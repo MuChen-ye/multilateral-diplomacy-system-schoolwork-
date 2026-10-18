@@ -8,6 +8,8 @@
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE operation_log;
+TRUNCATE TABLE app_user;
 TRUNCATE TABLE follow_up_action;
 TRUNCATE TABLE document_sponsor;
 TRUNCATE TABLE document;
@@ -238,3 +240,16 @@ INSERT INTO follow_up_action (conference_id, document_id, action_name, lead_coun
 (2, 2, '金砖国家新开发银行扩员研究',         6,  NULL, '2025-02-01', '2025-08-31', NULL,          45, '进行中', '扩员研究未按期完成'),
 (9, NULL, '金砖国家领导人第十七次会晤筹备工作', 6,  NULL, '2026-11-01', '2026-12-01', NULL,           0, '未启动', '待 2026 年峰会筹备启动'),
 (6, 7, '安理会改革方案文本磋商',             3,  1,    '2024-10-01', '2025-06-30', NULL,          20, '终止',   '各方立场分歧过大，磋商中止');
+
+-- ---------- app_user（系统用户，operation_log 由触发器自动写入） ----------
+INSERT INTO app_user (username, real_name, user_role, country_id, org_id, is_active) VALUES
+('admin',        '系统管理员',   '系统管理员', NULL, 1,    1),
+('org_china',    '中方会议组织者', '会议组织者', 1,    NULL, 1),
+('org_brazil',   '巴方会议组织者', '会议组织者', 4,    NULL, 1),
+('org_sco',      '上合秘书处干事', '会议组织者', NULL, 2,    1),
+('dip_china',    '中方外交官',   '外交官',     1,    NULL, 1),
+('dip_southaf',  '南非常驻代表', '外交官',     5,    NULL, 1),
+('dip_egypt',    '埃及外交官',   '外交官',     7,    NULL, 1),
+('obs_asean',    '东盟观察员',   '观察员',     10,   4,    1),
+('obs_unfccc',   '气候公约观察员', '观察员',   NULL, 5,    1),
+('dip_retired',  '离任外交官',   '外交官',     1,    NULL, 0);

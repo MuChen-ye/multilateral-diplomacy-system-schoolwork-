@@ -28,6 +28,7 @@ $files = @(
     "04_views.sql",
     "06_routines.sql",
     "05_queries.sql",
+    "07_crud_samples.sql",
     "99_verify.sql"
 )
 

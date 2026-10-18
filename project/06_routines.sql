@@ -9,6 +9,7 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 
 DROP TRIGGER IF EXISTS trg_action_before_insert;
 DROP TRIGGER IF EXISTS trg_action_before_update;
+DROP TRIGGER IF EXISTS trg_action_audit;
 DROP PROCEDURE IF EXISTS sp_conference_dashboard;
 DROP FUNCTION IF EXISTS fn_consensus_ratio;
 
@@ -35,6 +36,22 @@ BEGIN
     SET NEW.status = '已完成', NEW.progress_pct = 100;
   ELSEIF NEW.planned_end_date < CURDATE() AND NEW.status IN ('未启动', '进行中') THEN
     SET NEW.status = '逾期';
+  END IF;
+END$$
+
+-- ---------- 触发器 3：操作审计（状态/进度变化自动留痕） ----------
+CREATE TRIGGER trg_action_audit
+AFTER UPDATE ON follow_up_action
+FOR EACH ROW
+BEGIN
+  IF OLD.status <> NEW.status OR OLD.progress_pct <> NEW.progress_pct THEN
+    INSERT INTO operation_log
+      (user_id, action_type, target_table, target_id, old_value, new_value, detail)
+    VALUES
+      (NULL, 'UPDATE', 'follow_up_action', NEW.action_id,
+       CONCAT('status=', OLD.status, ', progress=', OLD.progress_pct),
+       CONCAT('status=', NEW.status, ', progress=', NEW.progress_pct),
+       '后续行动状态或进度变更（触发器自动记录）');
   END IF;
 END$$
 

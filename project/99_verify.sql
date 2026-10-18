@@ -16,6 +16,8 @@ UNION ALL SELECT 'conference_topic',           COUNT(*) FROM conference_topic
 UNION ALL SELECT 'document',                   COUNT(*) FROM document
 UNION ALL SELECT 'document_sponsor',           COUNT(*) FROM document_sponsor
 UNION ALL SELECT 'follow_up_action',           COUNT(*) FROM follow_up_action
+UNION ALL SELECT 'app_user',                   COUNT(*) FROM app_user
+UNION ALL SELECT 'operation_log',              COUNT(*) FROM operation_log
 ORDER BY 表名;
 
 -- 2 约束清单（主键 / 唯一 / 外键 / 检查）

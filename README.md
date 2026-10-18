@@ -11,7 +11,7 @@
 | 目录 | 内容 | 说明 |
 |---|---|---|
 | [`lab1/`](lab1/README.md) | 实验一 数据定义与插入 | `library_db071`：建库、5 表、数据、表结构修改、备份还原 |
-| [`project/`](project/README.md) | 三级项目：多边外交数据库 | 选题 3 完整实现：10 表、4 视图、触发器、存储过程、12 条核心查询 |
+| [`project/`](project/README.md) | 三级项目：多边外交数据库 | 选题 3 完整实现：12 表、5 视图、3 触发器、存储过程、14 条核心查询，报告按六章结构成文 |
 
 每个目录都自带 `README.md`（设计与实测记录）、编号 SQL 脚本，以及一键构建脚本 `run_all.cmd`。
 
@@ -20,7 +20,7 @@
 ```powershell
 # 方式一：双击一键构建（会提示输入 MySQL 密码）
 cd project
-.\run_all.cmd        # 依次执行 01→02→03→04→06→05→99
+.\run_all.cmd        # 依次执行 01→02→03→04→06→05→07→99
 
 cd ..\lab1
 .\run_all.cmd        # 实验一同样一键跑通
@@ -52,19 +52,21 @@ cd ..\lab1
 | `document` | 11 | `doc_no` 唯一；CHECK 编号非空串 |
 | `document_sponsor` | 76 | 复合主键 + 2 外键 |
 | `follow_up_action` | 16 | 4 外键 + **4 CHECK**（进度 0–100、日期合法、完成必须有完成日期） |
+| `app_user` | 10 | 账号唯一；角色枚举；2 外键（国家/组织） |
+| `operation_log` | 4 | 审计日志，由触发器自动写入；外键 → 用户 |
 
-合计 **15 个外键、7 个 CHECK、8 个 UNIQUE**，全部在库内生效；10 个关系模式均满足 **3NF**（不冗余统计字段，聚合全部交给视图）。
+合计 **18 个外键、7 个 CHECK、9 个 UNIQUE**，全部在库内生效；12 个关系模式均满足 **3NF/BCNF**（不冗余统计字段，聚合全部交给视图）。
 
 ## 数据库对象
 
 | 类型 | 数量 | 清单 |
 |---|---|---|
-| 视图 | 4 | `v_conference_overview`、`v_document_consensus`、`v_action_alert`、`v_china_multilateral` |
-| 触发器 | 2 | `trg_action_before_insert`、`trg_action_before_update`（后续行动逾期自动判定） |
+| 视图 | 5 | `v_conference_overview`、`v_document_consensus`、`v_action_alert`、`v_china_multilateral`、`v_operation_audit` |
+| 触发器 | 3 | `trg_action_before_insert`、`trg_action_before_update`（逾期自动判定）、`trg_action_audit`（变更留痕） |
 | 存储过程 | 1 | `sp_conference_dashboard(会议ID)` —— 一次输出 5 个结果集 |
 | 函数 | 1 | `fn_consensus_ratio(文件ID)` —— 成果文件联署率 |
 
-## 核心查询（12 条，均在 MySQL 9.4 实测跑通）
+## 核心查询（14 条，均在 MySQL 9.4 实测跑通）
 
 | # | 查询 | 技术点 |
 |---|---|---|
@@ -80,6 +82,8 @@ cd ..\lab1
 | 10 | 行动状态分布 | 分组 + 条件计数 |
 | 11 | 年度会议统计 | `YEAR()` 分组 |
 | 12 | 全链条汇总 | `GROUP_CONCAT` + 条件聚合 |
+| 13 | 用户角色与国别分布 | 分组 + 条件求和 |
+| 14 | 操作审计日志 | 视图 + 时间倒序 |
 
 ## 环境与实测
 

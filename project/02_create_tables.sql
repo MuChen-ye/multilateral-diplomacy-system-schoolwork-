@@ -11,6 +11,8 @@
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS operation_log;
+DROP TABLE IF EXISTS app_user;
 DROP TABLE IF EXISTS follow_up_action;
 DROP TABLE IF EXISTS document_sponsor;
 DROP TABLE IF EXISTS document;
@@ -209,3 +211,42 @@ CREATE TABLE follow_up_action (
   CONSTRAINT ck_action_actual CHECK (actual_end_date IS NULL OR actual_end_date >= start_date),
   CONSTRAINT ck_action_done CHECK (status <> '已完成' OR actual_end_date IS NOT NULL)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后续行动表';
+
+-- ---------- 表 11 app_user 系统用户表（操作者与角色） ----------
+CREATE TABLE app_user (
+  user_id    INT         NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  username   VARCHAR(40) NOT NULL                COMMENT '登录账号',
+  real_name  VARCHAR(40) NOT NULL                COMMENT '姓名',
+  user_role  ENUM('系统管理员','会议组织者','外交官','观察员') NOT NULL DEFAULT '观察员' COMMENT '角色',
+  country_id INT             NULL                COMMENT '所属国家',
+  org_id     INT             NULL                COMMENT '所属国际组织',
+  is_active  TINYINT(1)  NOT NULL DEFAULT 1      COMMENT '是否启用',
+  created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (user_id),
+  UNIQUE KEY uk_user_username (username),
+  KEY idx_user_role (user_role),
+  KEY idx_user_country (country_id),
+  CONSTRAINT fk_user_country FOREIGN KEY (country_id) REFERENCES country (country_id)
+    ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT fk_user_org FOREIGN KEY (org_id) REFERENCES international_organization (org_id)
+    ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户表';
+
+-- ---------- 表 12 operation_log 操作审计表（由触发器自动写入） ----------
+CREATE TABLE operation_log (
+  log_id      BIGINT      NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+  user_id     INT             NULL                COMMENT '操作人(周界外为NULL)',
+  action_type ENUM('INSERT','UPDATE','DELETE') NOT NULL COMMENT '操作类型',
+  target_table VARCHAR(40) NOT NULL               COMMENT '目标表',
+  target_id   INT             NULL                COMMENT '目标记录主键',
+  old_value   VARCHAR(200)    NULL                COMMENT '变更前摘要',
+  new_value   VARCHAR(200)    NULL                COMMENT '变更后摘要',
+  log_time    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
+  detail      VARCHAR(300)    NULL                COMMENT '说明',
+  PRIMARY KEY (log_id),
+  KEY idx_log_time (log_time),
+  KEY idx_log_target (target_table, target_id),
+  KEY idx_log_user (user_id),
+  CONSTRAINT fk_log_user FOREIGN KEY (user_id) REFERENCES app_user (user_id)
+    ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作审计表';

@@ -113,3 +113,17 @@ LEFT JOIN document d            ON d.conference_id = c.conference_id
 LEFT JOIN follow_up_action a    ON a.conference_id = c.conference_id
 GROUP BY c.conference_id, c.short_name
 ORDER BY c.start_date;
+
+-- 查询 13：系统用户角色与国别分布（权限视角）
+SELECT user_role AS 角色, COUNT(*) AS 人数,
+       SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS 启用人数,
+       COUNT(DISTINCT country_id) AS 涉及国家数
+FROM app_user
+GROUP BY user_role
+ORDER BY 人数 DESC;
+
+-- 查询 14：操作审计日志（触发器自动留痕，按时间倒序取最近 10 条）
+SELECT 操作人, 角色, 操作类型, 目标表, 目标ID, 变更前, 变更后, log_time AS 记录时间
+FROM v_operation_audit
+ORDER BY log_time DESC, log_id DESC
+LIMIT 10;

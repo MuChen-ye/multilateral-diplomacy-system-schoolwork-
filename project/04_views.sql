@@ -108,3 +108,19 @@ JOIN conference_participant p ON p.conference_id = c.conference_id
                             AND p.country_id = cn.country_id
 JOIN country hc              ON hc.country_id = c.host_country_id
 LEFT JOIN mechanism m        ON m.mechanism_id = c.mechanism_id;
+
+-- ---------- 视图 5 v_operation_audit 操作审计视图 ----------
+CREATE VIEW v_operation_audit AS
+SELECT
+  l.log_id,
+  l.log_time,
+  COALESCE(u.real_name, '系统触发器') AS 操作人,
+  COALESCE(u.user_role, '系统')       AS 角色,
+  l.action_type                       AS 操作类型,
+  l.target_table                      AS 目标表,
+  l.target_id                         AS 目标ID,
+  l.old_value                         AS 变更前,
+  l.new_value                         AS 变更后,
+  l.detail                            AS 说明
+FROM operation_log l
+LEFT JOIN app_user u ON u.user_id = l.user_id;
