@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 9.4.0, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.4.11, for Linux (x86_64)
 --
 -- Host: localhost    Database: multilateral-diplomacy-system-schoolwork-
 -- ------------------------------------------------------
--- Server version	9.4.0
+-- Server version	8.4.11
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -55,7 +55,7 @@ CREATE TABLE `app_user` (
 
 LOCK TABLES `app_user` WRITE;
 /*!40000 ALTER TABLE `app_user` DISABLE KEYS */;
-INSERT INTO `app_user` VALUES (1,'admin','系统管理员','系统管理员',NULL,1,1,'2026-10-18 11:51:34'),(2,'org_china','中方会议组织者','会议组织者',1,NULL,1,'2026-10-18 11:51:34'),(3,'org_brazil','巴方会议组织者','会议组织者',4,NULL,1,'2026-10-18 11:51:34'),(4,'org_sco','上合秘书处干事','会议组织者',NULL,2,1,'2026-10-18 11:51:34'),(5,'dip_china','中方外交官','外交官',1,NULL,1,'2026-10-18 11:51:34'),(6,'dip_southaf','南非常驻代表','外交官',5,NULL,1,'2026-10-18 11:51:34'),(7,'dip_egypt','埃及外交官','外交官',7,NULL,1,'2026-10-18 11:51:34'),(8,'obs_asean','东盟观察员','观察员',10,4,1,'2026-10-18 11:51:34'),(9,'obs_unfccc','气候公约观察员','观察员',NULL,5,1,'2026-10-18 11:51:34'),(10,'dip_retired','离任外交官','外交官',1,NULL,0,'2026-10-18 11:51:34');
+INSERT INTO `app_user` VALUES (1,'admin','系统管理员','系统管理员',NULL,1,1,'2026-10-23 17:56:22'),(2,'org_china','中方会议组织者','会议组织者',1,NULL,1,'2026-10-23 17:56:22'),(3,'org_brazil','巴方会议组织者','会议组织者',4,NULL,1,'2026-10-23 17:56:22'),(4,'org_sco','上合秘书处干事','会议组织者',NULL,2,1,'2026-10-23 17:56:22'),(5,'dip_china','中方外交官','外交官',1,NULL,1,'2026-10-23 17:56:22'),(6,'dip_southaf','南非常驻代表','外交官',5,NULL,1,'2026-10-23 17:56:22'),(7,'dip_egypt','埃及外交官','外交官',7,NULL,1,'2026-10-23 17:56:22'),(8,'obs_asean','东盟观察员','观察员',10,4,1,'2026-10-23 17:56:22'),(9,'obs_unfccc','气候公约观察员','观察员',NULL,5,1,'2026-10-23 17:56:22'),(10,'dip_retired','离任外交官','外交官',1,NULL,0,'2026-10-23 17:56:22');
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,7 +319,14 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_action_before_insert` BEFORE INSERT ON `follow_up_action` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 */ /*!50003 TRIGGER `trg_action_before_insert` BEFORE INSERT ON `follow_up_action` FOR EACH ROW BEGIN
+  -- 文件可为空；填写文件时，其所属会议必须与行动来源一致。
+  IF NEW.document_id IS NOT NULL AND NOT EXISTS (
+    SELECT * FROM document d
+    WHERE d.document_id = NEW.document_id AND d.conference_id = NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
   IF NEW.actual_end_date IS NOT NULL THEN
     SET NEW.status = '已完成', NEW.progress_pct = 100;
   ELSEIF NEW.planned_end_date < CURDATE() AND NEW.status <> '终止' THEN
@@ -340,7 +347,14 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_action_before_update` BEFORE UPDATE ON `follow_up_action` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 */ /*!50003 TRIGGER `trg_action_before_update` BEFORE UPDATE ON `follow_up_action` FOR EACH ROW BEGIN
+  -- 文件可为空；填写文件时，其所属会议必须与行动来源一致。
+  IF NEW.document_id IS NOT NULL AND NOT EXISTS (
+    SELECT * FROM document d
+    WHERE d.document_id = NEW.document_id AND d.conference_id = NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
   IF NEW.actual_end_date IS NOT NULL THEN
     SET NEW.status = '已完成', NEW.progress_pct = 100;
   ELSEIF NEW.planned_end_date < CURDATE() AND NEW.status IN ('未启动', '进行中') THEN
@@ -361,7 +375,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_action_audit` AFTER UPDATE ON `follow_up_action` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 */ /*!50003 TRIGGER `trg_action_audit` AFTER UPDATE ON `follow_up_action` FOR EACH ROW BEGIN
   IF OLD.status <> NEW.status OR OLD.progress_pct <> NEW.progress_pct THEN
     INSERT INTO operation_log
       (user_id, action_type, target_table, target_id, old_value, new_value, detail)
@@ -471,7 +485,7 @@ CREATE TABLE `operation_log` (
 
 LOCK TABLES `operation_log` WRITE;
 /*!40000 ALTER TABLE `operation_log` DISABLE KEYS */;
-INSERT INTO `operation_log` VALUES (1,NULL,'UPDATE','follow_up_action',3,'status=进行中, progress=60','status=逾期, progress=60','2026-10-18 11:51:34','后续行动状态或进度变更（触发器自动记录）'),(2,NULL,'UPDATE','follow_up_action',7,'status=进行中, progress=40','status=逾期, progress=40','2026-10-18 11:51:34','后续行动状态或进度变更（触发器自动记录）'),(3,NULL,'UPDATE','follow_up_action',10,'status=进行中, progress=35','status=逾期, progress=35','2026-10-18 11:51:34','后续行动状态或进度变更（触发器自动记录）'),(4,NULL,'UPDATE','follow_up_action',14,'status=进行中, progress=45','status=逾期, progress=45','2026-10-18 11:51:34','后续行动状态或进度变更（触发器自动记录）');
+INSERT INTO `operation_log` VALUES (1,NULL,'UPDATE','follow_up_action',3,'status=进行中, progress=60','status=逾期, progress=60','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(2,NULL,'UPDATE','follow_up_action',7,'status=进行中, progress=40','status=逾期, progress=40','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(3,NULL,'UPDATE','follow_up_action',10,'status=进行中, progress=35','status=逾期, progress=35','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(4,NULL,'UPDATE','follow_up_action',14,'status=进行中, progress=45','status=逾期, progress=45','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）');
 /*!40000 ALTER TABLE `operation_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -511,7 +525,7 @@ DROP TABLE IF EXISTS `v_action_alert`;
 /*!50001 DROP VIEW IF EXISTS `v_action_alert`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `v_action_alert` AS SELECT 
+/*!50001 CREATE VIEW `v_action_alert` AS SELECT
  1 AS `action_id`,
  1 AS `action_name`,
  1 AS `conference_name`,
@@ -525,6 +539,25 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary view structure for view `v_active_user`
+--
+
+DROP TABLE IF EXISTS `v_active_user`;
+/*!50001 DROP VIEW IF EXISTS `v_active_user`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `v_active_user` AS SELECT
+ 1 AS `user_id`,
+ 1 AS `username`,
+ 1 AS `real_name`,
+ 1 AS `user_role`,
+ 1 AS `country_id`,
+ 1 AS `org_id`,
+ 1 AS `is_active`,
+ 1 AS `created_at`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary view structure for view `v_china_multilateral`
 --
 
@@ -532,7 +565,7 @@ DROP TABLE IF EXISTS `v_china_multilateral`;
 /*!50001 DROP VIEW IF EXISTS `v_china_multilateral`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `v_china_multilateral` AS SELECT 
+/*!50001 CREATE VIEW `v_china_multilateral` AS SELECT
  1 AS `conference_name`,
  1 AS `conference_type`,
  1 AS `start_date`,
@@ -555,7 +588,7 @@ DROP TABLE IF EXISTS `v_conference_overview`;
 /*!50001 DROP VIEW IF EXISTS `v_conference_overview`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `v_conference_overview` AS SELECT 
+/*!50001 CREATE VIEW `v_conference_overview` AS SELECT
  1 AS `conference_id`,
  1 AS `short_name`,
  1 AS `conference_type`,
@@ -582,7 +615,7 @@ DROP TABLE IF EXISTS `v_document_consensus`;
 /*!50001 DROP VIEW IF EXISTS `v_document_consensus`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `v_document_consensus` AS SELECT 
+/*!50001 CREATE VIEW `v_document_consensus` AS SELECT
  1 AS `document_id`,
  1 AS `doc_no`,
  1 AS `title`,
@@ -604,7 +637,7 @@ DROP TABLE IF EXISTS `v_operation_audit`;
 /*!50001 DROP VIEW IF EXISTS `v_operation_audit`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `v_operation_audit` AS SELECT 
+/*!50001 CREATE VIEW `v_operation_audit` AS SELECT
  1 AS `log_id`,
  1 AS `log_time`,
  1 AS `操作人`,
@@ -616,10 +649,6 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `变更后`,
  1 AS `说明`*/;
 SET character_set_client = @saved_cs_client;
-
---
--- Dumping events for database 'multilateral-diplomacy-system-schoolwork-'
---
 
 --
 -- Dumping routines for database 'multilateral-diplomacy-system-schoolwork-'
@@ -634,7 +663,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `fn_consensus_ratio`(p_document_id INT) RETURNS decimal(5,2)
+CREATE FUNCTION `fn_consensus_ratio`(p_document_id INT) RETURNS decimal(5,2)
     READS SQL DATA
 BEGIN
   DECLARE v_total  INT DEFAULT 0;
@@ -663,7 +692,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_conference_dashboard`(IN p_conference_id INT)
+CREATE PROCEDURE `sp_conference_dashboard`(IN p_conference_id INT)
     COMMENT '输出一场国际会议的：基本信息 / 参与国家 / 议题 / 成果文件 / 后续行动'
 BEGIN
   -- 1 基本信息
@@ -732,8 +761,27 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_action_alert` AS select `a`.`action_id` AS `action_id`,`a`.`action_name` AS `action_name`,`c`.`short_name` AS `conference_name`,`lc`.`name_cn` AS `lead_country`,`a`.`start_date` AS `start_date`,`a`.`planned_end_date` AS `planned_end_date`,(to_days(curdate()) - to_days(`a`.`planned_end_date`)) AS `overdue_days`,`a`.`progress_pct` AS `progress_pct`,`a`.`status` AS `status`,`a`.`remarks` AS `remarks` from ((`follow_up_action` `a` join `conference` `c` on((`c`.`conference_id` = `a`.`conference_id`))) join `country` `lc` on((`lc`.`country_id` = `a`.`lead_country_id`))) where ((`a`.`actual_end_date` is null) and (`a`.`planned_end_date` < curdate()) and (`a`.`status` <> '终止')) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `v_active_user`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_active_user`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 SQL SECURITY DEFINER */
+/*!50001 VIEW `v_active_user` AS select `app_user`.`user_id` AS `user_id`,`app_user`.`username` AS `username`,`app_user`.`real_name` AS `real_name`,`app_user`.`user_role` AS `user_role`,`app_user`.`country_id` AS `country_id`,`app_user`.`org_id` AS `org_id`,`app_user`.`is_active` AS `is_active`,`app_user`.`created_at` AS `created_at` from `app_user` where (`app_user`.`is_active` = 1) */
+/*!50002 WITH CASCADED CHECK OPTION */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -750,8 +798,8 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_china_multilateral` AS select `c`.`short_name` AS `conference_name`,`c`.`conference_type` AS `conference_type`,`c`.`start_date` AS `start_date`,`c`.`host_city` AS `host_city`,`hc`.`name_cn` AS `host_country`,`m`.`name` AS `mechanism_name`,`p`.`role` AS `china_role`,`p`.`delegation_level` AS `china_delegation_level`,`p`.`delegation_size` AS `china_delegation_size`,(case when (`p`.`role` = '主办国') then '主办' else '参与' end) AS `china_engagement`,(select count(0) from `document` `d` where (`d`.`conference_id` = `c`.`conference_id`)) AS `documents_of_conference`,(select count(0) from (`document` `d` join `document_sponsor` `sp` on((`sp`.`document_id` = `d`.`document_id`))) where ((`d`.`conference_id` = `c`.`conference_id`) and (`sp`.`country_id` = `cn`.`country_id`))) AS `documents_china_signed` from ((((`conference` `c` join `country` `cn` on((`cn`.`iso_code` = 'CHN'))) join `conference_participant` `p` on(((`p`.`conference_id` = `c`.`conference_id`) and (`p`.`country_id` = `cn`.`country_id`)))) join `country` `hc` on((`hc`.`country_id` = `c`.`host_country_id`))) left join `mechanism` `m` on((`m`.`mechanism_id` = `c`.`mechanism_id`))) */;
+/*!50013 SQL SECURITY DEFINER */
+/*!50001 VIEW `v_china_multilateral` AS select `c`.`short_name` AS `conference_name`,`c`.`conference_type` AS `conference_type`,`c`.`start_date` AS `start_date`,`c`.`host_city` AS `host_city`,`c`.`host_country` AS `host_country`,`c`.`mechanism_name` AS `mechanism_name`,`p`.`role` AS `china_role`,`p`.`delegation_level` AS `china_delegation_level`,`p`.`delegation_size` AS `china_delegation_size`,(case when (`p`.`role` = '主办国') then '主办' else '参与' end) AS `china_engagement`,`c`.`document_count` AS `documents_of_conference`,(select count(0) from (`document` `d` join `document_sponsor` `sp` on((`sp`.`document_id` = `d`.`document_id`))) where ((`d`.`conference_id` = `c`.`conference_id`) and (`sp`.`country_id` = `cn`.`country_id`) and (`sp`.`stance` = '联署'))) AS `documents_china_signed` from ((`v_conference_overview` `c` join `conference_participant` `p` on((`p`.`conference_id` = `c`.`conference_id`))) join `country` `cn` on((`cn`.`country_id` = `p`.`country_id`))) where (`cn`.`iso_code` = 'CHN') */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -768,7 +816,7 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_conference_overview` AS select `c`.`conference_id` AS `conference_id`,`c`.`short_name` AS `short_name`,`c`.`conference_type` AS `conference_type`,`c`.`session_label` AS `session_label`,`c`.`start_date` AS `start_date`,`c`.`end_date` AS `end_date`,`c`.`status` AS `status`,`hc`.`name_cn` AS `host_country`,`c`.`host_city` AS `host_city`,`m`.`name` AS `mechanism_name`,`o`.`name_cn` AS `org_name`,(select count(0) from `conference_participant` `p` where (`p`.`conference_id` = `c`.`conference_id`)) AS `participant_count`,(select count(0) from `conference_topic` `ct` where ((`ct`.`conference_id` = `c`.`conference_id`) and (`ct`.`is_core` = 1))) AS `core_topic_count`,(select count(0) from `document` `d` where (`d`.`conference_id` = `c`.`conference_id`)) AS `document_count`,(select count(0) from `follow_up_action` `a` where (`a`.`conference_id` = `c`.`conference_id`)) AS `action_count`,(select count(0) from `follow_up_action` `a` where ((`a`.`conference_id` = `c`.`conference_id`) and (`a`.`status` = '已完成'))) AS `action_done_count` from (((`conference` `c` join `country` `hc` on((`hc`.`country_id` = `c`.`host_country_id`))) left join `mechanism` `m` on((`m`.`mechanism_id` = `c`.`mechanism_id`))) left join `international_organization` `o` on((`o`.`org_id` = `c`.`org_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -786,7 +834,7 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_document_consensus` AS select `d`.`document_id` AS `document_id`,`d`.`doc_no` AS `doc_no`,`d`.`title` AS `title`,`d`.`doc_type` AS `doc_type`,`d`.`adopt_method` AS `adopt_method`,`d`.`issue_date` AS `issue_date`,`c`.`short_name` AS `conference_name`,sum((case when (`ds`.`stance` = '联署') then 1 else 0 end)) AS `signed_count`,sum((case when (`ds`.`stance` = '支持') then 1 else 0 end)) AS `support_count`,sum((case when (`ds`.`stance` = '保留') then 1 else 0 end)) AS `reserved_count`,count(`ds`.`country_id`) AS `total_country_count` from ((`document` `d` join `conference` `c` on((`c`.`conference_id` = `d`.`conference_id`))) left join `document_sponsor` `ds` on((`ds`.`document_id` = `d`.`document_id`))) group by `d`.`document_id`,`d`.`doc_no`,`d`.`title`,`d`.`doc_type`,`d`.`adopt_method`,`d`.`issue_date`,`c`.`short_name` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -804,7 +852,7 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_operation_audit` AS select `l`.`log_id` AS `log_id`,`l`.`log_time` AS `log_time`,coalesce(`u`.`real_name`,'系统触发器') AS `操作人`,coalesce(`u`.`user_role`,'系统') AS `角色`,`l`.`action_type` AS `操作类型`,`l`.`target_table` AS `目标表`,`l`.`target_id` AS `目标ID`,`l`.`old_value` AS `变更前`,`l`.`new_value` AS `变更后`,`l`.`detail` AS `说明` from (`operation_log` `l` left join `app_user` `u` on((`u`.`user_id` = `l`.`user_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -819,4 +867,4 @@ USE `multilateral-diplomacy-system-schoolwork-`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-23 16:02:13
+-- Dump completed

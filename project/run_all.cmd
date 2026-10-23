@@ -1,9 +1,9 @@
 @echo off
-rem Build and verify the multilateral-diplomacy database from scratch.
-rem Bypasses the PowerShell execution policy for this one run only.
+rem Rebuild the demo database; forward the PowerShell exit code.
 setlocal
-cd /d "%~dp0"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_all.ps1" %*
+set "result=%ERRORLEVEL%"
 echo.
-echo ----- finished (exit %ERRORLEVEL%) -----
+echo ----- finished (exit %result%) -----
 pause
+exit /b %result%

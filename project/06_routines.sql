@@ -1,5 +1,6 @@
 -- ============================================================
--- 实验项目 步骤 6：触发器 + 存储过程 + 函数
+-- 实验项目 步骤 6：扩展功能（触发器 + 存储过程 + 函数）
+-- 课件 3.7 将存储过程列为自学内容；基础查询见 05 和 08。
 -- 触发器：后续行动状态自动判定（逾期预警的业务保障）
 -- 存储过程：单场会议全景仪表盘（验收演示用，一次输出 5 个结果集）
 -- 函数：成果文件共识率（联署国占比）
@@ -20,6 +21,13 @@ CREATE TRIGGER trg_action_before_insert
 BEFORE INSERT ON follow_up_action
 FOR EACH ROW
 BEGIN
+  -- 文件可为空；填写文件时，其所属会议必须与行动来源一致。
+  IF NEW.document_id IS NOT NULL AND NOT EXISTS (
+    SELECT * FROM document d
+    WHERE d.document_id = NEW.document_id AND d.conference_id = NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
   IF NEW.actual_end_date IS NOT NULL THEN
     SET NEW.status = '已完成', NEW.progress_pct = 100;
   ELSEIF NEW.planned_end_date < CURDATE() AND NEW.status <> '终止' THEN
@@ -32,6 +40,13 @@ CREATE TRIGGER trg_action_before_update
 BEFORE UPDATE ON follow_up_action
 FOR EACH ROW
 BEGIN
+  -- 文件可为空；填写文件时，其所属会议必须与行动来源一致。
+  IF NEW.document_id IS NOT NULL AND NOT EXISTS (
+    SELECT * FROM document d
+    WHERE d.document_id = NEW.document_id AND d.conference_id = NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
   IF NEW.actual_end_date IS NOT NULL THEN
     SET NEW.status = '已完成', NEW.progress_pct = 100;
   ELSEIF NEW.planned_end_date < CURDATE() AND NEW.status IN ('未启动', '进行中') THEN
@@ -121,5 +136,5 @@ END$$
 
 DELIMITER ;
 
--- 触发一次批量刷新，让已有 14 条行动记录按当前日期重算状态
+-- 触发一次批量刷新，让已有 16 条行动记录按当前日期重算状态
 UPDATE follow_up_action SET progress_pct = progress_pct;

@@ -1,57 +1,47 @@
-# Build the multilateral-diplomacy database from scratch and verify it.
-#
-#   .\run_all.ps1                     # prompts for the MySQL root password
-#   $env:MYSQL_PWD = "..."; .\run_all.ps1
-#
-# ASCII only on purpose: this file must parse under a GBK (cp936) console.
-
+# Rebuild the demo database. SQL files contain DROP/TRUNCATE statements.
+# Usage: .\run_all.ps1 [-MySqlPath "C:\path\to\mysql.exe"]
+# ASCII only for Windows PowerShell consoles.
+param([string]$MySqlPath)
 $ErrorActionPreference = "Stop"
 
-# -File does not change the working directory; anchor to the script folder so
-# the numbered .sql files resolve no matter where the caller starts from.
-Set-Location -LiteralPath $PSScriptRoot
-
-$mysql = "C:\Program Files\MySQL\MySQL Server 9.4\bin\mysql.exe"
-if (-not (Test-Path $mysql)) { throw "mysql.exe not found: $mysql" }
-
-if (-not $env:MYSQL_PWD) {
-    $sec = Read-Host "MySQL root password" -AsSecureString
-    $env:MYSQL_PWD = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
-        [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
+if (-not $MySqlPath) {
+    $command = Get-Command mysql.exe -CommandType Application -ErrorAction SilentlyContinue
+    if (-not $command) { throw "Add MySQL bin to PATH or pass -MySqlPath." }
+    $MySqlPath = $command.Source
+}
+if (-not (Test-Path -LiteralPath $MySqlPath -PathType Leaf)) {
+    throw "mysql.exe not found: $MySqlPath"
 }
 
-# 01 build  -> 02 tables -> 03 data -> 04 views -> 06 triggers/procs -> 05 queries -> 99 verify
 $files = @(
-    "01_create_database.sql",
-    "02_create_tables.sql",
-    "03_insert_data.sql",
-    "04_views.sql",
-    "06_routines.sql",
-    "05_queries.sql",
-    "07_crud_samples.sql",
-    "99_verify.sql"
+    "01_create_database.sql", "02_create_tables.sql", "03_insert_data.sql",
+    "04_views.sql", "06_routines.sql", "05_queries.sql", "07_crud_samples.sql",
+    "08_course_examples.sql", "99_verify.sql"
 )
-
 foreach ($f in $files) {
-    if (-not (Test-Path -LiteralPath $f)) { throw "missing: $f" }
-    Write-Host "==> $f"
-
-    # mysql.exe is fed a copy in an ASCII-only temp dir, so a non-ASCII
-    # working directory (Chinese folder names) can never break the redirect.
-    $tmp = Join-Path $env:TEMP ("dlab_" + [guid]::NewGuid().ToString("N"))
-    New-Item -ItemType Directory -Path $tmp | Out-Null
-    Copy-Item -LiteralPath $f -Destination $tmp -Force
-    $dst = Join-Path $tmp $f
-
-    if ($f -eq "99_verify.sql" -or $f -eq "05_queries.sql") {
-        & cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 --table < `"$dst`""
-    } else {
-        & cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 < `"$dst`""
-    }
-    if ($LASTEXITCODE -ne 0) { throw "failed: $f (exit $LASTEXITCODE)" }
-
-    Remove-Item -LiteralPath $tmp -Recurse -Force
+    if (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot $f))) { throw "Missing: $f" }
 }
 
-Write-Host ""
-Write-Host "all scripts applied successfully"
+$prompted = -not $env:MYSQL_PWD
+$tmp = $null
+try {
+    if ($prompted) {
+        $sec = Read-Host "MySQL root password" -AsSecureString
+        $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
+        try { $env:MYSQL_PWD = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr) }
+        finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr) }
+    }
+    $tmp = Join-Path ([IO.Path]::GetTempPath()) ("dlab_" + [guid]::NewGuid().ToString("N"))
+    New-Item -ItemType Directory -Path $tmp | Out-Null
+    foreach ($f in $files) {
+        Write-Host "==> $f"
+        $dst = Join-Path $tmp $f
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot $f) -Destination $dst
+        & cmd /d /c "`"$MySqlPath`" -u root --default-character-set=utf8mb4 --table < `"$dst`""
+        if ($LASTEXITCODE -ne 0) { throw "Failed: $f (exit $LASTEXITCODE)" }
+    }
+    Write-Host "All scripts applied successfully."
+} finally {
+    if ($tmp) { Remove-Item -LiteralPath $tmp -Recurse -Force }
+    if ($prompted) { Remove-Item Env:MYSQL_PWD -ErrorAction SilentlyContinue }
+}

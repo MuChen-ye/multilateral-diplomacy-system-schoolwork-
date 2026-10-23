@@ -1,18 +1,15 @@
 -- ============================================================
 -- 实验项目 步骤 4：视图
 -- 用途：把多表连接与聚合固化成可直接演示的"报表"，
---       其中 v_china_multilateral 与 v_consensus_report 用于呈现思政主题。
+--       其中 v_china_multilateral 与 v_document_consensus 用于呈现思政主题。
+-- 6 个视图覆盖多表、分组、表达式、基于视图及行列子集视图。
+-- CREATE OR REPLACE 是 MySQL 对 CREATE VIEW 的扩展，使本文件可单独重跑。
 -- ============================================================
 
 USE `multilateral-diplomacy-system-schoolwork-`;
 
-DROP VIEW IF EXISTS v_conference_overview;
-DROP VIEW IF EXISTS v_document_consensus;
-DROP VIEW IF EXISTS v_action_alert;
-DROP VIEW IF EXISTS v_china_multilateral;
-
 -- ---------- 视图 1 v_conference_overview 会议全景 ----------
-CREATE VIEW v_conference_overview AS
+CREATE OR REPLACE VIEW v_conference_overview AS
 SELECT
   c.conference_id,
   c.short_name,
@@ -44,7 +41,7 @@ LEFT JOIN international_organization o
   ON o.org_id = c.org_id;
 
 -- ---------- 视图 2 v_document_consensus 成果文件共识广度 ----------
-CREATE VIEW v_document_consensus AS
+CREATE OR REPLACE VIEW v_document_consensus AS
 SELECT
   d.document_id,
   d.doc_no,
@@ -64,7 +61,7 @@ GROUP BY d.document_id, d.doc_no, d.title, d.doc_type, d.adopt_method,
          d.issue_date, c.short_name;
 
 -- ---------- 视图 3 v_action_alert 后续行动逾期预警 ----------
-CREATE VIEW v_action_alert AS
+CREATE OR REPLACE VIEW v_action_alert AS
 SELECT
   a.action_id,
   a.action_name,
@@ -83,34 +80,31 @@ WHERE a.actual_end_date IS NULL
   AND a.planned_end_date < CURDATE()
   AND a.status <> '终止';
 
--- ---------- 视图 4 v_china_multilateral 中国多边外交参与全景（思政报表） ----------
-CREATE VIEW v_china_multilateral AS
+-- ---------- 视图 4 v_china_multilateral 基于视图的中国参与全景 ----------
+CREATE OR REPLACE VIEW v_china_multilateral AS
 SELECT
-  c.short_name                                 AS conference_name,
+  c.short_name AS conference_name,
   c.conference_type,
   c.start_date,
   c.host_city,
-  hc.name_cn                                   AS host_country,
-  m.name                                       AS mechanism_name,
-  p.role                                       AS china_role,
-  p.delegation_level                           AS china_delegation_level,
-  p.delegation_size                            AS china_delegation_size,
+  c.host_country,
+  c.mechanism_name,
+  p.role AS china_role,
+  p.delegation_level AS china_delegation_level,
+  p.delegation_size AS china_delegation_size,
   CASE WHEN p.role = '主办国' THEN '主办' ELSE '参与' END AS china_engagement,
-  (SELECT COUNT(*) FROM document d
-     WHERE d.conference_id = c.conference_id)   AS documents_of_conference,
-  (SELECT COUNT(*) FROM document d
-     JOIN document_sponsor sp ON sp.document_id = d.document_id
-     WHERE d.conference_id = c.conference_id
-       AND sp.country_id = cn.country_id)       AS documents_china_signed
-FROM conference c
-JOIN country cn              ON cn.iso_code = 'CHN'
+  c.document_count AS documents_of_conference,
+  (SELECT COUNT(*)
+   FROM document d JOIN document_sponsor sp ON sp.document_id = d.document_id
+   WHERE d.conference_id = c.conference_id
+     AND sp.country_id = cn.country_id AND sp.stance = '联署') AS documents_china_signed
+FROM v_conference_overview c
 JOIN conference_participant p ON p.conference_id = c.conference_id
-                            AND p.country_id = cn.country_id
-JOIN country hc              ON hc.country_id = c.host_country_id
-LEFT JOIN mechanism m        ON m.mechanism_id = c.mechanism_id;
+JOIN country cn ON cn.country_id = p.country_id
+WHERE cn.iso_code = 'CHN';
 
 -- ---------- 视图 5 v_operation_audit 操作审计视图 ----------
-CREATE VIEW v_operation_audit AS
+CREATE OR REPLACE VIEW v_operation_audit AS
 SELECT
   l.log_id,
   l.log_time,
@@ -124,3 +118,11 @@ SELECT
   l.detail                            AS 说明
 FROM operation_log l
 LEFT JOIN app_user u ON u.user_id = l.user_id;
+
+-- ---------- 视图 6 v_active_user 可更新的行列子集视图 ----------
+-- 课件 3.5：单表选择、投影并保留主键；CHECK OPTION 限制写入后仍满足视图条件。
+CREATE OR REPLACE VIEW v_active_user AS
+SELECT user_id, username, real_name, user_role, country_id, org_id, is_active, created_at
+FROM app_user
+WHERE is_active = 1
+WITH CHECK OPTION;

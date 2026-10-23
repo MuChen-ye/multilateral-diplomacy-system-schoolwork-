@@ -4,7 +4,7 @@
 
 数据库名：`` `multilateral-diplomacy-system-schoolwork-` ``（与仓库同名；含连字符，SQL 中必须加反引号）
 
-> 本文件按历年优秀作品的报告骨架组织：系统分析 → 概念模型 → 逻辑模型 → 物理模型 → 数据库实现 → 总结。
+> 本文件按课程数据库设计流程组织：系统分析 → 概念模型 → 逻辑模型 → 物理模型 → 数据库实现 → 总结。
 
 ---
 
@@ -52,8 +52,8 @@
 
 ### 1.4 可行性分析
 
-- **技术可行性**：MySQL 9.4 完整支持外键、CHECK、ENUM、窗口函数、触发器与存储过程，本设计所需能力全部原生提供，无需额外组件。
-- **数据可行性**：外交部官网、国际组织公开发布的议程与会议成果足以支撑示例数据（本库 18 国 / 9 场会议 / 11 份文件）。
+- **技术可行性**：MySQL 8.0.16 及以上版本支持本项目使用的外键、CHECK、视图、触发器与存储过程，本设计所需能力全部原生提供，无需额外组件。
+- **数据可行性**：按课程业务场景构造的示例数据可支撑查询与更新演示（本库 18 国 / 9 场会议 / 11 份文件）。
 - **经济可行性**：全流程在单机完成，无授权费用。
 - **操作可行性**：Navicat 图形界面 + 命令行脚本两条路径，组织者无需编程即可录入。
 
@@ -128,7 +128,7 @@ erDiagram
 
 ### 3.1 实体类型的转换
 
-10 个独立实体各转换为一个关系，实体标识符作主键：
+9 个实体各转换为一个关系，实体标识符作主键：
 
 | 实体 | 关系 | 主键 |
 |---|---|---|
@@ -148,9 +148,9 @@ erDiagram
 
 | 原有联系 | 类型 | 转换方式 | 结果关系 |
 |---|---|---|---|
-| 国家—会议 | M:N | 新建关系，取双方主键为联合主键，加入联系属性 | `conference_participant`（身份、级别、人数、确认日期） |
-| 会议—议题 | M:N | 同上 | `conference_topic`（核心标记、讨论日期、要点） |
-| 文件—国家 | M:N | 同上 | `document_sponsor`（立场：联署/支持/保留） |
+| 国家—会议 | M:N | 新建关系，双方主键组成联合候选键，另设代理主键 | `conference_participant`（身份、级别、人数、确认日期） |
+| 会议—议题 | M:N | 双方主键组成联合主键，加入联系属性 | `conference_topic`（核心标记、讨论日期、要点） |
+| 文件—国家 | M:N | 双方主键组成联合主键，加入立场属性 | `document_sponsor`（立场：联署/支持/保留） |
 | 会议—文件 | 1:N | 在 N 端加入 1 端主键作外键 | `document.conference_id` |
 | 会议—行动 | 1:N | 同上 | `follow_up_action.conference_id` |
 | 文件—行动 | 1:N（可空） | 同上，允许为空（行动可只挂会议） | `follow_up_action.document_id` |
@@ -177,61 +177,32 @@ app_user(user_id, username, real_name, user_role, country_id, org_id, is_active,
 operation_log(log_id, user_id, action_type, target_table, target_id, old_value, new_value, log_time, detail)
 ```
 
-### 3.4 范式判断及关系模型优化
+### 3.4 函数依赖与范式分析（课件第 4 章）
 
-#### 3.4.1 第一范式（1NF）的判断及转化
+先依据业务语义列出函数依赖，再判断候选键及范式。不能仅凭“有自增主键”判断为 BCNF。
 
-所有关系的每个属性值都是不可再分的原子值：联系方式只存单个号码、日期用 DATE/DATETIME 而非"年月日"拼接、立场与状态用 ENUM 取值。**数据库模式为 1NF。**
-
-#### 3.4.2 第二范式（2NF）的判断及转化
-
-先给出函数依赖：
-
-```
-country_id   → iso_code, name_cn, name_en, continent, development_status, is_un_member
-org_id       → name_cn, abbr, org_type, founded_year, hq_city
-mechanism_id → name, category, lead_org_id
-conference_id→ title, short_name, mechanism_id, host_country_id, start_date, end_date, status
-document_id  → conference_id, title, doc_type, doc_no, issue_date, adopt_method, status
-action_id    → conference_id, action_name, lead_country_id, planned_end_date, progress_pct, status
-(conference_id, country_id) → role, delegation_level, delegation_size, join_date
-(conference_id, topic_id)   → is_core, discussion_date, summary
-(document_id, country_id)   → stance
-```
-
-三个复合主键关系的非主属性都依赖**整个**联合主键而非其中一部分：参会身份依赖"哪场会议 + 哪个国家"，文件立场依赖"哪份文件 + 哪个国家"，不存在只依赖半边主键的属性。**所有关系均为 2NF。**
-
-#### 3.4.3 第三范式（3NF）的判断及转化
-
-检查非主属性对候选键的传递依赖，设计时已消除三处典型传递链：
-
-| 潜在传递依赖 | 处理方式 |
-|---|---|
-| 会议 → 主办国 → 主办国大洲/发展水平 | 会议只存 `host_country_id`，国名与大洲留在 `country` 一处 |
-| 文件 → 所属会议 → 会议名称/会期 | 文件只存 `conference_id`，会议信息不冗余 |
-| 机制 → 牵头组织 → 组织总部/成立年份 | 机制只存 `lead_org_id`，组织信息不重复 |
-
-同时**不冗余统计字段**（某会议的参与国数、文件数、行动完成数），全部由视图实时聚合，避免"明细改了、统计没改"的更新异常。**所有关系均为 3NF。**
-
-#### 3.4.4 BC 范式（BCNF）的判断及转化
-
-BCNF 要求每个决定因素都是候选键。逐类检查：
-
-- 单属性候选键关系（`country` 等）：决定因素即主键，平凡成立。
-- 存在多个候选键的关系：`country` 的候选键有 `country_id` 与 `iso_code`，其余属性对两者都是完全依赖，无属性决定另一候选键；`document` 同理（`document_id` 与 `doc_no`）。
-- 复合候选键关系（`conference_topic`、`document_sponsor`）：非主属性不决定任何主属性，`stance` 只由"文件+国家"共同决定。
-
-**所有关系模式均为 BCNF。**
-
-#### 3.4.5 关系模型优化（与常见做法的对比）
-
-| 常见做法 | 本设计的改进 | 原因 |
+| 关系 | 主要候选键 | 函数依赖示例 |
 |---|---|---|
-| 用身份证号 / 业务编号当主键 | `iso_code`、`doc_no`、`username` 仅作 UNIQUE，主键用自增代理键 | 业务码会改，改主键要级联更新所有引用行 |
-| 会议表直接存主办国名称 | 只存 `host_country_id` | 消除传递依赖，改名只改一处 |
-| 参会记录用"国家列表"字段 | 拆 `conference_participant` 关系并带联系属性 | 满足 1NF，且能按身份/级别统计 |
-| 行动完成状态靠人填 | 触发器按 `planned_end_date` 自动判定逾期 | 业务规则落到数据库层，避免漏填 |
-| 无审计 | `operation_log` + AFTER UPDATE 触发器 | 状态与进度变更自动留痕 |
+| country | country_id、iso_code、name_cn | country_id → 国家名称、大洲等 |
+| international_organization | org_id、name_cn | org_id → 名称、类型、成立年份、总部 |
+| mechanism / topic | 各自主键、name | 主键 → 名称、类别等 |
+| conference | conference_id | conference_id → 会名、机制、主办国、会期等 |
+| conference_participant | participant_id；(conference_id, country_id) | (会议, 国家) → 身份、级别、人数、确认日期 |
+| conference_topic | (conference_id, topic_id) | (会议, 议题) → 核心标记、日期、要点 |
+| document | document_id | document_id → conference_id、标题、类型等 |
+| document_sponsor | (document_id, country_id) | (文件, 国家) → 立场 |
+| follow_up_action | action_id | action_id → document_id、conference_id、进度等 |
+| app_user / operation_log | user_id、username / log_id | 各自候选键 → 其余属性 |
+
+`international_organization.abbr`、`document.doc_no` 允许 NULL，虽然有 UNIQUE 约束，也不能据此直接当作关系理论中的候选键。
+
+- **1NF**：每格保存单值，参会国、议题和联署国分别存入联系表。
+- **2NF**：联系表的身份、讨论要点、立场依赖整个复合候选键，不依赖其中一部分。
+- **3NF**：国名和大洲只保存在 country，组织信息只保存在 international_organization，会议表通过外键引用，避免传递依赖。
+- **保留的冗余**：follow_up_action 同时保存 conference_id 和可空的 document_id。填写文件时，存在 action_id → document_id → conference_id，document_id 不是行动表的超键，因此不能宣称该表满足 3NF/BCNF。为保留“仅挂会议”的原有用法，本次不改表结构；06 中的两个触发器检查文件与会议一致。该检查针对行动的插入/更新，不消除冗余；单独调整文件所属会议前仍需检查已有行动。
+
+课件中的规范化思路可将带文件的行动分为“行动(action_id, document_id, …)”和“文件(document_id, conference_id, …)”。两者交集为 document_id，它决定文件关系，因此该分解无损；原依赖可通过 action_id → document_id → conference_id 推导。若要同时支持无文件的行动，还需单独设计会议关联。本项目将此作为后续结构调整，不写成已经完成的改动。
+
 
 ---
 
@@ -304,6 +275,8 @@ BCNF 要求每个决定因素都是候选键。逐类检查：
 | 14 | `theme` | varchar(200) | 是 |  |  | 会议主题 |
 
 #### 表 4-6  conference_participant 会议参与国家表
+
+`participant_id` 是主键，`(conference_id, country_id)` 是联合 UNIQUE 候选键。
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
@@ -430,11 +403,12 @@ BCNF 要求每个决定因素都是候选键。逐类检查：
 | 1 | `01_create_database.sql` | 建库（utf8mb4） |
 | 2 | `02_create_tables.sql` | 12 张表 + 主键/外键/CHECK/UNIQUE + 索引 |
 | 3 | `03_insert_data.sql` | 示例数据（可重复执行） |
-| 4 | `04_views.sql` | 5 个视图 |
+| 4 | `04_views.sql` | 6 个视图（可单独重跑） |
 | 5 | `06_routines.sql` | 3 触发器 + 1 存储过程 + 1 函数 |
 | 6 | `05_queries.sql` | 14 条核心查询 |
 | 7 | `07_crud_samples.sql` | 增删改查样例（事务内演示，末尾 ROLLBACK） |
-| 8 | `99_verify.sql` | 验收自检 |
+| 8 | `08_course_examples.sql` | 条件、自身连接、IN、ANY/ALL、UNION、空值及视图更新 |
+| 9 | `99_verify.sql` | 验收自检 |
 
 ### 5.2 数据规模
 
@@ -447,48 +421,38 @@ BCNF 要求每个决定因素都是候选键。逐类检查：
 | conference | 9 | operation_log | 4（触发器生成） |
 | conference_participant | 66 | conference_topic | 27 |
 
-### 5.3 增删改查样例（`07_crud_samples.sql`）
+### 5.3 数据更新与约束
 
-一段显式事务里完整演示四类操作，实测输出：
+`07_crud_samples.sql` 在事务内演示单行/多行 INSERT、INSERT … SELECT、带子查询的 UPDATE/DELETE，随后 ROLLBACK。基础表数据恢复原样，自增编号可能留下空号。
 
-| 操作 | 语句要点 | 实测结果 |
+`08_course_examples.sql` 演示可更新视图：通过 v_active_user 修改姓名，查询 app_user 确认映射，再回滚。WITH CHECK OPTION 会拒绝将 is_active 改为 0，因为修改后该记录不再满足视图条件。
+
+非法外键、重复业务码、超出范围的进度及非法枚举值均应被拒绝。触发器同时检查行动引用的文件是否属于来源会议。
+
+### 5.4 本次验证环境
+
+MySQL 8.4.11，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY。验证使用独立临时实例；不连接或重建已有业务数据库。35 项执行及约束检查通过，视图重复创建、CRUD/视图演示回滚、完整备份首次及重复还原均通过。Linux 入口从中文路径执行通过。Windows 入口已修改，但本次未在 Windows 上运行。
+
+### 5.5 核心查询一览（14 条）
+
+| # | 查询 | 主要语法 |
 |---|---|---|
-| INSERT | 新建上合 2026 峰会 + 4 国参会 + 2 议题 + 1 文件 + 3 联署 + 1 行动 | `conference_id=10`，连带 4/2/1 条明细 |
-| 触发器联动 | 插入行动时计划完成日期已过 | 状态自动判为 **逾期** |
-| UPDATE | 补录完成日期与进度 100% | 触发器改判 **已完成**，并写入审计日志 |
-| 审计 | 查询 `operation_log` | 记录 `status=逾期, progress=30 → status=已完成, progress=100` |
-| DELETE | 撤销误登记的观察员与该行动 | 该会议参与国数 4 → 3 |
-| ROLLBACK | 回滚整个演示事务 | 会议 9 / 行动 16 / 文件 11，与演示前一致 |
+| 1 | 会议全景 | 视图查询、ORDER BY |
+| 2 | 机制维度统计 | LEFT JOIN、COUNT(DISTINCT)、GROUP BY |
+| 3 | 参与国不少于 8 个的会议 | GROUP BY、HAVING |
+| 4 | 无后续行动的文件 | 相关子查询、NOT EXISTS |
+| 5 | 各国主办会议数（含 0） | LEFT JOIN、COUNT、排序 |
+| 6 | 行动逾期预警 | 视图、日期表达式 |
+| 7 | 文件共识广度 | 分组视图、排序 |
+| 8 | 议题热度 | 分组、条件求和 |
+| 9 | 中国参与全景 | 基于视图的视图，仅统计“联署”立场 |
+| 10 | 行动状态分布 | COUNT、AVG、GROUP BY |
+| 11 | 年度会议统计 | YEAR、GROUP BY |
+| 12 | 参加中国所参加全部会议的国家 | 双重 NOT EXISTS（关系除法） |
+| 13 | 用户角色分布 | 分组、条件求和 |
+| 14 | 操作审计日志 | 视图、倒序排列 |
 
-### 5.4 约束与触发器实测
-
-| 测试 | 实际结果 |
-|---|---|
-| 参会国 `country_id = 999` | `ERROR 1452` 外键约束失败 |
-| 进度改为 150 | `ERROR 3819` `ck_action_progress` 被违反 |
-| 重复 `iso_code = 'CHN'` | `ERROR 1062` 唯一键冲突 |
-| 会议状态填"已延期" | `ERROR 1265` 非法枚举值被拒 |
-| 删除被引用的国家 | `ERROR 1451` 外键 `ON DELETE RESTRICT` 阻止 |
-| 16 项行动按当前日期重算 | 4 项由"进行中"自动改判**逾期**，并各写 1 条审计日志 |
-
-### 5.5 核心查询一览（14 条，全部实测跑通）
-
-| # | 查询 | 技术点 | 结果 |
-|---|---|---|---|
-| 1 | 会议全景 | 4 表连接 + 视图 | 9 行 |
-| 2 | 机制维度统计 | 多重 `COUNT(DISTINCT)` | 金砖 3 会居首 |
-| 3 | 参与国 ≥ 8 的会议 | `HAVING` | G20、UNGA79（各 10 国） |
-| 4 | 无后续行动的成果文件 | `NOT EXISTS` | 1 份草案 |
-| 5 | 各国主办会议数排名 | `DENSE_RANK` | 巴西 2 场第 1 |
-| 6 | 行动逾期预警 | 视图 + `DATEDIFF` | 4 项，最长 475 天 |
-| 7 | 文件共识广度 | 条件聚合 + `LIMIT` | G20 宣言 10 国全联署 |
-| 8 | 议题热度 | 分组 + 条件求和 | 全球治理体系 6 会 |
-| 9 | 中国参与全景 | 视图（思政） | 9 场逐场列出身份与联署数 |
-| 10 | 行动状态分布 | 条件计数 | 进行中 7 / 逾期 4 / 已完成 3 / 未启动 1 / 终止 1 |
-| 11 | 年度会议统计 | `YEAR()` | 2024 年 7 场 55 国次 |
-| 12 | 全链条汇总 | `GROUP_CONCAT` | 每会议议题链/文件/完成数 |
-| 13 | 用户角色分布 | 分组 + 条件求和 | 外交官 4 / 组织者 3 / 观察员 2 / 管理员 1 |
-| 14 | 操作审计日志 | 视图 + 排序 | 4 条触发器留痕 |
+主查询使用课件讲授的关系操作。CASE 为条件表达式，YEAR、DATEDIFF、CURDATE 为 MySQL 日期函数。更多基础语法及与课件的对应关系见 [COURSE_ALIGNMENT.md](COURSE_ALIGNMENT.md)。
 
 ### 5.6 视图 / 触发器 / 例程
 
@@ -499,48 +463,24 @@ BCNF 要求每个决定因素都是候选键。逐类检查：
 | 视图 | `v_action_alert` | 逾期行动预警（含逾期天数） |
 | 视图 | `v_china_multilateral` | 中国多边参与全景（思政报表） |
 | 视图 | `v_operation_audit` | 操作审计（关联用户与角色） |
+| 视图 | `v_active_user` | 单表可更新视图，WITH CHECK OPTION 保证启用条件 |
 | 触发器 | `trg_action_before_insert` | 插入时按计划日期判定逾期 |
 | 触发器 | `trg_action_before_update` | 更新时按完成日期判定已完成并置进度 100 |
 | 触发器 | `trg_action_audit` | 状态/进度变化写审计日志 |
 | 存储过程 | `sp_conference_dashboard(会议ID)` | 一次输出 5 个结果集（基本信息/参会/议题/文件含共识率/行动） |
 | 函数 | `fn_consensus_ratio(文件ID)` | 文件联署率（%） |
 
-### 5.7 整库备份（可直接还原，不用逐条跑脚本）
+### 5.7 整库备份
 
-[`backup/multilateral-diplomacy-system-schoolwork-_full.sql`](backup/multilateral-diplomacy-system-schoolwork-_full.sql)
-是 `mysqldump` 导出的**整库备份**（58 KB），包含：
+[完整备份](backup/multilateral-diplomacy-system-schoolwork-_full.sql) 已同步包含 12 张表、示例数据、6 个视图、3 个触发器及 2 个例程。备份删除了固定 DEFINER，导入时由当前用户创建对象。
 
-| 内容 | 数量 |
-|---|---|
-| `CREATE DATABASE` + `USE` | 1（库名与仓库同名，含连字符） |
-| 建表语句 `CREATE TABLE` | 12 张基础表（含主键/外键/CHECK/唯一键） |
-| 数据 `INSERT` | 12 组，共 259 行 |
-| 视图 `CREATE VIEW` | 5 个 |
-| 触发器 `CREATE TRIGGER` | 3 个 |
-| 存储过程 / 函数 | `sp_conference_dashboard` / `fn_consensus_ratio` |
-| 字符集 | `utf8mb4`，中文不会乱码 |
-
-生成命令（本机实测）：
-
-```powershell
-$dump = "C:\Program Files\MySQL\MySQL Server 9.4\bin\mysqldump.exe"
-& $dump -u root --default-character-set=utf8mb4 --single-transaction --set-gtid-purged=OFF `
-        --routines --triggers --events --databases 'multilateral-diplomacy-system-schoolwork-' `
-        --result-file="project\backup\multilateral-diplomacy-system-schoolwork-_full.sql"
+```bash
+# 会覆盖同名表与数据；请先备份已有内容
+mysql -u root -p --default-character-set=utf8mb4 < project/backup/multilateral-diplomacy-system-schoolwork-_full.sql
 ```
 
-还原（一条命令，会先建库再建表灌数据）：
+Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正常执行顺序为 `01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 99`。Windows 入口通过 PATH 查找 mysql.exe，也可指定 `-MySqlPath`；Linux/macOS 使用 `run_all.sh`。
 
-```powershell
-$mysql = "C:\Program Files\MySQL\MySQL Server 9.4\bin\mysql.exe"
-cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 < project\backup\multilateral-diplomacy-system-schoolwork-_full.sql"
-```
-
-**还原实测**：导入到临时库后逐表 `COUNT(*)` 比对，12 张表行数与原库完全一致
-（18/6/6/10/9/66/27/11/76/16/10/4），视图 5、触发器 3、例程 2 全部在；比对完临时库已删除。
-
-> 注意：`mysqldump` 的 `--databases` 会带上 `DROP`/`CREATE DATABASE` 语义，还原到本机会**覆盖同名库**；
-> 若只想看结构不动数据，用 `mysql -e "SHOW CREATE TABLE ..."` 或打开备份文件搜索 `CREATE TABLE`。
 
 ---
 
@@ -553,7 +493,7 @@ cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 < project\backup\mult
 | 批量导入时报 `ERROR 1265 Data truncated`，后面几张表全空 | ENUM 取值写错（"总理级"不在枚举内），严格模式下该语句中止 | 枚举值统一在 02 定义处核对；导入后逐表 `COUNT(*)` 校验 |
 | 自检脚本显示行动表 0 行，实际有 16 行 | `information_schema.table_rows` 是 InnoDB 估算值 | 改用 `COUNT(*)` |
 | 库名含连字符导致语法错误 | 标识符需反引号 | 全库 SQL 统一反引号；命令行可用 `-D` 传库名 |
-| 重跑脚本时主键冲突 / 数据翻倍 | 脚本不幂等 | 建表前 `DROP IF EXISTS`、插入前 `TRUNCATE`，按外键逆序清理 |
+| 重跑脚本时主键冲突 / 数据翻倍 | 脚本不幂等 | 建表前 `DROP IF EXISTS`、插入前 `TRUNCATE`，按外键逆序清理；视图使用 `CREATE OR REPLACE` |
 | 一键脚本双击报"未对文件进行数字签名" | Windows 默认执行策略 | 提供 `.cmd` 外壳用 `-ExecutionPolicy Bypass` 只对本次放行 |
 
 ### 6.2 心得体会
@@ -567,19 +507,19 @@ cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 < project\backup\mult
 | 评分维度（三级项目） | 分值 | 对应内容 |
 |---|---|---|
 | 项目完整度（需求与流程） | 10 | 1.2 角色需求 + 1.3 功能模块 + 第 5 章完整闭环 |
-| 关系模型设计（ER 图与逻辑） | 20 | 2.1 三个局部 E-R + 2.2 全局 E-R；3.1–3.3 转换；3.4 的 1NF→BCNF 判定；18 外键 / 7 CHECK / 9 UNIQUE 全生效 |
+| 关系模型设计（ER 图与逻辑） | 20 | 2.1 三个局部 E-R + 2.2 全局 E-R；3.1–3.3 转换；3.4 的函数依赖与范式分析（说明行动表的冗余）；18 外键 / 7 CHECK / 9 UNIQUE 全生效 |
 | 思政元素体现 | 10 | 1.1 背景；`v_china_multilateral`；查询 7/9 量化共识广度与发展中国家代表性 |
-| 功能概述与数据（实现） | 30 | 14 条查询实测；12 张表数据覆盖 5 类会议/4 种身份/6 域议题/8 类文件/5 种行动状态；5.3 CRUD 演示；5.4 约束实测 |
+| 功能概述与数据（实现） | 30 | 14 条核心查询；12 张表数据覆盖 3 类会议/4 种身份/6 域议题/5 类文件/5 种行动状态；5.3 CRUD 演示；5.3 约束与 5.4 验证记录 |
 | 展示（验收演示） | 30 | `run_all.cmd` 一键重建；`99_verify.sql` 自检；`CALL sp_conference_dashboard(3)` 一屏看全链条 |
-| 加分项 | 10 | 逾期预警 + 审计触发器 + 窗口函数 + 分组拼接报表 + 5 视图 + 1 过程 1 函数 + 事务演示 |
+| 加分项 | 10 | 逾期预警、审计触发器、6 视图、1 过程 1 函数与事务演示 |
 
 ## 附 B：答辩演示清单
 
 1. `run_all.cmd` 一键重建 → 停在 `99_verify` 输出（表齐、约束齐、对象齐）
 2. Navicat 展开库 → 12 张表、外键连线、`follow_up_action` 的 4 个 CHECK
 3. 跑 `07_crud_samples.sql` → 增删改查 + 触发器联动 + 审计留痕 + 事务回滚
-4. 跑 5.4 的四条非法写入 → 约束不是摆设
+4. 单独运行 07/08 末尾注释中的非法写入示例 → 约束不是摆设
 5. `CALL sp_conference_dashboard(3);` → 中非论坛北京峰会全链条一屏看完
 6. 查询 6 逾期预警 + 查询 9 中国参与全景 → 思政落到数据上
 
-**需要截图的位置**：库与表树、每表设计视图、外键页、各表数据、约束报错、14 条查询结果、过程输出、审计日志。
+**需要截图的位置**：库与表树、每表设计视图、外键页、各表数据、约束报错、14 条核心查询结果、08 的课件示例、过程输出、审计日志。

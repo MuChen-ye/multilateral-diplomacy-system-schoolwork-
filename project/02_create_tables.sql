@@ -1,8 +1,11 @@
 -- ============================================================
--- 实验项目 步骤 2：建立关系模式（10 张表）
+-- 实验项目 步骤 2：建立关系模式（12 张表）
 -- 主题链：国际会议 — 参与国家 — 议题 — 成果文件 — 后续行动
 --
--- 主表（无外键依赖）：country / international_organization / mechanism / topic
+-- 无外键依赖：country / international_organization / topic
+-- mechanism 依赖 international_organization；app_user 依赖国家/组织；operation_log 依赖用户。
+-- 课件对应：CREATE TABLE、PRIMARY KEY、FOREIGN KEY、UNIQUE、CHECK。
+-- ENUM、AUTO_INCREMENT、KEY、InnoDB 为本项目使用的 MySQL 扩展。
 -- 从表：conference -> conference_participant, conference_topic, document
 --      document -> document_sponsor
 --      conference/document -> follow_up_action

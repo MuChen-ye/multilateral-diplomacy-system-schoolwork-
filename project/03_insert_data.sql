@@ -2,7 +2,8 @@
 -- 实验项目 步骤 3：录入示例数据
 -- 数据说明：依据外交部官网、国际组织公开发布的议程与会议成果整理，
 --           用于课程演示，非官方发布文本。
--- 覆盖场景：5 类会议类型、4 种参会身份、6 类议题、8 类成果文件、5 种行动状态
+-- 数据覆盖：3 类会议类型、4 种参会身份、6 类议题、5 类成果文件、5 种行动状态
+-- 会议、文件、人数和行动均为课程示例，不作为真实外交活动记录。
 -- ============================================================
 
 USE `multilateral-diplomacy-system-schoolwork-`;
@@ -222,7 +223,7 @@ INSERT INTO document_sponsor (document_id, country_id, stance) VALUES
 (10, 3, '联署'), (10, 1, '联署'), (10, 4, '联署'), (10, 6, '联署'), (10, 5, '支持');
 
 -- ---------- follow_up_action ----------
--- 状态由触发器依据 planned_end_date 与 actual_end_date 自动判定
+-- 首次按示例值插入；06 安装触发器后按当前日期统一刷新状态
 INSERT INTO follow_up_action (conference_id, document_id, action_name, lead_country_id, responsible_org_id, start_date, planned_end_date, actual_end_date, progress_pct, status, remarks) VALUES
 (3, 4, '中非减贫示范项目落地实施',           1,  3,    '2025-01-01', '2026-06-30', '2026-05-20', 100, '已完成', '已完成两批示范点建设'),
 (3, 4, '非洲农业技术示范中心扩建',           1,  3,    '2025-03-01', '2027-12-31', NULL,          45, '进行中', '三个中心完成选址'),

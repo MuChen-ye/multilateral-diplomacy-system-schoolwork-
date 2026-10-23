@@ -40,8 +40,9 @@ FROM information_schema.check_constraints
 WHERE constraint_schema = DATABASE();
 
 -- 5 视图 / 触发器 / 存储过程 / 函数
-SELECT table_name AS 视图名 FROM information_schema.tables
-WHERE table_schema = DATABASE() AND table_type = 'VIEW' ORDER BY table_name;
+SELECT table_name AS 视图名, is_updatable AS 可更新
+FROM information_schema.views
+WHERE table_schema = DATABASE() ORDER BY table_name;
 
 SELECT trigger_name AS 触发器, event_manipulation AS 时机, event_object_table AS 表
 FROM information_schema.triggers WHERE trigger_schema = DATABASE();

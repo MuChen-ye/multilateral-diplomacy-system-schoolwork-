@@ -1,7 +1,8 @@
 -- ============================================================
--- 实验项目 步骤 5：核心查询（12 条，覆盖评分点"典型查询种类较多"）
---   1 多表连接  2 聚合统计  3 HAVING  4 子查询  5 窗口函数  6 预警
---   7 排序取前 N 8 分组多指标 9 半连接/存在  10 状态分布  11 时间维度  12 全链条串联
+-- 实验项目 步骤 5：核心查询（14 条）
+-- 课件对应：连接、聚合、GROUP BY/HAVING、嵌套查询与视图查询。
+-- IN、ANY/ALL、自身连接与 UNION 示例另见 08_course_examples.sql。
+-- 日期函数 DATEDIFF、CURDATE、YEAR 用于适配 MySQL。
 -- ============================================================
 
 USE `multilateral-diplomacy-system-schoolwork-`;
@@ -40,14 +41,12 @@ FROM document d
 WHERE NOT EXISTS (SELECT 1 FROM follow_up_action a WHERE a.document_id = d.document_id)
 ORDER BY d.issue_date;
 
--- 查询 5：各国主办会议数排名（窗口函数 DENSE_RANK）
-SELECT hc.name_cn AS 主办国,
-       COUNT(*) AS 主办会议数,
-       DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS 名次
-FROM conference c
-JOIN country hc ON hc.country_id = c.host_country_id
+-- 查询 5：各国主办会议数（分组统计 + 排序，包含未主办的国家）
+SELECT hc.name_cn AS 主办国, COUNT(c.conference_id) AS 主办会议数
+FROM country hc
+LEFT JOIN conference c ON c.host_country_id = hc.country_id
 GROUP BY hc.country_id, hc.name_cn
-ORDER BY 名次, 主办国;
+ORDER BY 主办会议数 DESC, hc.country_id;
 
 -- 查询 6：后续行动逾期预警（视图 + 逾期天数）
 SELECT action_name AS 行动名称, conference_name AS 来源会议, lead_country AS 牵头国,
@@ -56,13 +55,12 @@ SELECT action_name AS 行动名称, conference_name AS 来源会议, lead_countr
 FROM v_action_alert
 ORDER BY overdue_days DESC;
 
--- 查询 7：成果文件共识广度排行（按联署国数量取前 5）
+-- 查询 7：成果文件共识广度（按联署国数排序）
 SELECT title AS 文件名称, conference_name AS 会议,
        signed_count AS 联署国数, support_count AS 支持国数,
        reserved_count AS 保留国数, total_country_count AS 涉国总数
 FROM v_document_consensus
-ORDER BY signed_count DESC, total_country_count DESC
-LIMIT 5;
+ORDER BY signed_count DESC, total_country_count DESC, document_id;
 
 -- 查询 8：议题热度（按领域统计被多少场会议讨论、其中多少为核心议题）
 SELECT t.category AS 议题领域,
@@ -99,20 +97,19 @@ LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY YEAR(c.start_date)
 ORDER BY 年份;
 
--- 查询 12："会议—议题—成果文件—后续行动"全链条汇总（GROUP_CONCAT + 条件聚合）
-SELECT c.short_name AS 会议,
-       GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ' / ')  AS 议题链,
-       GROUP_CONCAT(DISTINCT d.title ORDER BY d.title SEPARATOR ' / ') AS 成果文件,
-       COUNT(DISTINCT a.action_id) AS 行动数,
-       COUNT(DISTINCT CASE WHEN a.status = '已完成' THEN a.action_id END) AS 已完成,
-       COUNT(DISTINCT CASE WHEN a.status = '逾期'   THEN a.action_id END) AS 逾期
-FROM conference c
-LEFT JOIN conference_topic ct   ON ct.conference_id = c.conference_id
-LEFT JOIN topic t               ON t.topic_id = ct.topic_id
-LEFT JOIN document d            ON d.conference_id = c.conference_id
-LEFT JOIN follow_up_action a    ON a.conference_id = c.conference_id
-GROUP BY c.conference_id, c.short_name
-ORDER BY c.start_date;
+-- 查询 12：参加了中国所参加的全部会议的国家（双重 NOT EXISTS，关系除法）
+-- 含义：不存在一场中国参加、但该国没有参加的会议；结果包含中国本身。
+SELECT cn.country_id AS 国家编号, cn.name_cn AS 国家
+FROM country cn
+WHERE NOT EXISTS (
+  SELECT * FROM conference_participant p
+  WHERE p.country_id = (SELECT country_id FROM country WHERE iso_code = 'CHN')
+    AND NOT EXISTS (
+      SELECT * FROM conference_participant x
+      WHERE x.conference_id = p.conference_id AND x.country_id = cn.country_id
+    )
+)
+ORDER BY cn.country_id;
 
 -- 查询 13：系统用户角色与国别分布（权限视角）
 SELECT user_role AS 角色, COUNT(*) AS 人数,
@@ -122,8 +119,7 @@ FROM app_user
 GROUP BY user_role
 ORDER BY 人数 DESC;
 
--- 查询 14：操作审计日志（触发器自动留痕，按时间倒序取最近 10 条）
+-- 查询 14：操作审计日志（视图查询 + 按时间倒序）
 SELECT 操作人, 角色, 操作类型, 目标表, 目标ID, 变更前, 变更后, log_time AS 记录时间
 FROM v_operation_audit
-ORDER BY log_time DESC, log_id DESC
-LIMIT 10;
+ORDER BY log_time DESC, log_id DESC;
