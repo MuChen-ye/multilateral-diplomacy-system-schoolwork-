@@ -30,6 +30,13 @@ cd project
 2. 右键库 →「运行 SQL 文件」，按目录内 README 给出的顺序执行
 ```
 
+```powershell
+# 方式三：直接还原整库备份（结构 + 数据 + 视图 + 触发器 + 存储过程，一条命令建好）
+mysql -u root --default-character-set=utf8mb4 < project\backup\multilateral-diplomacy-system-schoolwork-_full.sql
+```
+
+> 整库备份在 [`project/backup/`](project/backup)，说明见 [`project/README.md` 5.7 节](project/README.md)。
+
 > ⚠️ `project/01_create_database.sql` 开头是 `DROP DATABASE IF EXISTS`，`03_insert_data.sql` 会 TRUNCATE 所有表——重跑等于重建。演示前若改过数据，先备份。
 
 ## 数据库设计摘要

@@ -505,6 +505,43 @@ BCNF 要求每个决定因素都是候选键。逐类检查：
 | 存储过程 | `sp_conference_dashboard(会议ID)` | 一次输出 5 个结果集（基本信息/参会/议题/文件含共识率/行动） |
 | 函数 | `fn_consensus_ratio(文件ID)` | 文件联署率（%） |
 
+### 5.7 整库备份（可直接还原，不用逐条跑脚本）
+
+[`backup/multilateral-diplomacy-system-schoolwork-_full.sql`](backup/multilateral-diplomacy-system-schoolwork-_full.sql)
+是 `mysqldump` 导出的**整库备份**（58 KB），包含：
+
+| 内容 | 数量 |
+|---|---|
+| `CREATE DATABASE` + `USE` | 1（库名与仓库同名，含连字符） |
+| 建表语句 `CREATE TABLE` | 12 张基础表（含主键/外键/CHECK/唯一键） |
+| 数据 `INSERT` | 12 组，共 259 行 |
+| 视图 `CREATE VIEW` | 5 个 |
+| 触发器 `CREATE TRIGGER` | 3 个 |
+| 存储过程 / 函数 | `sp_conference_dashboard` / `fn_consensus_ratio` |
+| 字符集 | `utf8mb4`，中文不会乱码 |
+
+生成命令（本机实测）：
+
+```powershell
+$dump = "C:\Program Files\MySQL\MySQL Server 9.4\bin\mysqldump.exe"
+& $dump -u root --default-character-set=utf8mb4 --single-transaction --set-gtid-purged=OFF `
+        --routines --triggers --events --databases 'multilateral-diplomacy-system-schoolwork-' `
+        --result-file="project\backup\multilateral-diplomacy-system-schoolwork-_full.sql"
+```
+
+还原（一条命令，会先建库再建表灌数据）：
+
+```powershell
+$mysql = "C:\Program Files\MySQL\MySQL Server 9.4\bin\mysql.exe"
+cmd /c "`"$mysql`" -u root --default-character-set=utf8mb4 < project\backup\multilateral-diplomacy-system-schoolwork-_full.sql"
+```
+
+**还原实测**：导入到临时库后逐表 `COUNT(*)` 比对，12 张表行数与原库完全一致
+（18/6/6/10/9/66/27/11/76/16/10/4），视图 5、触发器 3、例程 2 全部在；比对完临时库已删除。
+
+> 注意：`mysqldump` 的 `--databases` 会带上 `DROP`/`CREATE DATABASE` 语义，还原到本机会**覆盖同名库**；
+> 若只想看结构不动数据，用 `mysql -e "SHOW CREATE TABLE ..."` 或打开备份文件搜索 `CREATE TABLE`。
+
 ---
 
 ## 第 6 章 总结
