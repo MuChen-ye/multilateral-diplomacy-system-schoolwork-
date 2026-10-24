@@ -8,7 +8,7 @@
 
 ## 运行
 
-需要 MySQL 8.0.16 及以上版本（CHECK 约束需要实际生效），本次在 MySQL 8.4.11 验证。
+需要 MySQL 8.0.16 及以上版本（CHECK 约束需要实际生效）。本项目在 **MySQL 9.4.0（Windows 服务 MySQL94）** 上完整跑通过；此前也在 MySQL 8.4.11 独立实例验证过。
 
 ```powershell
 # Windows：mysql.exe 所在目录已加入 PATH
