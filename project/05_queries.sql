@@ -14,16 +14,18 @@ SELECT short_name AS 会议简称, conference_type AS 类型, host_country AS �
 FROM v_conference_overview
 ORDER BY start_date;
 
--- 查询 2：按机制统计会议数、成果文件数、参与国总人次
+-- 查询 2：按机制统计会议数、成果文件数、参会国次（按会议与国家组合计数）
+-- 分别计数，避免文件与参会记录连接后相互放大。
 SELECT m.name AS 机制, m.category AS 类别,
-       COUNT(DISTINCT c.conference_id) AS 会议数,
-       COUNT(DISTINCT d.document_id)   AS 成果文件数,
-       COUNT(DISTINCT p.participant_id) AS 参会国次
+       (SELECT COUNT(*) FROM conference c
+        WHERE c.mechanism_id = m.mechanism_id) AS 会议数,
+       (SELECT COUNT(*) FROM conference c, document d
+        WHERE c.conference_id = d.conference_id
+          AND c.mechanism_id = m.mechanism_id) AS 成果文件数,
+       (SELECT COUNT(*) FROM conference c, conference_participant p
+        WHERE c.conference_id = p.conference_id
+          AND c.mechanism_id = m.mechanism_id) AS 参会国次
 FROM mechanism m
-LEFT JOIN conference c            ON c.mechanism_id = m.mechanism_id
-LEFT JOIN document d              ON d.conference_id = c.conference_id
-LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
-GROUP BY m.mechanism_id, m.name, m.category
 ORDER BY 会议数 DESC, 成果文件数 DESC;
 
 -- 查询 3：参与国不少于 8 个的多边会议（HAVING 过滤分组结果）

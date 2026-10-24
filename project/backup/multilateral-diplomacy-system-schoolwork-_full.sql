@@ -31,22 +31,24 @@ DROP TABLE IF EXISTS `app_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `app_user` (
-  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `username` varchar(40) NOT NULL COMMENT '登录账号',
-  `real_name` varchar(40) NOT NULL COMMENT '姓名',
-  `user_role` enum('系统管理员','会议组织者','外交官','观察员') NOT NULL DEFAULT '观察员' COMMENT '角色',
-  `country_id` int DEFAULT NULL COMMENT '所属国家',
-  `org_id` int DEFAULT NULL COMMENT '所属国际组织',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(40) NOT NULL,
+  `real_name` varchar(40) NOT NULL,
+  `user_role` varchar(10) NOT NULL DEFAULT '观察员',
+  `country_id` int DEFAULT NULL,
+  `org_id` int DEFAULT NULL,
+  `is_active` smallint NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `uk_user_username` (`username`),
+  UNIQUE KEY `username` (`username`),
+  KEY `country_id` (`country_id`),
+  KEY `org_id` (`org_id`),
   KEY `idx_user_role` (`user_role`),
-  KEY `idx_user_country` (`country_id`),
-  KEY `fk_user_org` (`org_id`),
-  CONSTRAINT `fk_user_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_user_org` FOREIGN KEY (`org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统用户表';
+  CONSTRAINT `app_user_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `app_user_ibfk_2` FOREIGN KEY (`org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `app_user_chk_1` CHECK ((`user_role` in (_utf8mb4'系统管理员',_utf8mb4'会议组织者',_utf8mb4'外交官',_utf8mb4'观察员'))),
+  CONSTRAINT `app_user_chk_2` CHECK ((`is_active` in (0,1)))
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -55,7 +57,7 @@ CREATE TABLE `app_user` (
 
 LOCK TABLES `app_user` WRITE;
 /*!40000 ALTER TABLE `app_user` DISABLE KEYS */;
-INSERT INTO `app_user` VALUES (1,'admin','系统管理员','系统管理员',NULL,1,1,'2026-10-23 17:56:22'),(2,'org_china','中方会议组织者','会议组织者',1,NULL,1,'2026-10-23 17:56:22'),(3,'org_brazil','巴方会议组织者','会议组织者',4,NULL,1,'2026-10-23 17:56:22'),(4,'org_sco','上合秘书处干事','会议组织者',NULL,2,1,'2026-10-23 17:56:22'),(5,'dip_china','中方外交官','外交官',1,NULL,1,'2026-10-23 17:56:22'),(6,'dip_southaf','南非常驻代表','外交官',5,NULL,1,'2026-10-23 17:56:22'),(7,'dip_egypt','埃及外交官','外交官',7,NULL,1,'2026-10-23 17:56:22'),(8,'obs_asean','东盟观察员','观察员',10,4,1,'2026-10-23 17:56:22'),(9,'obs_unfccc','气候公约观察员','观察员',NULL,5,1,'2026-10-23 17:56:22'),(10,'dip_retired','离任外交官','外交官',1,NULL,0,'2026-10-23 17:56:22');
+INSERT INTO `app_user` VALUES (1,'admin','系统管理员','系统管理员',NULL,1,1,'2026-10-24 15:49:27'),(2,'org_china','中方会议组织者','会议组织者',1,NULL,1,'2026-10-24 15:49:27'),(3,'org_brazil','巴方会议组织者','会议组织者',4,NULL,1,'2026-10-24 15:49:27'),(4,'org_sco','上合秘书处干事','会议组织者',NULL,2,1,'2026-10-24 15:49:27'),(5,'dip_china','中方外交官','外交官',1,NULL,1,'2026-10-24 15:49:27'),(6,'dip_southaf','南非常驻代表','外交官',5,NULL,1,'2026-10-24 15:49:27'),(7,'dip_egypt','埃及外交官','外交官',7,NULL,1,'2026-10-24 15:49:27'),(8,'obs_asean','东盟观察员','观察员',10,4,1,'2026-10-24 15:49:27'),(9,'obs_unfccc','气候公约观察员','观察员',NULL,5,1,'2026-10-24 15:49:27'),(10,'dip_retired','离任外交官','外交官',1,NULL,0,'2026-10-24 15:49:27');
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -67,30 +69,33 @@ DROP TABLE IF EXISTS `conference`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conference` (
-  `conference_id` int NOT NULL AUTO_INCREMENT COMMENT '会议ID',
-  `title` varchar(120) NOT NULL COMMENT '会议全称',
-  `short_name` varchar(60) DEFAULT NULL COMMENT '会议简称',
-  `mechanism_id` int DEFAULT NULL COMMENT '所属机制',
-  `org_id` int DEFAULT NULL COMMENT '主办国际组织',
-  `host_country_id` int NOT NULL COMMENT '主办/承办国家',
-  `host_city` varchar(60) DEFAULT NULL COMMENT '举办城市',
-  `conference_type` enum('首脑峰会','部长级会议','高官会议','专家会议','大会','特别会议') NOT NULL COMMENT '会议类型',
-  `session_label` varchar(20) DEFAULT NULL COMMENT '届次(如 第24次)',
-  `start_date` date NOT NULL COMMENT '开始日期',
-  `end_date` date NOT NULL COMMENT '结束日期',
-  `format` enum('线下','线上','混合') NOT NULL DEFAULT '线下' COMMENT '会议形式',
-  `status` enum('筹备中','进行中','已闭幕','取消') NOT NULL DEFAULT '已闭幕' COMMENT '会议状态',
-  `theme` varchar(200) DEFAULT NULL COMMENT '会议主题',
+  `conference_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(120) NOT NULL,
+  `short_name` varchar(60) DEFAULT NULL,
+  `mechanism_id` int DEFAULT NULL,
+  `org_id` int DEFAULT NULL,
+  `host_country_id` int NOT NULL,
+  `host_city` varchar(60) DEFAULT NULL,
+  `conference_type` varchar(10) NOT NULL,
+  `session_label` varchar(20) DEFAULT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `format` varchar(10) NOT NULL DEFAULT '线下',
+  `status` varchar(10) NOT NULL DEFAULT '已闭幕',
+  `theme` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`conference_id`),
+  KEY `mechanism_id` (`mechanism_id`),
+  KEY `org_id` (`org_id`),
+  KEY `host_country_id` (`host_country_id`),
   KEY `idx_conf_dates` (`start_date`,`end_date`),
-  KEY `idx_conf_mechanism` (`mechanism_id`),
-  KEY `idx_conf_host` (`host_country_id`),
-  KEY `idx_conf_org` (`org_id`),
-  CONSTRAINT `fk_conf_host` FOREIGN KEY (`host_country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_conf_mechanism` FOREIGN KEY (`mechanism_id`) REFERENCES `mechanism` (`mechanism_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_conf_org` FOREIGN KEY (`org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `ck_conf_dates` CHECK ((`end_date` >= `start_date`))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='国际会议表';
+  CONSTRAINT `conference_ibfk_1` FOREIGN KEY (`mechanism_id`) REFERENCES `mechanism` (`mechanism_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `conference_ibfk_2` FOREIGN KEY (`org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `conference_ibfk_3` FOREIGN KEY (`host_country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `conference_chk_1` CHECK ((`end_date` >= `start_date`)),
+  CONSTRAINT `conference_chk_2` CHECK ((`conference_type` in (_utf8mb4'首脑峰会',_utf8mb4'部长级会议',_utf8mb4'高官会议',_utf8mb4'专家会议',_utf8mb4'大会',_utf8mb4'特别会议'))),
+  CONSTRAINT `conference_chk_3` CHECK ((`format` in (_utf8mb4'线下',_utf8mb4'线上',_utf8mb4'混合'))),
+  CONSTRAINT `conference_chk_4` CHECK ((`status` in (_utf8mb4'筹备中',_utf8mb4'进行中',_utf8mb4'已闭幕',_utf8mb4'取消')))
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,20 +116,20 @@ DROP TABLE IF EXISTS `conference_participant`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conference_participant` (
-  `participant_id` int NOT NULL AUTO_INCREMENT COMMENT '参与记录ID',
-  `conference_id` int NOT NULL COMMENT '会议ID',
-  `country_id` int NOT NULL COMMENT '国家ID',
-  `role` enum('主办国','主席国','成员国','观察员','嘉宾国') NOT NULL DEFAULT '成员国' COMMENT '参会身份',
-  `delegation_level` enum('元首级','政府首脑级','外交部长级','部长级','高官级','专家级') NOT NULL DEFAULT '部长级' COMMENT '出席级别',
-  `delegation_size` int NOT NULL DEFAULT '0' COMMENT '代表团人数',
-  `join_date` date DEFAULT NULL COMMENT '确认参会日期',
-  PRIMARY KEY (`participant_id`),
-  UNIQUE KEY `uk_participant` (`conference_id`,`country_id`),
-  KEY `idx_participant_country` (`country_id`),
-  CONSTRAINT `fk_participant_conf` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_participant_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `ck_participant_size` CHECK ((`delegation_size` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会议参与国家表';
+  `conference_id` int NOT NULL,
+  `country_id` int NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT '成员国',
+  `delegation_level` varchar(10) NOT NULL DEFAULT '部长级',
+  `delegation_size` int NOT NULL DEFAULT '0',
+  `join_date` date DEFAULT NULL,
+  PRIMARY KEY (`conference_id`,`country_id`),
+  KEY `country_id` (`country_id`),
+  CONSTRAINT `conference_participant_ibfk_1` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `conference_participant_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `conference_participant_chk_1` CHECK ((`delegation_size` >= 0)),
+  CONSTRAINT `conference_participant_chk_2` CHECK ((`role` in (_utf8mb4'主办国',_utf8mb4'主席国',_utf8mb4'成员国',_utf8mb4'观察员',_utf8mb4'嘉宾国'))),
+  CONSTRAINT `conference_participant_chk_3` CHECK ((`delegation_level` in (_utf8mb4'元首级',_utf8mb4'政府首脑级',_utf8mb4'外交部长级',_utf8mb4'部长级',_utf8mb4'高官级',_utf8mb4'专家级')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +138,7 @@ CREATE TABLE `conference_participant` (
 
 LOCK TABLES `conference_participant` WRITE;
 /*!40000 ALTER TABLE `conference_participant` DISABLE KEYS */;
-INSERT INTO `conference_participant` VALUES (1,1,8,'主办国','元首级',58,'2024-06-01'),(2,1,1,'成员国','元首级',42,'2024-06-01'),(3,1,3,'成员国','元首级',40,'2024-06-01'),(4,1,9,'成员国','政府首脑级',35,'2024-06-01'),(5,1,6,'成员国','元首级',38,'2024-06-05'),(6,1,10,'观察员','部长级',20,'2024-06-10'),(7,1,11,'嘉宾国','部长级',18,'2024-06-12'),(8,2,3,'主办国','元首级',65,'2024-09-20'),(9,2,1,'成员国','元首级',48,'2024-09-20'),(10,2,4,'成员国','元首级',44,'2024-09-20'),(11,2,6,'成员国','元首级',46,'2024-09-20'),(12,2,5,'成员国','元首级',36,'2024-09-20'),(13,2,7,'成员国','元首级',30,'2024-09-25'),(14,2,17,'成员国','政府首脑级',26,'2024-09-25'),(15,2,11,'嘉宾国','外交部长级',22,'2024-09-28'),(16,3,1,'主办国','元首级',120,'2024-08-01'),(17,3,5,'成员国','元首级',45,'2024-08-05'),(18,3,7,'成员国','元首级',40,'2024-08-05'),(19,3,17,'成员国','元首级',32,'2024-08-05'),(20,3,18,'成员国','元首级',38,'2024-08-06'),(21,4,4,'主办国','元首级',80,'2024-10-01'),(22,4,1,'成员国','元首级',55,'2024-10-01'),(23,4,2,'成员国','元首级',60,'2024-10-01'),(24,4,12,'成员国','元首级',40,'2024-10-01'),(25,4,13,'成员国','元首级',42,'2024-10-01'),(26,4,14,'成员国','元首级',41,'2024-10-02'),(27,4,6,'成员国','元首级',48,'2024-10-02'),(28,4,11,'成员国','元首级',35,'2024-10-03'),(29,4,15,'成员国','元首级',33,'2024-10-03'),(30,4,5,'成员国','元首级',34,'2024-10-04'),(31,5,16,'主办国','部长级',90,'2024-10-01'),(32,5,1,'成员国','部长级',60,'2024-10-01'),(33,5,2,'成员国','部长级',55,'2024-10-01'),(34,5,12,'成员国','部长级',48,'2024-10-02'),(35,5,13,'成员国','部长级',46,'2024-10-02'),(36,5,4,'成员国','部长级',42,'2024-10-03'),(37,5,6,'成员国','部长级',38,'2024-10-03'),(38,5,5,'成员国','部长级',30,'2024-10-04'),(39,5,10,'成员国','部长级',28,'2024-10-04'),(40,6,2,'主办国','元首级',100,'2024-09-01'),(41,6,1,'成员国','元首级',50,'2024-09-01'),(42,6,3,'成员国','外交部长级',45,'2024-09-01'),(43,6,4,'成员国','元首级',40,'2024-09-02'),(44,6,13,'成员国','元首级',38,'2024-09-02'),(45,6,12,'成员国','外交部长级',36,'2024-09-02'),(46,6,14,'成员国','元首级',37,'2024-09-03'),(47,6,5,'成员国','元首级',32,'2024-09-03'),(48,6,6,'成员国','外交部长级',34,'2024-09-04'),(49,6,11,'成员国','外交部长级',28,'2024-09-04'),(50,7,9,'主办国','政府首脑级',45,'2024-09-01'),(51,7,1,'成员国','政府首脑级',40,'2024-09-01'),(52,7,3,'成员国','政府首脑级',38,'2024-09-01'),(53,7,8,'成员国','政府首脑级',30,'2024-09-02'),(54,7,6,'成员国','部长级',26,'2024-09-03'),(55,7,10,'观察员','部长级',18,'2024-09-05'),(56,8,4,'主办国','外交部长级',30,'2025-03-01'),(57,8,1,'成员国','外交部长级',28,'2025-03-01'),(58,8,3,'成员国','外交部长级',26,'2025-03-01'),(59,8,6,'成员国','外交部长级',24,'2025-03-02'),(60,8,5,'成员国','外交部长级',22,'2025-03-02'),(61,8,7,'成员国','外交部长级',20,'2025-03-03'),(62,9,6,'主办国','元首级',0,NULL),(63,9,1,'成员国','元首级',0,NULL),(64,9,3,'成员国','元首级',0,NULL),(65,9,4,'成员国','元首级',0,NULL),(66,9,5,'成员国','元首级',0,NULL);
+INSERT INTO `conference_participant` VALUES (1,1,'成员国','元首级',42,'2024-06-01'),(1,3,'成员国','元首级',40,'2024-06-01'),(1,6,'成员国','元首级',38,'2024-06-05'),(1,8,'主办国','元首级',58,'2024-06-01'),(1,9,'成员国','政府首脑级',35,'2024-06-01'),(1,10,'观察员','部长级',20,'2024-06-10'),(1,11,'嘉宾国','部长级',18,'2024-06-12'),(2,1,'成员国','元首级',48,'2024-09-20'),(2,3,'主办国','元首级',65,'2024-09-20'),(2,4,'成员国','元首级',44,'2024-09-20'),(2,5,'成员国','元首级',36,'2024-09-20'),(2,6,'成员国','元首级',46,'2024-09-20'),(2,7,'成员国','元首级',30,'2024-09-25'),(2,11,'嘉宾国','外交部长级',22,'2024-09-28'),(2,17,'成员国','政府首脑级',26,'2024-09-25'),(3,1,'主办国','元首级',120,'2024-08-01'),(3,5,'成员国','元首级',45,'2024-08-05'),(3,7,'成员国','元首级',40,'2024-08-05'),(3,17,'成员国','元首级',32,'2024-08-05'),(3,18,'成员国','元首级',38,'2024-08-06'),(4,1,'成员国','元首级',55,'2024-10-01'),(4,2,'成员国','元首级',60,'2024-10-01'),(4,4,'主办国','元首级',80,'2024-10-01'),(4,5,'成员国','元首级',34,'2024-10-04'),(4,6,'成员国','元首级',48,'2024-10-02'),(4,11,'成员国','元首级',35,'2024-10-03'),(4,12,'成员国','元首级',40,'2024-10-01'),(4,13,'成员国','元首级',42,'2024-10-01'),(4,14,'成员国','元首级',41,'2024-10-02'),(4,15,'成员国','元首级',33,'2024-10-03'),(5,1,'成员国','部长级',60,'2024-10-01'),(5,2,'成员国','部长级',55,'2024-10-01'),(5,4,'成员国','部长级',42,'2024-10-03'),(5,5,'成员国','部长级',30,'2024-10-04'),(5,6,'成员国','部长级',38,'2024-10-03'),(5,10,'成员国','部长级',28,'2024-10-04'),(5,12,'成员国','部长级',48,'2024-10-02'),(5,13,'成员国','部长级',46,'2024-10-02'),(5,16,'主办国','部长级',90,'2024-10-01'),(6,1,'成员国','元首级',50,'2024-09-01'),(6,2,'主办国','元首级',100,'2024-09-01'),(6,3,'成员国','外交部长级',45,'2024-09-01'),(6,4,'成员国','元首级',40,'2024-09-02'),(6,5,'成员国','元首级',32,'2024-09-03'),(6,6,'成员国','外交部长级',34,'2024-09-04'),(6,11,'成员国','外交部长级',28,'2024-09-04'),(6,12,'成员国','外交部长级',36,'2024-09-02'),(6,13,'成员国','元首级',38,'2024-09-02'),(6,14,'成员国','元首级',37,'2024-09-03'),(7,1,'成员国','政府首脑级',40,'2024-09-01'),(7,3,'成员国','政府首脑级',38,'2024-09-01'),(7,6,'成员国','部长级',26,'2024-09-03'),(7,8,'成员国','政府首脑级',30,'2024-09-02'),(7,9,'主办国','政府首脑级',45,'2024-09-01'),(7,10,'观察员','部长级',18,'2024-09-05'),(8,1,'成员国','外交部长级',28,'2025-03-01'),(8,3,'成员国','外交部长级',26,'2025-03-01'),(8,4,'主办国','外交部长级',30,'2025-03-01'),(8,5,'成员国','外交部长级',22,'2025-03-02'),(8,6,'成员国','外交部长级',24,'2025-03-02'),(8,7,'成员国','外交部长级',20,'2025-03-03'),(9,1,'成员国','元首级',0,NULL),(9,3,'成员国','元首级',0,NULL),(9,4,'成员国','元首级',0,NULL),(9,5,'成员国','元首级',0,NULL),(9,6,'主办国','元首级',0,NULL);
 /*!40000 ALTER TABLE `conference_participant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,16 +150,17 @@ DROP TABLE IF EXISTS `conference_topic`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conference_topic` (
-  `conference_id` int NOT NULL COMMENT '会议ID',
-  `topic_id` int NOT NULL COMMENT '议题ID',
-  `is_core` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否核心议题',
-  `discussion_date` date DEFAULT NULL COMMENT '讨论日期',
-  `summary` varchar(300) DEFAULT NULL COMMENT '议题讨论要点',
+  `conference_id` int NOT NULL,
+  `topic_id` int NOT NULL,
+  `is_core` smallint NOT NULL DEFAULT '0',
+  `discussion_date` date DEFAULT NULL,
+  `summary` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`conference_id`,`topic_id`),
-  KEY `idx_ct_topic` (`topic_id`),
-  CONSTRAINT `fk_ct_conf` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_ct_topic` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`topic_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会议议题关联表';
+  KEY `topic_id` (`topic_id`),
+  CONSTRAINT `conference_topic_ibfk_1` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `conference_topic_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`topic_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `conference_topic_chk_1` CHECK ((`is_core` in (0,1)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,19 +181,22 @@ DROP TABLE IF EXISTS `country`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `country` (
-  `country_id` int NOT NULL AUTO_INCREMENT COMMENT '国家ID',
-  `iso_code` char(3) NOT NULL COMMENT 'ISO三位代码',
-  `name_cn` varchar(50) NOT NULL COMMENT '国家名称(中文)',
-  `name_en` varchar(80) NOT NULL COMMENT '国家名称(英文)',
-  `continent` enum('亚洲','欧洲','非洲','北美洲','南美洲','大洋洲') NOT NULL COMMENT '所属大洲',
-  `development_status` enum('发达国家','发展中国家','最不发达国家') NOT NULL DEFAULT '发展中国家' COMMENT '发展水平',
-  `is_un_member` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否联合国成员国',
-  `note` varchar(200) DEFAULT NULL COMMENT '备注',
+  `country_id` int NOT NULL AUTO_INCREMENT,
+  `iso_code` char(3) NOT NULL,
+  `name_cn` varchar(50) NOT NULL,
+  `name_en` varchar(80) NOT NULL,
+  `continent` varchar(10) NOT NULL,
+  `development_status` varchar(10) NOT NULL DEFAULT '发展中国家',
+  `is_un_member` smallint NOT NULL DEFAULT '1',
+  `note` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`country_id`),
-  UNIQUE KEY `uk_country_iso` (`iso_code`),
-  UNIQUE KEY `uk_country_name` (`name_cn`),
-  KEY `idx_country_continent` (`continent`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='参与国家表';
+  UNIQUE KEY `iso_code` (`iso_code`),
+  UNIQUE KEY `name_cn` (`name_cn`),
+  KEY `idx_country_continent` (`continent`),
+  CONSTRAINT `country_chk_1` CHECK ((`continent` in (_utf8mb4'亚洲',_utf8mb4'欧洲',_utf8mb4'非洲',_utf8mb4'北美洲',_utf8mb4'南美洲',_utf8mb4'大洋洲'))),
+  CONSTRAINT `country_chk_2` CHECK ((`development_status` in (_utf8mb4'发达国家',_utf8mb4'发展中国家',_utf8mb4'最不发达国家'))),
+  CONSTRAINT `country_chk_3` CHECK ((`is_un_member` in (0,1)))
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,22 +217,25 @@ DROP TABLE IF EXISTS `document`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `document` (
-  `document_id` int NOT NULL AUTO_INCREMENT COMMENT '文件ID',
-  `conference_id` int NOT NULL COMMENT '所属会议',
-  `title` varchar(120) NOT NULL COMMENT '文件名称',
-  `doc_type` enum('联合声明','联合公报','决议','行动计划','谅解备忘录','倡议') NOT NULL COMMENT '文件类型',
-  `doc_no` varchar(40) DEFAULT NULL COMMENT '文件编号',
-  `issue_date` date NOT NULL COMMENT '发布/通过日期',
-  `adopt_method` enum('协商一致','表决通过') NOT NULL DEFAULT '协商一致' COMMENT '通过方式',
-  `status` enum('草案','已通过','已生效') NOT NULL DEFAULT '已通过' COMMENT '文件状态',
-  `summary` varchar(300) DEFAULT NULL COMMENT '内容概要',
+  `document_id` int NOT NULL AUTO_INCREMENT,
+  `conference_id` int NOT NULL,
+  `title` varchar(120) NOT NULL,
+  `doc_type` varchar(10) NOT NULL,
+  `doc_no` varchar(40) DEFAULT NULL,
+  `issue_date` date NOT NULL,
+  `adopt_method` varchar(10) NOT NULL DEFAULT '协商一致',
+  `status` varchar(10) NOT NULL DEFAULT '已通过',
+  `summary` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`document_id`),
-  UNIQUE KEY `uk_document_no` (`doc_no`),
-  KEY `idx_doc_conf` (`conference_id`),
+  UNIQUE KEY `doc_no` (`doc_no`),
+  KEY `conference_id` (`conference_id`),
   KEY `idx_doc_type` (`doc_type`),
-  CONSTRAINT `fk_doc_conf` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `ck_doc_no_empty` CHECK (((`doc_no` is null) or (char_length(trim(`doc_no`)) > 0)))
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='成果文件表';
+  CONSTRAINT `document_ibfk_1` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_chk_1` CHECK (((`doc_no` is null) or (char_length(trim(`doc_no`)) > 0))),
+  CONSTRAINT `document_chk_2` CHECK ((`doc_type` in (_utf8mb4'联合声明',_utf8mb4'联合公报',_utf8mb4'决议',_utf8mb4'行动计划',_utf8mb4'谅解备忘录',_utf8mb4'倡议'))),
+  CONSTRAINT `document_chk_3` CHECK ((`adopt_method` in (_utf8mb4'协商一致',_utf8mb4'表决通过'))),
+  CONSTRAINT `document_chk_4` CHECK ((`status` in (_utf8mb4'草案',_utf8mb4'已通过',_utf8mb4'已生效')))
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,6 +247,28 @@ LOCK TABLES `document` WRITE;
 INSERT INTO `document` VALUES (1,1,'上海合作组织成员国元首理事会阿斯塔纳宣言','联合声明','SCO-2024-DECL','2024-07-05','协商一致','已生效','重申共同安全观，深化反恐与经贸合作'),(2,2,'金砖国家领导人第十六次会晤喀山宣言','联合声明','BRICS-2024-KAZAN','2024-10-23','协商一致','已生效','加强多边主义，推动全球治理体系改革'),(3,3,'2024年中非合作论坛北京宣言','联合声明','FOCAC-2024-DECL','2024-09-05','协商一致','已生效','构建高水平中非命运共同体'),(4,3,'中非合作论坛北京行动计划（2025—2027）','行动计划','FOCAC-2024-ACT','2024-09-06','协商一致','已生效','明确未来三年中非合作重点领域'),(5,4,'二十国集团领导人里约热内卢峰会宣言','联合公报','G20-2024-RIO','2024-11-19','协商一致','已通过','构建公正世界与可持续星球'),(6,5,'COP29 关于气候融资新集体量化目标的决定','决议','COP29-2024-DEC','2024-11-22','表决通过','已通过','确立新的气候融资目标与落实安排'),(7,6,'第七十九届联合国大会一般性辩论主席总结','联合声明','UNGA79-2024-SUM','2024-09-30','协商一致','已通过','汇总各方关于和平与发展的立场'),(8,7,'上海合作组织成员国政府首脑理事会联合公报','联合公报','SCO-2024-PM','2024-10-16','协商一致','已通过','推进区域经济一体化与互联互通'),(9,8,'金砖国家外长会晤联合声明','联合声明','BRICS-2025-FM','2025-04-29','协商一致','已通过','协调安理会改革与地区热点立场'),(10,2,'金砖国家数字经济与人工智能治理合作倡议','倡议','BRICS-2024-DIGI','2024-10-23','协商一致','已通过','推动数字鸿沟弥合与人工智能治理'),(11,9,'金砖国家领导人第十七次会晤成果文件（草案）','联合声明',NULL,'2026-12-16','协商一致','草案','筹备阶段草案，尚未提交领导人会议通过');
 /*!40000 ALTER TABLE `document` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 */ /*!50003 TRIGGER `trg_document_before_update` BEFORE UPDATE ON `document` FOR EACH ROW BEGIN
+  IF NEW.conference_id <> OLD.conference_id AND EXISTS (
+    SELECT * FROM follow_up_action a
+    WHERE a.document_id = OLD.document_id AND a.conference_id <> NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `document_sponsor`
@@ -244,14 +278,15 @@ DROP TABLE IF EXISTS `document_sponsor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `document_sponsor` (
-  `document_id` int NOT NULL COMMENT '文件ID',
-  `country_id` int NOT NULL COMMENT '国家ID',
-  `stance` enum('联署','支持','保留') NOT NULL DEFAULT '联署' COMMENT '国别立场',
+  `document_id` int NOT NULL,
+  `country_id` int NOT NULL,
+  `stance` varchar(10) NOT NULL DEFAULT '联署',
   PRIMARY KEY (`document_id`,`country_id`),
-  KEY `idx_sponsor_country` (`country_id`),
-  CONSTRAINT `fk_sponsor_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_sponsor_doc` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件联署/支持国家表';
+  KEY `country_id` (`country_id`),
+  CONSTRAINT `document_sponsor_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_sponsor_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `document_sponsor_chk_1` CHECK ((`stance` in (_utf8mb4'联署',_utf8mb4'支持',_utf8mb4'保留')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -272,33 +307,34 @@ DROP TABLE IF EXISTS `follow_up_action`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `follow_up_action` (
-  `action_id` int NOT NULL AUTO_INCREMENT COMMENT '行动ID',
-  `conference_id` int NOT NULL COMMENT '来源会议',
-  `document_id` int DEFAULT NULL COMMENT '依据文件',
-  `action_name` varchar(120) NOT NULL COMMENT '行动名称',
-  `lead_country_id` int NOT NULL COMMENT '牵头国家',
-  `responsible_org_id` int DEFAULT NULL COMMENT '责任国际组织',
-  `start_date` date NOT NULL COMMENT '启动日期',
-  `planned_end_date` date NOT NULL COMMENT '计划完成日期',
-  `actual_end_date` date DEFAULT NULL COMMENT '实际完成日期(未完成为NULL)',
-  `progress_pct` int NOT NULL DEFAULT '0' COMMENT '进度百分比',
-  `status` enum('未启动','进行中','已完成','逾期','终止') NOT NULL DEFAULT '进行中' COMMENT '行动状态',
-  `remarks` varchar(200) DEFAULT NULL COMMENT '备注',
+  `action_id` int NOT NULL AUTO_INCREMENT,
+  `conference_id` int NOT NULL,
+  `document_id` int DEFAULT NULL,
+  `action_name` varchar(120) NOT NULL,
+  `lead_country_id` int NOT NULL,
+  `responsible_org_id` int DEFAULT NULL,
+  `start_date` date NOT NULL,
+  `planned_end_date` date NOT NULL,
+  `actual_end_date` date DEFAULT NULL,
+  `progress_pct` int NOT NULL DEFAULT '0',
+  `status` varchar(10) NOT NULL DEFAULT '进行中',
+  `remarks` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`action_id`),
-  KEY `idx_action_conf` (`conference_id`),
-  KEY `idx_action_doc` (`document_id`),
-  KEY `idx_action_lead` (`lead_country_id`),
-  KEY `idx_action_org` (`responsible_org_id`),
+  KEY `conference_id` (`conference_id`),
+  KEY `document_id` (`document_id`),
+  KEY `lead_country_id` (`lead_country_id`),
+  KEY `responsible_org_id` (`responsible_org_id`),
   KEY `idx_action_due` (`planned_end_date`),
-  CONSTRAINT `fk_action_conf` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_action_doc` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_action_lead` FOREIGN KEY (`lead_country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_action_org` FOREIGN KEY (`responsible_org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `ck_action_actual` CHECK (((`actual_end_date` is null) or (`actual_end_date` >= `start_date`))),
-  CONSTRAINT `ck_action_dates` CHECK ((`planned_end_date` >= `start_date`)),
-  CONSTRAINT `ck_action_done` CHECK (((`status` <> _utf8mb4'已完成') or (`actual_end_date` is not null))),
-  CONSTRAINT `ck_action_progress` CHECK ((`progress_pct` between 0 and 100))
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='后续行动表';
+  CONSTRAINT `follow_up_action_ibfk_1` FOREIGN KEY (`conference_id`) REFERENCES `conference` (`conference_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `follow_up_action_ibfk_2` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `follow_up_action_ibfk_3` FOREIGN KEY (`lead_country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `follow_up_action_ibfk_4` FOREIGN KEY (`responsible_org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `follow_up_action_chk_1` CHECK ((`progress_pct` between 0 and 100)),
+  CONSTRAINT `follow_up_action_chk_2` CHECK ((`planned_end_date` >= `start_date`)),
+  CONSTRAINT `follow_up_action_chk_3` CHECK (((`actual_end_date` is null) or (`actual_end_date` >= `start_date`))),
+  CONSTRAINT `follow_up_action_chk_4` CHECK (((`status` <> _utf8mb4'已完成') or (`actual_end_date` is not null))),
+  CONSTRAINT `follow_up_action_chk_5` CHECK ((`status` in (_utf8mb4'未启动',_utf8mb4'进行中',_utf8mb4'已完成',_utf8mb4'逾期',_utf8mb4'终止')))
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,16 +436,18 @@ DROP TABLE IF EXISTS `international_organization`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `international_organization` (
-  `org_id` int NOT NULL AUTO_INCREMENT COMMENT '组织ID',
-  `name_cn` varchar(80) NOT NULL COMMENT '组织中文名',
-  `abbr` varchar(20) DEFAULT NULL COMMENT '组织简称',
-  `org_type` enum('联合国系统','区域性组织','多边机制','专门机构') NOT NULL COMMENT '组织类型',
-  `founded_year` year DEFAULT NULL COMMENT '成立年份',
-  `hq_city` varchar(50) DEFAULT NULL COMMENT '总部所在地',
+  `org_id` int NOT NULL AUTO_INCREMENT,
+  `name_cn` varchar(80) NOT NULL,
+  `abbr` varchar(20) DEFAULT NULL,
+  `org_type` varchar(10) NOT NULL,
+  `founded_year` smallint DEFAULT NULL,
+  `hq_city` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`org_id`),
-  UNIQUE KEY `uk_org_name` (`name_cn`),
-  UNIQUE KEY `uk_org_abbr` (`abbr`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='国际组织表';
+  UNIQUE KEY `name_cn` (`name_cn`),
+  UNIQUE KEY `abbr` (`abbr`),
+  CONSTRAINT `international_organization_chk_1` CHECK ((`org_type` in (_utf8mb4'联合国系统',_utf8mb4'区域性组织',_utf8mb4'多边机制',_utf8mb4'专门机构'))),
+  CONSTRAINT `international_organization_chk_2` CHECK ((`founded_year` between 1 and 9999))
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -430,18 +468,20 @@ DROP TABLE IF EXISTS `mechanism`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mechanism` (
-  `mechanism_id` int NOT NULL AUTO_INCREMENT COMMENT '机制ID',
-  `name` varchar(80) NOT NULL COMMENT '机制名称',
-  `abbr` varchar(20) DEFAULT NULL COMMENT '机制简称',
-  `category` enum('全球治理','区域合作','南南合作','大国协调','专门领域') NOT NULL COMMENT '机制类别',
-  `founded_year` year DEFAULT NULL COMMENT '启动年份',
-  `lead_org_id` int DEFAULT NULL COMMENT '牵头组织',
-  `description` varchar(200) DEFAULT NULL COMMENT '机制说明',
+  `mechanism_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) NOT NULL,
+  `abbr` varchar(20) DEFAULT NULL,
+  `category` varchar(10) NOT NULL,
+  `founded_year` smallint DEFAULT NULL,
+  `lead_org_id` int DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`mechanism_id`),
-  UNIQUE KEY `uk_mechanism_name` (`name`),
-  KEY `idx_mechanism_org` (`lead_org_id`),
-  CONSTRAINT `fk_mechanism_org` FOREIGN KEY (`lead_org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='多边机制表';
+  UNIQUE KEY `name` (`name`),
+  KEY `lead_org_id` (`lead_org_id`),
+  CONSTRAINT `mechanism_ibfk_1` FOREIGN KEY (`lead_org_id`) REFERENCES `international_organization` (`org_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `mechanism_chk_1` CHECK ((`category` in (_utf8mb4'全球治理',_utf8mb4'区域合作',_utf8mb4'南南合作',_utf8mb4'大国协调',_utf8mb4'专门领域'))),
+  CONSTRAINT `mechanism_chk_2` CHECK ((`founded_year` between 1 and 9999))
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,21 +502,22 @@ DROP TABLE IF EXISTS `operation_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `operation_log` (
-  `log_id` bigint NOT NULL AUTO_INCREMENT COMMENT '日志ID',
-  `user_id` int DEFAULT NULL COMMENT '操作人(周界外为NULL)',
-  `action_type` enum('INSERT','UPDATE','DELETE') NOT NULL COMMENT '操作类型',
-  `target_table` varchar(40) NOT NULL COMMENT '目标表',
-  `target_id` int DEFAULT NULL COMMENT '目标记录主键',
-  `old_value` varchar(200) DEFAULT NULL COMMENT '变更前摘要',
-  `new_value` varchar(200) DEFAULT NULL COMMENT '变更后摘要',
-  `log_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
-  `detail` varchar(300) DEFAULT NULL COMMENT '说明',
+  `log_id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `action_type` varchar(10) NOT NULL,
+  `target_table` varchar(40) NOT NULL,
+  `target_id` int DEFAULT NULL,
+  `old_value` varchar(200) DEFAULT NULL,
+  `new_value` varchar(200) DEFAULT NULL,
+  `log_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `detail` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`log_id`),
+  KEY `user_id` (`user_id`),
   KEY `idx_log_time` (`log_time`),
   KEY `idx_log_target` (`target_table`,`target_id`),
-  KEY `idx_log_user` (`user_id`),
-  CONSTRAINT `fk_log_user` FOREIGN KEY (`user_id`) REFERENCES `app_user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='操作审计表';
+  CONSTRAINT `operation_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `operation_log_chk_1` CHECK ((`action_type` in (_utf8mb4'INSERT',_utf8mb4'UPDATE',_utf8mb4'DELETE')))
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -485,7 +526,7 @@ CREATE TABLE `operation_log` (
 
 LOCK TABLES `operation_log` WRITE;
 /*!40000 ALTER TABLE `operation_log` DISABLE KEYS */;
-INSERT INTO `operation_log` VALUES (1,NULL,'UPDATE','follow_up_action',3,'status=进行中, progress=60','status=逾期, progress=60','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(2,NULL,'UPDATE','follow_up_action',7,'status=进行中, progress=40','status=逾期, progress=40','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(3,NULL,'UPDATE','follow_up_action',10,'status=进行中, progress=35','status=逾期, progress=35','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）'),(4,NULL,'UPDATE','follow_up_action',14,'status=进行中, progress=45','status=逾期, progress=45','2026-10-23 17:56:22','后续行动状态或进度变更（触发器自动记录）');
+INSERT INTO `operation_log` VALUES (1,NULL,'UPDATE','follow_up_action',3,'status=进行中, progress=60','status=逾期, progress=60','2026-10-24 15:49:27','后续行动状态或进度变更（触发器自动记录）'),(2,NULL,'UPDATE','follow_up_action',7,'status=进行中, progress=40','status=逾期, progress=40','2026-10-24 15:49:27','后续行动状态或进度变更（触发器自动记录）'),(3,NULL,'UPDATE','follow_up_action',10,'status=进行中, progress=35','status=逾期, progress=35','2026-10-24 15:49:27','后续行动状态或进度变更（触发器自动记录）'),(4,NULL,'UPDATE','follow_up_action',14,'status=进行中, progress=45','status=逾期, progress=45','2026-10-24 15:49:27','后续行动状态或进度变更（触发器自动记录）');
 /*!40000 ALTER TABLE `operation_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -497,14 +538,15 @@ DROP TABLE IF EXISTS `topic`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `topic` (
-  `topic_id` int NOT NULL AUTO_INCREMENT COMMENT '议题ID',
-  `name` varchar(60) NOT NULL COMMENT '议题名称',
-  `category` enum('和平与安全','发展与合作','气候变化','公共卫生','人文交流','全球治理体系') NOT NULL COMMENT '议题领域',
-  `description` varchar(200) DEFAULT NULL COMMENT '议题说明',
+  `topic_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL,
+  `category` varchar(10) NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`topic_id`),
-  UNIQUE KEY `uk_topic_name` (`name`),
-  KEY `idx_topic_category` (`category`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='议题表';
+  UNIQUE KEY `name` (`name`),
+  KEY `idx_topic_category` (`category`),
+  CONSTRAINT `topic_chk_1` CHECK ((`category` in (_utf8mb4'和平与安全',_utf8mb4'发展与合作',_utf8mb4'气候变化',_utf8mb4'公共卫生',_utf8mb4'人文交流',_utf8mb4'全球治理体系')))
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

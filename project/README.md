@@ -148,7 +148,7 @@ erDiagram
 
 | 原有联系 | 类型 | 转换方式 | 结果关系 |
 |---|---|---|---|
-| 国家—会议 | M:N | 新建关系，双方主键组成联合候选键，另设代理主键 | `conference_participant`（身份、级别、人数、确认日期） |
+| 国家—会议 | M:N | 双方主键组成联合主键，加入联系属性 | `conference_participant`（身份、级别、人数、确认日期） |
 | 会议—议题 | M:N | 双方主键组成联合主键，加入联系属性 | `conference_topic`（核心标记、讨论日期、要点） |
 | 文件—国家 | M:N | 双方主键组成联合主键，加入立场属性 | `document_sponsor`（立场：联署/支持/保留） |
 | 会议—文件 | 1:N | 在 N 端加入 1 端主键作外键 | `document.conference_id` |
@@ -166,7 +166,7 @@ mechanism(mechanism_id, name, abbr, category, founded_year, lead_org_id, descrip
 topic(topic_id, name, category, description)
 conference(conference_id, title, short_name, mechanism_id, org_id, host_country_id,
            host_city, conference_type, session_label, start_date, end_date, format, status, theme)
-conference_participant(participant_id, conference_id, country_id, role, delegation_level,
+conference_participant(conference_id, country_id, role, delegation_level,
                        delegation_size, join_date)
 conference_topic(conference_id, topic_id, is_core, discussion_date, summary)
 document(document_id, conference_id, title, doc_type, doc_no, issue_date, adopt_method, status, summary)
@@ -187,7 +187,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | international_organization | org_id、name_cn | org_id → 名称、类型、成立年份、总部 |
 | mechanism / topic | 各自主键、name | 主键 → 名称、类别等 |
 | conference | conference_id | conference_id → 会名、机制、主办国、会期等 |
-| conference_participant | participant_id；(conference_id, country_id) | (会议, 国家) → 身份、级别、人数、确认日期 |
+| conference_participant | (conference_id, country_id) | (会议, 国家) → 身份、级别、人数、确认日期 |
 | conference_topic | (conference_id, topic_id) | (会议, 议题) → 核心标记、日期、要点 |
 | document | document_id | document_id → conference_id、标题、类型等 |
 | document_sponsor | (document_id, country_id) | (文件, 国家) → 立场 |
@@ -199,7 +199,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 - **1NF**：每格保存单值，参会国、议题和联署国分别存入联系表。
 - **2NF**：联系表的身份、讨论要点、立场依赖整个复合候选键，不依赖其中一部分。
 - **3NF**：国名和大洲只保存在 country，组织信息只保存在 international_organization，会议表通过外键引用，避免传递依赖。
-- **保留的冗余**：follow_up_action 同时保存 conference_id 和可空的 document_id。填写文件时，存在 action_id → document_id → conference_id，document_id 不是行动表的超键，因此不能宣称该表满足 3NF/BCNF。为保留“仅挂会议”的原有用法，本次不改表结构；06 中的两个触发器检查文件与会议一致。该检查针对行动的插入/更新，不消除冗余；单独调整文件所属会议前仍需检查已有行动。
+- **保留的冗余**：follow_up_action 同时保存 conference_id 和可空的 document_id。填写文件时，存在 action_id → document_id → conference_id，document_id 不是行动表的超键，因此不能宣称该表满足 3NF/BCNF。为保留“仅挂会议”的原有用法，本次不改表结构；06 中的触发器检查文件与会议一致。这些检查不消除冗余；文件所属会议的修改由 `trg_document_before_update` 检查，拒绝造成已有行动与文件来源不一致的变更。
 
 课件中的规范化思路可将带文件的行动分为“行动(action_id, document_id, …)”和“文件(document_id, conference_id, …)”。两者交集为 document_id，它决定文件关系，因此该分解无损；原依赖可通过 action_id → document_id → conference_id 推导。若要同时支持无文件的行动，还需单独设计会议关联。本项目将此作为后续结构调整，不写成已经完成的改动。
 
@@ -210,91 +210,94 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 ### 4.1 数据字典
 
+字段类型及主外键与 `02_create_tables.sql` 一致。分类值和布尔标记由 CHECK 限定；年份允许未知（NULL），已知年份范围为 1—9999。
+
 #### 表 4-1  country 参与国家表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `country_id` | int | 否 | 主键 |  | 国家ID auto_increment |
+| 1 | `country_id` | int | 否 | 主键 |  | 国家ID；自增 |
 | 2 | `iso_code` | char(3) | 否 | 唯一 |  | ISO三位代码 |
 | 3 | `name_cn` | varchar(50) | 否 | 唯一 |  | 国家名称(中文) |
 | 4 | `name_en` | varchar(80) | 否 |  |  | 国家名称(英文) |
-| 5 | `continent` | enum('亚洲','欧洲','非洲','北美洲','南美洲','大洋洲') | 否 | 索引 |  | 所属大洲 |
-| 6 | `development_status` | enum('发达国家','发展中国家','最不发达国家') | 否 |  | 发展中国家 | 发展水平 |
-| 7 | `is_un_member` | tinyint(1) | 否 |  | 1 | 是否联合国成员国 |
+| 5 | `continent` | varchar(10) | 否 | 索引 |  | 所属大洲 |
+| 6 | `development_status` | varchar(10) | 否 |  | 发展中国家 | 发展水平 |
+| 7 | `is_un_member` | smallint | 否 |  | 1 | 是否联合国成员国 |
 | 8 | `note` | varchar(200) | 是 |  |  | 备注 |
 
 #### 表 4-2  international_organization 国际组织表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `org_id` | int | 否 | 主键 |  | 组织ID auto_increment |
+| 1 | `org_id` | int | 否 | 主键 |  | 组织ID；自增 |
 | 2 | `name_cn` | varchar(80) | 否 | 唯一 |  | 组织中文名 |
 | 3 | `abbr` | varchar(20) | 是 | 唯一 |  | 组织简称 |
-| 4 | `org_type` | enum('联合国系统','区域性组织','多边机制','专门机构') | 否 |  |  | 组织类型 |
-| 5 | `founded_year` | year | 是 |  |  | 成立年份 |
+| 4 | `org_type` | varchar(10) | 否 |  |  | 组织类型 |
+| 5 | `founded_year` | smallint | 是 |  |  | 成立年份 |
 | 6 | `hq_city` | varchar(50) | 是 |  |  | 总部所在地 |
 
 #### 表 4-3  mechanism 多边机制表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `mechanism_id` | int | 否 | 主键 |  | 机制ID auto_increment |
+| 1 | `mechanism_id` | int | 否 | 主键 |  | 机制ID；自增 |
 | 2 | `name` | varchar(80) | 否 | 唯一 |  | 机制名称 |
 | 3 | `abbr` | varchar(20) | 是 |  |  | 机制简称 |
-| 4 | `category` | enum('全球治理','区域合作','南南合作','大国协调','专门领域') | 否 |  |  | 机制类别 |
-| 5 | `founded_year` | year | 是 |  |  | 启动年份 |
-| 6 | `lead_org_id` | int | 是 | 索引 |  | 牵头组织 |
+| 4 | `category` | varchar(10) | 否 |  |  | 机制类别 |
+| 5 | `founded_year` | smallint | 是 |  |  | 启动年份 |
+| 6 | `lead_org_id` | int | 是 | 外键 |  | 牵头组织 |
 | 7 | `description` | varchar(200) | 是 |  |  | 机制说明 |
 
 #### 表 4-4  topic 议题表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `topic_id` | int | 否 | 主键 |  | 议题ID auto_increment |
+| 1 | `topic_id` | int | 否 | 主键 |  | 议题ID；自增 |
 | 2 | `name` | varchar(60) | 否 | 唯一 |  | 议题名称 |
-| 3 | `category` | enum('和平与安全','发展与合作','气候变化','公共卫生','人文交流','全球治理体系') | 否 | 索引 |  | 议题领域 |
+| 3 | `category` | varchar(10) | 否 | 索引 |  | 议题领域 |
 | 4 | `description` | varchar(200) | 是 |  |  | 议题说明 |
 
 #### 表 4-5  conference 国际会议表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `conference_id` | int | 否 | 主键 |  | 会议ID auto_increment |
+| 1 | `conference_id` | int | 否 | 主键 |  | 会议ID；自增 |
 | 2 | `title` | varchar(120) | 否 |  |  | 会议全称 |
 | 3 | `short_name` | varchar(60) | 是 |  |  | 会议简称 |
-| 4 | `mechanism_id` | int | 是 | 索引 |  | 所属机制 |
-| 5 | `org_id` | int | 是 | 索引 |  | 主办国际组织 |
-| 6 | `host_country_id` | int | 否 | 索引 |  | 主办/承办国家 |
+| 4 | `mechanism_id` | int | 是 | 外键 |  | 所属机制 |
+| 5 | `org_id` | int | 是 | 外键 |  | 主办国际组织 |
+| 6 | `host_country_id` | int | 否 | 外键 |  | 主办/承办国家 |
 | 7 | `host_city` | varchar(60) | 是 |  |  | 举办城市 |
-| 8 | `conference_type` | enum('首脑峰会','部长级会议','高官会议','专家会议','大会','特别会议') | 否 |  |  | 会议类型 |
+| 8 | `conference_type` | varchar(10) | 否 |  |  | 会议类型 |
 | 9 | `session_label` | varchar(20) | 是 |  |  | 届次(如 第24次) |
 | 10 | `start_date` | date | 否 | 索引 |  | 开始日期 |
 | 11 | `end_date` | date | 否 |  |  | 结束日期 |
-| 12 | `format` | enum('线下','线上','混合') | 否 |  | 线下 | 会议形式 |
-| 13 | `status` | enum('筹备中','进行中','已闭幕','取消') | 否 |  | 已闭幕 | 会议状态 |
+| 12 | `format` | varchar(10) | 否 |  | 线下 | 会议形式 |
+| 13 | `status` | varchar(10) | 否 |  | 已闭幕 | 会议状态 |
 | 14 | `theme` | varchar(200) | 是 |  |  | 会议主题 |
 
 #### 表 4-6  conference_participant 会议参与国家表
 
-`participant_id` 是主键，`(conference_id, country_id)` 是联合 UNIQUE 候选键。
+联合主键：`(conference_id, country_id)`。
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `participant_id` | int | 否 | 主键 |  | 参与记录ID auto_increment |
-| 2 | `conference_id` | int | 否 | 索引 |  | 会议ID |
-| 3 | `country_id` | int | 否 | 索引 |  | 国家ID |
-| 4 | `role` | enum('主办国','主席国','成员国','观察员','嘉宾国') | 否 |  | 成员国 | 参会身份 |
-| 5 | `delegation_level` | enum('元首级','政府首脑级','外交部长级','部长级','高官级','专家级') | 否 |  | 部长级 | 出席级别 |
-| 6 | `delegation_size` | int | 否 |  | 0 | 代表团人数 |
-| 7 | `join_date` | date | 是 |  |  | 确认参会日期 |
+| 1 | `conference_id` | int | 否 | 主键/外键 |  | 会议ID |
+| 2 | `country_id` | int | 否 | 主键/外键 |  | 国家ID |
+| 3 | `role` | varchar(10) | 否 |  | 成员国 | 参会身份 |
+| 4 | `delegation_level` | varchar(10) | 否 |  | 部长级 | 出席级别 |
+| 5 | `delegation_size` | int | 否 |  | 0 | 代表团人数 |
+| 6 | `join_date` | date | 是 |  |  | 确认参会日期 |
 
 #### 表 4-7  conference_topic 会议议题关联表
 
+联合主键：`(conference_id, topic_id)`。
+
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `conference_id` | int | 否 | 主键 |  | 会议ID |
-| 2 | `topic_id` | int | 否 | 主键 |  | 议题ID |
-| 3 | `is_core` | tinyint(1) | 否 |  | 0 | 是否核心议题 |
+| 1 | `conference_id` | int | 否 | 主键/外键 |  | 会议ID |
+| 2 | `topic_id` | int | 否 | 主键/外键 |  | 议题ID |
+| 3 | `is_core` | smallint | 否 |  | 0 | 是否核心议题 |
 | 4 | `discussion_date` | date | 是 |  |  | 讨论日期 |
 | 5 | `summary` | varchar(300) | 是 |  |  | 议题讨论要点 |
 
@@ -302,82 +305,86 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `document_id` | int | 否 | 主键 |  | 文件ID auto_increment |
-| 2 | `conference_id` | int | 否 | 索引 |  | 所属会议 |
+| 1 | `document_id` | int | 否 | 主键 |  | 文件ID；自增 |
+| 2 | `conference_id` | int | 否 | 外键 |  | 所属会议 |
 | 3 | `title` | varchar(120) | 否 |  |  | 文件名称 |
-| 4 | `doc_type` | enum('联合声明','联合公报','决议','行动计划','谅解备忘录','倡议') | 否 | 索引 |  | 文件类型 |
+| 4 | `doc_type` | varchar(10) | 否 | 索引 |  | 文件类型 |
 | 5 | `doc_no` | varchar(40) | 是 | 唯一 |  | 文件编号 |
 | 6 | `issue_date` | date | 否 |  |  | 发布/通过日期 |
-| 7 | `adopt_method` | enum('协商一致','表决通过') | 否 |  | 协商一致 | 通过方式 |
-| 8 | `status` | enum('草案','已通过','已生效') | 否 |  | 已通过 | 文件状态 |
+| 7 | `adopt_method` | varchar(10) | 否 |  | 协商一致 | 通过方式 |
+| 8 | `status` | varchar(10) | 否 |  | 已通过 | 文件状态 |
 | 9 | `summary` | varchar(300) | 是 |  |  | 内容概要 |
 
-#### 表 4-9  document_sponsor 文件联署国家表
+#### 表 4-9  document_sponsor 文件联署/支持国家表
+
+联合主键：`(document_id, country_id)`。
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `document_id` | int | 否 | 主键 |  | 文件ID |
-| 2 | `country_id` | int | 否 | 主键 |  | 国家ID |
-| 3 | `stance` | enum('联署','支持','保留') | 否 |  | 联署 | 国别立场 |
+| 1 | `document_id` | int | 否 | 主键/外键 |  | 文件ID |
+| 2 | `country_id` | int | 否 | 主键/外键 |  | 国家ID |
+| 3 | `stance` | varchar(10) | 否 |  | 联署 | 国别立场 |
 
 #### 表 4-10  follow_up_action 后续行动表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `action_id` | int | 否 | 主键 |  | 行动ID auto_increment |
-| 2 | `conference_id` | int | 否 | 索引 |  | 来源会议 |
-| 3 | `document_id` | int | 是 | 索引 |  | 依据文件 |
+| 1 | `action_id` | int | 否 | 主键 |  | 行动ID；自增 |
+| 2 | `conference_id` | int | 否 | 外键 |  | 来源会议 |
+| 3 | `document_id` | int | 是 | 外键 |  | 依据文件 |
 | 4 | `action_name` | varchar(120) | 否 |  |  | 行动名称 |
-| 5 | `lead_country_id` | int | 否 | 索引 |  | 牵头国家 |
-| 6 | `responsible_org_id` | int | 是 | 索引 |  | 责任国际组织 |
+| 5 | `lead_country_id` | int | 否 | 外键 |  | 牵头国家 |
+| 6 | `responsible_org_id` | int | 是 | 外键 |  | 责任国际组织 |
 | 7 | `start_date` | date | 否 |  |  | 启动日期 |
 | 8 | `planned_end_date` | date | 否 | 索引 |  | 计划完成日期 |
 | 9 | `actual_end_date` | date | 是 |  |  | 实际完成日期(未完成为NULL) |
 | 10 | `progress_pct` | int | 否 |  | 0 | 进度百分比 |
-| 11 | `status` | enum('未启动','进行中','已完成','逾期','终止') | 否 |  | 进行中 | 行动状态 |
+| 11 | `status` | varchar(10) | 否 |  | 进行中 | 行动状态 |
 | 12 | `remarks` | varchar(200) | 是 |  |  | 备注 |
 
 #### 表 4-11  app_user 系统用户表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `user_id` | int | 否 | 主键 |  | 用户ID auto_increment |
+| 1 | `user_id` | int | 否 | 主键 |  | 用户ID；自增 |
 | 2 | `username` | varchar(40) | 否 | 唯一 |  | 登录账号 |
 | 3 | `real_name` | varchar(40) | 否 |  |  | 姓名 |
-| 4 | `user_role` | enum('系统管理员','会议组织者','外交官','观察员') | 否 | 索引 | 观察员 | 角色 |
-| 5 | `country_id` | int | 是 | 索引 |  | 所属国家 |
-| 6 | `org_id` | int | 是 | 索引 |  | 所属国际组织 |
-| 7 | `is_active` | tinyint(1) | 否 |  | 1 | 是否启用 |
-| 8 | `created_at` | datetime | 否 |  | CURRENT_TIMESTAMP | 创建时间 DEFAULT_GENERATED |
+| 4 | `user_role` | varchar(10) | 否 | 索引 | 观察员 | 角色 |
+| 5 | `country_id` | int | 是 | 外键 |  | 所属国家 |
+| 6 | `org_id` | int | 是 | 外键 |  | 所属国际组织 |
+| 7 | `is_active` | smallint | 否 |  | 1 | 是否启用 |
+| 8 | `created_at` | datetime | 否 |  | CURRENT_TIMESTAMP | 创建时间 |
 
 #### 表 4-12  operation_log 操作审计表
 
 | 序号 | 列名 | 类型 | 允许空 | 键 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| 1 | `log_id` | bigint | 否 | 主键 |  | 日志ID auto_increment |
-| 2 | `user_id` | int | 是 | 索引 |  | 操作人(周界外为NULL) |
-| 3 | `action_type` | enum('INSERT','UPDATE','DELETE') | 否 |  |  | 操作类型 |
+| 1 | `log_id` | bigint | 否 | 主键 |  | 日志ID；自增 |
+| 2 | `user_id` | int | 是 | 外键 |  | 操作人(周界外为NULL) |
+| 3 | `action_type` | varchar(10) | 否 |  |  | 操作类型 |
 | 4 | `target_table` | varchar(40) | 否 | 索引 |  | 目标表 |
 | 5 | `target_id` | int | 是 |  |  | 目标记录主键 |
 | 6 | `old_value` | varchar(200) | 是 |  |  | 变更前摘要 |
 | 7 | `new_value` | varchar(200) | 是 |  |  | 变更后摘要 |
-| 8 | `log_time` | datetime | 否 | 索引 | CURRENT_TIMESTAMP | 记录时间 DEFAULT_GENERATED |
+| 8 | `log_time` | datetime | 否 | 索引 | CURRENT_TIMESTAMP | 记录时间 |
 | 9 | `detail` | varchar(300) | 是 |  |  | 说明 |
 
 ### 4.2 索引设计
 
+主键和 UNIQUE 由数据库建立对应索引，外键缺少可用索引时由 InnoDB 自动建立。查询所需的普通索引按课件 3.2.4 使用独立的 CREATE INDEX，统一放在建表文件末尾。
+
 | 索引 | 所在表 | 作用 |
 |---|---|---|
-| `idx_conf_dates(start_date, end_date)` | conference | 按时间范围筛会（查询 1、11） |
-| `idx_conf_mechanism` / `idx_conf_host` / `idx_conf_org` | conference | 外键与按机制/主办国聚合（查询 2、5） |
-| `idx_participant_country` | conference_participant | 按国家反查参会记录（查询 9） |
-| `idx_ct_topic` | conference_topic | 议题热度统计（查询 8） |
-| `idx_doc_conf` / `idx_doc_type` | document | 按会议取文件、按类型统计 |
-| `idx_sponsor_country` | document_sponsor | 共识广度与国别联署统计（查询 7） |
-| `idx_action_due(planned_end_date)` | follow_up_action | 逾期预警范围扫描（查询 6） |
-| `idx_log_time` / `idx_log_target` | operation_log | 审计按时间倒序、按对象追溯 |
+| `idx_country_continent` | country | 按大洲筛选国家 |
+| `idx_topic_category` | topic | 按议题领域筛选 |
+| `idx_conf_dates(start_date, end_date)` | conference | 按会期筛选 |
+| `idx_doc_type` | document | 按文件类型统计 |
+| `idx_action_due` | follow_up_action | 按计划日期筛选行动 |
+| `idx_user_role` | app_user | 按用户角色筛选 |
+| `idx_log_time` | operation_log | 按日志时间查询 |
+| `idx_log_target(target_table, target_id)` | operation_log | 按操作对象追溯 |
 
-原则：外键列必建索引（InnoDB 外键检查需要）；高频过滤列建单列索引；范围查询用组合索引并把等值列放前面。全库共 12 张表、44 个索引（含主键与唯一键）。
+显式查询索引共 8 个；当前全库共 43 个索引（含主键、唯一及外键所需索引）。是否采用某个索引，由优化器结合查询与数据分布决定。
 
 ### 4.3 数据量估算与存储
 
@@ -390,7 +397,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | operation_log | ~300 B | 10 万条 | 30 MB |
 | 合计 | — | — | < 50 MB |
 
-参数选择：存储引擎 `InnoDB`（事务 + 外键）、字符集 `utf8mb4`（中文与符号无损）、排序规则 `utf8mb4_0900_ai_ci`；日志表主键用 `BIGINT` 为增长预留；时间统一 `DATE`（业务日）与 `DATETIME`（日志时刻）。
+参数选择：存储引擎 `InnoDB`（事务 + 外键）、字符集 `utf8mb4`（中文与符号无损）、排序规则继承 MySQL 的 utf8mb4 默认值；日志表主键用 `BIGINT` 为增长预留；时间统一 `DATE`（业务日）与 `DATETIME`（日志时刻）。
 
 ---
 
@@ -404,7 +411,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 2 | `02_create_tables.sql` | 12 张表 + 主键/外键/CHECK/UNIQUE + 索引 |
 | 3 | `03_insert_data.sql` | 示例数据（可重复执行） |
 | 4 | `04_views.sql` | 6 个视图（可单独重跑） |
-| 5 | `06_routines.sql` | 3 触发器 + 1 存储过程 + 1 函数 |
+| 5 | `06_routines.sql` | 4 触发器 + 1 存储过程 + 1 函数 |
 | 6 | `05_queries.sql` | 14 条核心查询 |
 | 7 | `07_crud_samples.sql` | 增删改查样例（事务内演示，末尾 ROLLBACK） |
 | 8 | `08_course_examples.sql` | 条件、自身连接、IN、ANY/ALL、UNION、空值及视图更新 |
@@ -427,25 +434,29 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 `08_course_examples.sql` 演示可更新视图：通过 v_active_user 修改姓名，查询 app_user 确认映射，再回滚。WITH CHECK OPTION 会拒绝将 is_active 改为 0，因为修改后该记录不再满足视图条件。
 
-非法外键、重复业务码、超出范围的进度及非法枚举值均应被拒绝。触发器同时检查行动引用的文件是否属于来源会议。
+非法外键、重复业务码、超出范围的进度及非法分类值均应被拒绝。触发器同时检查行动引用的文件是否属于来源会议；已关联行动的文件修改所属会议时，也会检查一致性。
 
 ### 5.4 本次验证环境
 
-Windows 11 + **MySQL 9.4.0**（服务 `MySQL94`，端口 3306，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY）。本次实测：
+2026-10-24，MySQL 8.4.11，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY。在独立临时实例完成 63 项执行及约束检查：建表文件在外键检查开启时重跑成功；原有示例数据正常导入；修改前后 14 条核心查询结果一致；非法分类、布尔标记、年份、重复参会、外键及日期范围均受约束；文件换会议的一致性检查通过；CRUD 与视图示例回滚后各表数据恢复；Linux 一键入口重建成功。Windows 入口本次未运行。
+
+备份首次和重复恢复另行核对，备份不含固定 DEFINER。
+
+此前版本的 Windows 验证记录：Windows 11 + **MySQL 9.4.0**（服务 `MySQL94`，端口 3306，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY）：
 
 - `run_all.ps1` 全链路通过（01→02→03→04→06→05→07→08→99），结果 **12 表 / 6 视图 / 3 触发器 / 2 例程**、259 行示例数据；
 - `04`、`06`、`07`、`08` 单独重复执行两次均成功：视图/触发器/例程可重复创建，CRUD 与视图更新演示回滚后数据不变；
 - 约束拦截实测：外键 `1452`、CHECK `3819`、父行删除 `1451`、视图 `WITH CHECK OPTION` → `1369`、触发器文件/会议不匹配 → `1644`；
 - 整库备份（`backup/…_full.sql`）导入临时库后 12 张表行数逐一一致，视图/触发器/例程齐全。
 
-此前记录：在 MySQL 8.4.11 独立实例上亦完成 35 项检查；Linux 入口未在本机复测。
+更早版本在 MySQL 8.4.11 独立实例上完成过 35 项检查。上述 Windows 记录针对调整前的版本；本次新增约束及第 4 个触发器以本节开头的验证结果为准。
 
 ### 5.5 核心查询一览（14 条）
 
 | # | 查询 | 主要语法 |
 |---|---|---|
 | 1 | 会议全景 | 视图查询、ORDER BY |
-| 2 | 机制维度统计 | LEFT JOIN、COUNT(DISTINCT)、GROUP BY |
+| 2 | 机制维度统计 | COUNT、相关子查询、等值连接 |
 | 3 | 参与国不少于 8 个的会议 | GROUP BY、HAVING |
 | 4 | 无后续行动的文件 | 相关子查询、NOT EXISTS |
 | 5 | 各国主办会议数（含 0） | LEFT JOIN、COUNT、排序 |
@@ -471,6 +482,7 @@ Windows 11 + **MySQL 9.4.0**（服务 `MySQL94`，端口 3306，utf8mb4，严格
 | 视图 | `v_china_multilateral` | 中国多边参与全景（思政报表） |
 | 视图 | `v_operation_audit` | 操作审计（关联用户与角色） |
 | 视图 | `v_active_user` | 单表可更新视图，WITH CHECK OPTION 保证启用条件 |
+| 触发器 | `trg_document_before_update` | 防止文件换会议后与已有关联行动不一致 |
 | 触发器 | `trg_action_before_insert` | 插入时按计划日期判定逾期 |
 | 触发器 | `trg_action_before_update` | 更新时按完成日期判定已完成并置进度 100 |
 | 触发器 | `trg_action_audit` | 状态/进度变化写审计日志 |
@@ -479,7 +491,7 @@ Windows 11 + **MySQL 9.4.0**（服务 `MySQL94`，端口 3306，utf8mb4，严格
 
 ### 5.7 整库备份
 
-[完整备份](backup/multilateral-diplomacy-system-schoolwork-_full.sql) 已同步包含 12 张表、示例数据、6 个视图、3 个触发器及 2 个例程。备份删除了固定 DEFINER，导入时由当前用户创建对象。
+[完整备份](backup/multilateral-diplomacy-system-schoolwork-_full.sql) 已同步包含 12 张表、示例数据、6 个视图、4 个触发器及 2 个例程。备份删除了固定 DEFINER，导入时由当前用户创建对象。
 
 ```bash
 # 会覆盖同名表与数据；请先备份已有内容
@@ -497,7 +509,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 
 | 问题 | 原因 | 解决 |
 |---|---|---|
-| 批量导入时报 `ERROR 1265 Data truncated`，后面几张表全空 | ENUM 取值写错（"总理级"不在枚举内），严格模式下该语句中止 | 枚举值统一在 02 定义处核对；导入后逐表 `COUNT(*)` 校验 |
+| 分类字段写入非法值，报 `ERROR 3819` | VARCHAR 的值未通过 CHECK，例如出席级别不在允许范围内 | 在 02 的 CHECK 中统一定义取值范围，导入后逐表核对行数 |
 | 自检脚本显示行动表 0 行，实际有 16 行 | `information_schema.table_rows` 是 InnoDB 估算值 | 改用 `COUNT(*)` |
 | 库名含连字符导致语法错误 | 标识符需反引号 | 全库 SQL 统一反引号；命令行可用 `-D` 传库名 |
 | 重跑脚本时主键冲突 / 数据翻倍 | 脚本不幂等 | 建表前 `DROP IF EXISTS`、插入前 `TRUNCATE`，按外键逆序清理；视图使用 `CREATE OR REPLACE` |
@@ -514,7 +526,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 | 评分维度（三级项目） | 分值 | 对应内容 |
 |---|---|---|
 | 项目完整度（需求与流程） | 10 | 1.2 角色需求 + 1.3 功能模块 + 第 5 章完整闭环 |
-| 关系模型设计（ER 图与逻辑） | 20 | 2.1 三个局部 E-R + 2.2 全局 E-R；3.1–3.3 转换；3.4 的函数依赖与范式分析（说明行动表的冗余）；18 外键 / 7 CHECK / 9 UNIQUE 全生效 |
+| 关系模型设计（ER 图与逻辑） | 20 | 2.1 三个局部 E-R + 2.2 全局 E-R；3.1–3.3 转换；3.4 的函数依赖与范式分析（说明行动表的冗余）；18 外键 / 29 CHECK / 8 UNIQUE 全生效 |
 | 思政元素体现 | 10 | 1.1 背景；`v_china_multilateral`；查询 7/9 量化共识广度与发展中国家代表性 |
 | 功能概述与数据（实现） | 30 | 14 条核心查询；12 张表数据覆盖 3 类会议/4 种身份/6 域议题/5 类文件/5 种行动状态；5.3 CRUD 演示；5.3 约束与 5.4 验证记录 |
 | 展示（验收演示） | 30 | `run_all.cmd` 一键重建；`99_verify.sql` 自检；`CALL sp_conference_dashboard(3)` 一屏看全链条 |
@@ -523,7 +535,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 ## 附 B：答辩演示清单
 
 1. `run_all.cmd` 一键重建 → 停在 `99_verify` 输出（表齐、约束齐、对象齐）
-2. Navicat 展开库 → 12 张表、外键连线、`follow_up_action` 的 4 个 CHECK
+2. Navicat 展开库 → 12 张表、外键连线、`follow_up_action` 的 5 个 CHECK
 3. 跑 `07_crud_samples.sql` → 增删改查 + 触发器联动 + 审计留痕 + 事务回滚
 4. 单独运行 07/08 末尾注释中的非法写入示例 → 约束不是摆设
 5. `CALL sp_conference_dashboard(3);` → 中非论坛北京峰会全链条一屏看完

@@ -103,6 +103,6 @@ SELECT (SELECT COUNT(*) FROM conference)         AS 回滚后会议数,
 --   INSERT INTO conference_participant (conference_id, country_id, role) VALUES (1, 999, '成员国');
 --   → ERROR 1452 外键约束失败
 --   UPDATE follow_up_action SET progress_pct = 150 WHERE action_id = 2;
---   → ERROR 3819 Check constraint 'ck_action_progress' is violated
+--   → ERROR 3819 CHECK 约束拒绝超出 0—100 的进度
 --   DELETE FROM country WHERE iso_code = 'CHN';
 --   → ERROR 1451 被外键引用，ON DELETE RESTRICT 拒绝删除

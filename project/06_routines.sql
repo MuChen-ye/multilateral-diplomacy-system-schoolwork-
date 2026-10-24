@@ -8,6 +8,7 @@
 
 USE `multilateral-diplomacy-system-schoolwork-`;
 
+DROP TRIGGER IF EXISTS trg_document_before_update;
 DROP TRIGGER IF EXISTS trg_action_before_insert;
 DROP TRIGGER IF EXISTS trg_action_before_update;
 DROP TRIGGER IF EXISTS trg_action_audit;
@@ -15,6 +16,19 @@ DROP PROCEDURE IF EXISTS sp_conference_dashboard;
 DROP FUNCTION IF EXISTS fn_consensus_ratio;
 
 DELIMITER $$
+
+-- 文件换会议前，检查已关联行动，避免与行动的来源会议不一致。
+CREATE TRIGGER trg_document_before_update
+BEFORE UPDATE ON document
+FOR EACH ROW
+BEGIN
+  IF NEW.conference_id <> OLD.conference_id AND EXISTS (
+    SELECT * FROM follow_up_action a
+    WHERE a.document_id = OLD.document_id AND a.conference_id <> NEW.conference_id
+  ) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'action document/conference mismatch';
+  END IF;
+END$$
 
 -- ---------- 触发器 1：插入时自动判定状态 ----------
 CREATE TRIGGER trg_action_before_insert
