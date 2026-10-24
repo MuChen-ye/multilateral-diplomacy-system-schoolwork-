@@ -1,5 +1,0 @@
-docs: 验证环境改为本机实测（Windows + MySQL 9.4.0），去掉悬空的 sql_temp 引用
-
-- README / COURSE_ALIGNMENT：8.4.11 是此前在独立实例的记录，本次补上本机 9.4.0 全链路实测结论
-- project/README 5.4：原写「Windows 入口未在 Windows 上运行」，现改为实测清单（全链路、04/06/07/08 重复执行、1452/3819/1451/1369/1644 约束拦截、备份还原逐表一致）
-- COURSE_ALIGNMENT：不再引用仓库里不存在的 sql_temp 目录，改为按课件章节核对
