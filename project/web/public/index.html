@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多边外交数据库 · 管理界面</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">多边外交</span>
+    <span class="sub">国际会议与外交活动数据库</span>
+  </div>
+  <div class="topbar-right">
+    <span id="conn" class="pill pill-muted">连接中…</span>
+    <button id="btn-refresh" class="btn btn-ghost" title="重新加载当前页面数据">刷新</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <nav>
+      <button class="nav-item active" data-view="overview">概览</button>
+      <button class="nav-item" data-view="conferences">会议</button>
+      <button class="nav-item" data-view="documents">成果文件</button>
+      <button class="nav-item" data-view="actions">后续行动</button>
+      <button class="nav-item" data-view="china">中国参与</button>
+      <button class="nav-item" data-view="audit">审计日志</button>
+      <button class="nav-item" data-view="admin">数据维护</button>
+    </nav>
+    <div class="side-foot">
+      <div class="muted">库：multilateral…-</div>
+      <div class="muted" id="side-version"></div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- 概览 -->
+    <section class="view active" id="view-overview">
+      <h2>数据概览</h2>
+      <div class="cards" id="overview-cards"></div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>会议类型分布</h3>
+          <div id="chart-type" class="bars"></div>
+        </div>
+        <div class="panel">
+          <h3>后续行动状态</h3>
+          <div id="chart-risk" class="bars"></div>
+          <p class="hint" id="risk-hint"></p>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>最近会议</h3>
+        <div id="recent-table"></div>
+      </div>
+    </section>
+
+    <!-- 会议 -->
+    <section class="view" id="view-conferences">
+      <h2>会议</h2>
+      <div class="toolbar">
+        <input id="conf-q" class="input" type="search" placeholder="搜索会议名称 / 举办城市">
+        <select id="conf-mech" class="input"></select>
+        <select id="conf-year" class="input"></select>
+        <button id="conf-search" class="btn">查询</button>
+        <span class="muted" id="conf-count"></span>
+      </div>
+      <div class="panel" id="conf-table"></div>
+    </section>
+
+    <!-- 成果文件 -->
+    <section class="view" id="view-documents">
+      <h2>成果文件</h2>
+      <div class="toolbar">
+        <input id="doc-q" class="input" type="search" placeholder="搜索文件标题 / 编号 / 类型">
+        <button id="doc-search" class="btn">查询</button>
+        <span class="muted" id="doc-count"></span>
+      </div>
+      <div class="panel" id="doc-table"></div>
+    </section>
+
+    <!-- 后续行动 -->
+    <section class="view" id="view-actions">
+      <h2>后续行动</h2>
+      <div class="toolbar">
+        <input id="act-q" class="input" type="search" placeholder="搜索行动名称 / 牵头国家">
+        <select id="act-risk" class="input">
+          <option value="">全部</option>
+          <option value="overdue">已逾期</option>
+          <option value="noplan">无计划日期</option>
+          <option value="done">已完成</option>
+        </select>
+        <button id="act-search" class="btn">查询</button>
+        <span class="muted" id="act-count"></span>
+      </div>
+      <p class="hint">风险列按日期实时推算：有实际完成日期＝已完成；有计划日期且已过＝已逾期；没有计划日期＝无计划日期。</p>
+      <div class="panel" id="act-table"></div>
+    </section>
+
+    <!-- 中国参与 -->
+    <section class="view" id="view-china">
+      <h2>中国参与全景</h2>
+      <div class="cards" id="china-cards"></div>
+      <div class="panel" id="china-table"></div>
+    </section>
+
+    <!-- 审计 -->
+    <section class="view" id="view-audit">
+      <h2>审计日志</h2>
+      <p class="hint">对后续行动的状态/进度修改由触发器自动写入。当前库中若无修改记录，列表为空属正常。</p>
+      <div class="panel" id="audit-table"></div>
+    </section>
+
+    <!-- 数据维护 -->
+    <section class="view" id="view-admin">
+      <h2>数据维护</h2>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>新增会议</h3>
+          <form id="form-conf" class="form">
+            <label>会议全称<input name="title" class="input" required placeholder="如：上海合作组织成员国元首理事会第二十五次会议"></label>
+            <label>简称<input name="short_name" class="input" required placeholder="如：上合阿斯塔纳峰会"></label>
+            <label>会议类型
+              <select name="conference_type" class="input" required>
+                <option>首脑峰会</option><option>部长级会议</option><option>高官会议</option>
+                <option>专家会议</option><option>大会</option><option>特别会议</option>
+              </select>
+            </label>
+            <div class="form-row">
+              <label>开始日期<input name="start_date" class="input" type="date" required></label>
+              <label>结束日期<input name="end_date" class="input" type="date"></label>
+            </div>
+            <div class="form-row">
+              <label>机制<select name="mechanism_id" class="input" id="form-mech"></select></label>
+              <label>举办地国家<select name="host_country_id" class="input" id="form-country"></select></label>
+            </div>
+            <label>举办城市<input name="host_city" class="input" placeholder="如：阿斯塔纳（线上会议可留空）"></label>
+            <button class="btn btn-primary" type="submit">保存会议</button>
+          </form>
+        </div>
+        <div class="panel">
+          <h3>约束校验（只读演示，不会改数据）</h3>
+          <p class="hint">两个按钮都是“故意做错”，用来演示数据库自己的约束真的在生效。失败是预期结果，数据不会变。</p>
+          <div class="form">
+            <button id="btn-bad-progress" class="btn">写入进度 150（应被 CHECK 拒绝）</button>
+            <button id="btn-dup-part" class="btn">重复登记同一参会国（应被唯一约束拒绝）</button>
+          </div>
+          <h3 style="margin-top:24px">参会登记</h3>
+          <form id="form-part" class="form">
+            <div class="form-row">
+              <label>会议 ID<input name="conference_id" class="input" type="number" min="1" required></label>
+              <label>国家<select name="country_id" class="input" id="form-country2" required></select></label>
+            </div>
+            <label>参会身份
+              <select name="role" class="input" required>
+                <option>成员国</option><option>主办国</option><option>主席国</option>
+                <option>观察员</option><option>嘉宾国</option>
+              </select>
+            </label>
+            <label>代表团人数<input name="delegation_size" class="input" type="number" min="0"></label>
+            <button class="btn btn-primary" type="submit">登记参会</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<aside id="drawer" class="drawer" hidden>
+  <div class="drawer-head">
+    <strong id="drawer-title">详情</strong>
+    <button id="drawer-close" class="btn btn-ghost">关闭</button>
+  </div>
+  <div id="drawer-body" class="drawer-body"></div>
+</aside>
+
+<script src="app.js"></script>
+</body>
+</html>

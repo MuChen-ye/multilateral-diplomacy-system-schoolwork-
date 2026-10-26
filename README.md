@@ -29,6 +29,6 @@ Navicat 中依次运行 `01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 →
 
 数据库名为 `` `multilateral-diplomacy-system-schoolwork-` ``，包含连字符，SQL 中需要反引号。
 
-[项目设计与运行说明](project/README.md) · [课件对应与本次修改](project/COURSE_ALIGNMENT.md)
+[项目设计与运行说明](project/README.md) · [课件对应与本次修改](project/COURSE_ALIGNMENT.md) · [Web 界面](project/web/README.md)（`node project/web/server.js` → <http://127.0.0.1:8765>）
 
 [project/backup/](project/backup/)保留旧版示例快照。本次50场真实资料以新版01—03脚本重建；07中的虚构数据仅在事务中演示并回滚。
