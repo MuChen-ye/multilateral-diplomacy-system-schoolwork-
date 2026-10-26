@@ -33,7 +33,7 @@ SELECT
   (SELECT COUNT(*) FROM follow_up_action a
      WHERE a.conference_id = c.conference_id AND a.status = '已完成') AS action_done_count
 FROM conference c
-JOIN country hc
+LEFT JOIN country hc
   ON hc.country_id = c.host_country_id
 LEFT JOIN mechanism m
   ON m.mechanism_id = c.mechanism_id
@@ -75,7 +75,7 @@ SELECT
   a.remarks
 FROM follow_up_action a
 JOIN conference c ON c.conference_id = a.conference_id
-JOIN country lc   ON lc.country_id = a.lead_country_id
+LEFT JOIN country lc   ON lc.country_id = a.lead_country_id
 WHERE a.actual_end_date IS NULL
   AND a.planned_end_date < CURDATE()
   AND a.status <> '终止';

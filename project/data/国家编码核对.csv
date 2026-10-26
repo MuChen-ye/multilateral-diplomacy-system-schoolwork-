@@ -1,0 +1,70 @@
+﻿country_id,name_cn,iso_code,name_en,continent,is_un_member,source
+1,中国,CHN,China,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+2,美国,USA,United States of America,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+3,俄罗斯,RUS,Russian Federation,欧洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+4,巴西,BRA,Brazil,南美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+5,南非,ZAF,South Africa,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+6,印度,IND,India,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+7,埃及,EGY,Egypt,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+8,哈萨克斯坦,KAZ,Kazakhstan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+9,巴基斯坦,PAK,Pakistan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+10,印度尼西亚,IDN,Indonesia,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+11,沙特阿拉伯,SAU,Saudi Arabia,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+12,东帝汶,TLS,Timor-Leste,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+13,乌兹别克斯坦,UZB,Uzbekistan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+14,伊拉克,IRQ,Iraq,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+15,伊朗,IRN,Iran (Islamic Republic of),亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+16,伯利兹,BLZ,Belize,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+17,刚果共和国,COG,Congo,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+18,刚果民主共和国,COD,Democratic Republic of the Congo,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+19,卡塔尔,QAT,Qatar,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+20,吉尔吉斯斯坦,KGZ,Kyrgyzstan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+21,吉布提,DJI,Djibouti,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+22,哥伦比亚,COL,Colombia,南美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+23,土库曼斯坦,TKM,Turkmenistan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+24,土耳其,TUR,Türkiye,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+25,圣卢西亚,LCA,Saint Lucia,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+26,圣基茨和尼维斯,KNA,Saint Kitts and Nevis,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+27,圣文森特和格林纳丁斯,VCT,Saint Vincent and the Grenadines,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+28,圭亚那,GUY,Guyana,南美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+29,坦桑尼亚,TZA,United Republic of Tanzania,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+30,埃塞俄比亚,ETH,Ethiopia,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+31,塔吉克斯坦,TJK,Tajikistan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+32,塞内加尔,SEN,Senegal,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+33,多米尼克,DMA,Dominica,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+34,孟加拉国,BGD,Bangladesh,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+35,安哥拉,AGO,Angola,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+36,安提瓜和巴布达,ATG,Antigua and Barbuda,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+37,尼日利亚,NGA,Nigeria,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+38,巴勒斯坦,PSE,State of Palestine,亚洲,0,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+39,巴哈马,BHS,Bahamas,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+40,巴巴多斯,BRB,Barbados,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+41,巴林,BHR,Bahrain,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+42,摩洛哥,MAR,Morocco,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+43,文莱,BRN,Brunei Darussalam,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+44,新加坡,SGP,Singapore,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+45,智利,CHL,Chile,南美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+46,柬埔寨,KHM,Cambodia,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+47,格林纳达,GRD,Grenada,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+48,毛里塔尼亚,MRT,Mauritania,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+49,泰国,THA,Thailand,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+50,海地,HTI,Haiti,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+51,牙买加,JAM,Jamaica,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+52,特立尼达和多巴哥,TTO,Trinidad and Tobago,北美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+53,白俄罗斯,BLR,Belarus,欧洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+54,科威特,KWT,Kuwait,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+55,科摩罗,COM,Comoros,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+56,突尼斯,TUN,Tunisia,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+57,约旦,JOR,Jordan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+58,缅甸,MMR,Myanmar,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+59,老挝,LAO,Lao People's Democratic Republic,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+60,苏里南,SUR,Suriname,南美洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+61,菲律宾,PHL,Philippines,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+62,蒙古国,MNG,Mongolia,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+63,越南,VNM,Viet Nam,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+64,阿塞拜疆,AZE,Azerbaijan,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+65,阿尔及利亚,DZA,Algeria,非洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+66,阿联酋,ARE,United Arab Emirates,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+67,马尔代夫,MDV,Maldives,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+68,马来西亚,MYS,Malaysia,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states
+69,黎巴嫩,LBN,Lebanon,亚洲,1,https://unstats.un.org/unsd/methodology/m49/overview/;https://www.un.org/en/about-us/member-states;https://www.un.org/en/about-us/non-member-states

@@ -47,7 +47,7 @@ WHERE a.progress_pct >= ALL (
 )
 ORDER BY a.conference_id, a.action_id;
 
--- 7. UNION：主办过会议或牵头过行动的国家，自动去重。
+-- 7. UNION：作为会议举办地或牵头过行动的国家，自动去重。
 SELECT country_id AS 国家编号, name_cn AS 国家 FROM country
 WHERE country_id IN (SELECT host_country_id FROM conference)
 UNION

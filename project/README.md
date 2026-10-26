@@ -5,6 +5,7 @@
 数据库名：`` `multilateral-diplomacy-system-schoolwork-` ``（与仓库同名；含连字符，SQL 中必须加反引号）
 
 > 本文件按课程数据库设计流程组织：系统分析 → 概念模型 → 逻辑模型 → 物理模型 → 数据库实现 → 总结。
+> 当前03为50场真实会议录入版本；数据范围、来源、NULL规则和执行方法见[DATA_IMPORT.md](DATA_IMPORT.md)。
 
 ---
 
@@ -53,7 +54,7 @@
 ### 1.4 可行性分析
 
 - **技术可行性**：MySQL 8.0.16 及以上版本支持本项目使用的外键、CHECK、视图、触发器与存储过程，本设计所需能力全部原生提供，无需额外组件。
-- **数据可行性**：按课程业务场景构造的示例数据可支撑查询与更新演示（本库 18 国 / 9 场会议 / 11 份文件）。
+- **数据可行性**：按外交部官网和国际组织资料采集50场会议、56份文件及304条参会记录，另用事务内虚构记录演示更新。
 - **经济可行性**：全流程在单机完成，无授权费用。
 - **操作可行性**：Navicat 图形界面 + 命令行脚本两条路径，组织者无需编程即可录入。
 
@@ -221,7 +222,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 3 | `name_cn` | varchar(50) | 否 | 唯一 |  | 国家名称(中文) |
 | 4 | `name_en` | varchar(80) | 否 |  |  | 国家名称(英文) |
 | 5 | `continent` | varchar(10) | 否 | 索引 |  | 所属大洲 |
-| 6 | `development_status` | varchar(10) | 否 |  | 发展中国家 | 发展水平 |
+| 6 | `development_status` | varchar(10) | 是 |  | | 发展类别；本次未统一核验 |
 | 7 | `is_un_member` | smallint | 否 |  | 1 | 是否联合国成员国 |
 | 8 | `note` | varchar(200) | 是 |  |  | 备注 |
 
@@ -266,13 +267,13 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 3 | `short_name` | varchar(60) | 是 |  |  | 会议简称 |
 | 4 | `mechanism_id` | int | 是 | 外键 |  | 所属机制 |
 | 5 | `org_id` | int | 是 | 外键 |  | 主办国际组织 |
-| 6 | `host_country_id` | int | 否 | 外键 |  | 主办/承办国家 |
+| 6 | `host_country_id` | int | 是 | 外键 | | 举办地国家；纯线上可空 |
 | 7 | `host_city` | varchar(60) | 是 |  |  | 举办城市 |
 | 8 | `conference_type` | varchar(10) | 否 |  |  | 会议类型 |
 | 9 | `session_label` | varchar(20) | 是 |  |  | 届次(如 第24次) |
 | 10 | `start_date` | date | 否 | 索引 |  | 开始日期 |
 | 11 | `end_date` | date | 否 |  |  | 结束日期 |
-| 12 | `format` | varchar(10) | 否 |  | 线下 | 会议形式 |
+| 12 | `format` | varchar(10) | 是 |  | | 会议形式；未知为NULL |
 | 13 | `status` | varchar(10) | 否 |  | 已闭幕 | 会议状态 |
 | 14 | `theme` | varchar(200) | 是 |  |  | 会议主题 |
 
@@ -285,8 +286,8 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 1 | `conference_id` | int | 否 | 主键/外键 |  | 会议ID |
 | 2 | `country_id` | int | 否 | 主键/外键 |  | 国家ID |
 | 3 | `role` | varchar(10) | 否 |  | 成员国 | 参会身份 |
-| 4 | `delegation_level` | varchar(10) | 否 |  | 部长级 | 出席级别 |
-| 5 | `delegation_size` | int | 否 |  | 0 | 代表团人数 |
+| 4 | `delegation_level` | varchar(10) | 是 |  | | 出席级别；未知为NULL |
+| 5 | `delegation_size` | int | 是 |  | | 代表团人数；未知为NULL |
 | 6 | `join_date` | date | 是 |  |  | 确认参会日期 |
 
 #### 表 4-7  conference_topic 会议议题关联表
@@ -297,7 +298,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 |---|---|---|---|---|---|---|
 | 1 | `conference_id` | int | 否 | 主键/外键 |  | 会议ID |
 | 2 | `topic_id` | int | 否 | 主键/外键 |  | 议题ID |
-| 3 | `is_core` | smallint | 否 |  | 0 | 是否核心议题 |
+| 3 | `is_core` | smallint | 是 |  | | 是否核心议题；未知为NULL |
 | 4 | `discussion_date` | date | 是 |  |  | 讨论日期 |
 | 5 | `summary` | varchar(300) | 是 |  |  | 议题讨论要点 |
 
@@ -311,7 +312,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 4 | `doc_type` | varchar(10) | 否 | 索引 |  | 文件类型 |
 | 5 | `doc_no` | varchar(40) | 是 | 唯一 |  | 文件编号 |
 | 6 | `issue_date` | date | 否 |  |  | 发布/通过日期 |
-| 7 | `adopt_method` | varchar(10) | 否 |  | 协商一致 | 通过方式 |
+| 7 | `adopt_method` | varchar(10) | 是 |  | | 通过方式；未知为NULL |
 | 8 | `status` | varchar(10) | 否 |  | 已通过 | 文件状态 |
 | 9 | `summary` | varchar(300) | 是 |  |  | 内容概要 |
 
@@ -333,13 +334,13 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 2 | `conference_id` | int | 否 | 外键 |  | 来源会议 |
 | 3 | `document_id` | int | 是 | 外键 |  | 依据文件 |
 | 4 | `action_name` | varchar(120) | 否 |  |  | 行动名称 |
-| 5 | `lead_country_id` | int | 否 | 外键 |  | 牵头国家 |
+| 5 | `lead_country_id` | int | 是 | 外键 | | 牵头国家；集体目标可空 |
 | 6 | `responsible_org_id` | int | 是 | 外键 |  | 责任国际组织 |
-| 7 | `start_date` | date | 否 |  |  | 启动日期 |
-| 8 | `planned_end_date` | date | 否 | 索引 |  | 计划完成日期 |
+| 7 | `start_date` | date | 是 |  |  | 精确启动日期；未知为NULL |
+| 8 | `planned_end_date` | date | 是 | 索引 | | 精确计划完成日期；未知为NULL |
 | 9 | `actual_end_date` | date | 是 |  |  | 实际完成日期(未完成为NULL) |
-| 10 | `progress_pct` | int | 否 |  | 0 | 进度百分比 |
-| 11 | `status` | varchar(10) | 否 |  | 进行中 | 行动状态 |
+| 10 | `progress_pct` | int | 是 |  | | 进度百分比；未知为NULL |
+| 11 | `status` | varchar(10) | 是 |  |  | 执行状态；未知为NULL |
 | 12 | `remarks` | varchar(200) | 是 |  |  | 备注 |
 
 #### 表 4-11  app_user 系统用户表
@@ -409,7 +410,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 |---|---|---|
 | 1 | `01_create_database.sql` | 建库（utf8mb4） |
 | 2 | `02_create_tables.sql` | 12 张表 + 主键/外键/CHECK/UNIQUE + 索引 |
-| 3 | `03_insert_data.sql` | 示例数据（可重复执行） |
+| 3 | `03_insert_data.sql` | 50场真实会议及关联资料（空表首次执行） |
 | 4 | `04_views.sql` | 6 个视图（可单独重跑） |
 | 5 | `06_routines.sql` | 4 触发器 + 1 存储过程 + 1 函数 |
 | 6 | `05_queries.sql` | 14 条核心查询 |
@@ -421,12 +422,12 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 | 表 | 行数 | 表 | 行数 |
 |---|---|---|---|
-| country | 18 | document | 11 |
-| international_organization | 6 | document_sponsor | 76 |
-| mechanism | 6 | follow_up_action | 16 |
-| topic | 10 | app_user | 10 |
-| conference | 9 | operation_log | 4（触发器生成） |
-| conference_participant | 66 | conference_topic | 27 |
+| country | 69 | document | 56 |
+| international_organization | 3 | document_sponsor | 45 |
+| mechanism | 17 | follow_up_action | 38 |
+| topic | 101 | app_user | 0（实际使用时创建） |
+| conference | 50 | operation_log | 0（实际操作时生成） |
+| conference_participant | 304 | conference_topic | 103 |
 
 ### 5.3 数据更新与约束
 
@@ -436,7 +437,9 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 非法外键、重复业务码、超出范围的进度及非法分类值均应被拒绝。触发器同时检查行动引用的文件是否属于来源会议；已关联行动的文件修改所属会议时，也会检查一致性。
 
-### 5.4 本次验证环境
+### 5.4 验证环境
+
+50场真实资料版本的本次验证见[DATA_IMPORT.md](DATA_IMPORT.md)。以下为此前示例版本的验证记录。
 
 2026-10-24，MySQL 8.4.11，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY。在独立临时实例完成 63 项执行及约束检查：建表文件在外键检查开启时重跑成功；原有示例数据正常导入；修改前后 14 条核心查询结果一致；非法分类、布尔标记、年份、重复参会、外键及日期范围均受约束；文件换会议的一致性检查通过；CRUD 与视图示例回滚后各表数据恢复；Linux 一键入口重建成功。Windows 入口本次未运行。
 
@@ -491,7 +494,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 
 ### 5.7 整库备份
 
-[完整备份](backup/multilateral-diplomacy-system-schoolwork-_full.sql) 已同步包含 12 张表、示例数据、6 个视图、4 个触发器及 2 个例程。备份删除了固定 DEFINER，导入时由当前用户创建对象。
+[旧版示例备份](backup/multilateral-diplomacy-system-schoolwork-_full.sql)未包含本次50场真实资料及本次表结构调整。需要当前版本时按01—03重建；该备份仅用于恢复旧版演示。
 
 ```bash
 # 会覆盖同名表与数据；请先备份已有内容
@@ -512,7 +515,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 | 分类字段写入非法值，报 `ERROR 3819` | VARCHAR 的值未通过 CHECK，例如出席级别不在允许范围内 | 在 02 的 CHECK 中统一定义取值范围，导入后逐表核对行数 |
 | 自检脚本显示行动表 0 行，实际有 16 行 | `information_schema.table_rows` 是 InnoDB 估算值 | 改用 `COUNT(*)` |
 | 库名含连字符导致语法错误 | 标识符需反引号 | 全库 SQL 统一反引号；命令行可用 `-D` 传库名 |
-| 重跑脚本时主键冲突 / 数据翻倍 | 脚本不幂等 | 建表前 `DROP IF EXISTS`、插入前 `TRUNCATE`，按外键逆序清理；视图使用 `CREATE OR REPLACE` |
+| 重跑脚本时主键冲突 / 数据翻倍 | 脚本不幂等 | 建表前 `DROP IF EXISTS`；03在新版空表首次执行，视图使用 `CREATE OR REPLACE` |
 | 一键脚本双击报"未对文件进行数字签名" | Windows 默认执行策略 | 提供 `.cmd` 外壳用 `-ExecutionPolicy Bypass` 只对本次放行 |
 
 ### 6.2 心得体会
@@ -528,7 +531,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 | 项目完整度（需求与流程） | 10 | 1.2 角色需求 + 1.3 功能模块 + 第 5 章完整闭环 |
 | 关系模型设计（ER 图与逻辑） | 20 | 2.1 三个局部 E-R + 2.2 全局 E-R；3.1–3.3 转换；3.4 的函数依赖与范式分析（说明行动表的冗余）；18 外键 / 29 CHECK / 8 UNIQUE 全生效 |
 | 思政元素体现 | 10 | 1.1 背景；`v_china_multilateral`；查询 7/9 量化共识广度与发展中国家代表性 |
-| 功能概述与数据（实现） | 30 | 14 条核心查询；12 张表数据覆盖 3 类会议/4 种身份/6 域议题/5 类文件/5 种行动状态；5.3 CRUD 演示；5.3 约束与 5.4 验证记录 |
+| 功能概述与数据（实现） | 30 | 14 条核心查询；50场真实会议及关联资料；未知执行状态不编造，状态变更在07中演示；5.3 CRUD 演示；5.3 约束与 5.4 验证记录 |
 | 展示（验收演示） | 30 | `run_all.cmd` 一键重建；`99_verify.sql` 自检；`CALL sp_conference_dashboard(3)` 一屏看全链条 |
 | 加分项 | 10 | 逾期预警、审计触发器、6 视图、1 过程 1 函数与事务演示 |
 

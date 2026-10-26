@@ -73,13 +73,14 @@ CREATE TRIGGER trg_action_audit
 AFTER UPDATE ON follow_up_action
 FOR EACH ROW
 BEGIN
-  IF OLD.status <> NEW.status OR OLD.progress_pct <> NEW.progress_pct THEN
+  -- MySQL的<=>为空值安全比较，能记录NULL与已知值之间的变化。
+  IF NOT (OLD.status <=> NEW.status) OR NOT (OLD.progress_pct <=> NEW.progress_pct) THEN
     INSERT INTO operation_log
       (user_id, action_type, target_table, target_id, old_value, new_value, detail)
     VALUES
       (NULL, 'UPDATE', 'follow_up_action', NEW.action_id,
-       CONCAT('status=', OLD.status, ', progress=', OLD.progress_pct),
-       CONCAT('status=', NEW.status, ', progress=', NEW.progress_pct),
+       CONCAT('status=', COALESCE(OLD.status, '未知'), ', progress=', COALESCE(CAST(OLD.progress_pct AS CHAR), '未知')),
+       CONCAT('status=', COALESCE(NEW.status, '未知'), ', progress=', COALESCE(CAST(NEW.progress_pct AS CHAR), '未知')),
        '后续行动状态或进度变更（触发器自动记录）');
   END IF;
 END$$
@@ -108,9 +109,9 @@ BEGIN
   -- 1 基本信息
   SELECT c.short_name AS 会议简称, c.title AS 会议全称, c.conference_type AS 会议类型,
          c.session_label AS 届次, c.start_date AS 开始日期, c.end_date AS 结束日期,
-         c.status AS 状态, hc.name_cn AS 主办国, m.name AS 所属机制
+         c.status AS 状态, hc.name_cn AS 举办地国家, m.name AS 所属机制
   FROM conference c
-  JOIN country hc        ON hc.country_id = c.host_country_id
+  LEFT JOIN country hc   ON hc.country_id = c.host_country_id
   LEFT JOIN mechanism m  ON m.mechanism_id = c.mechanism_id
   WHERE c.conference_id = p_conference_id;
 
@@ -143,12 +144,12 @@ BEGIN
          a.planned_end_date AS 计划完成, a.actual_end_date AS 实际完成,
          a.progress_pct AS 进度, a.status AS 状态
   FROM follow_up_action a
-  JOIN country lc ON lc.country_id = a.lead_country_id
+  LEFT JOIN country lc ON lc.country_id = a.lead_country_id
   WHERE a.conference_id = p_conference_id
   ORDER BY a.action_id;
 END$$
 
 DELIMITER ;
 
--- 触发一次批量刷新，让已有 16 条行动记录按当前日期重算状态
+-- 按已知期限刷新行动状态；NULL不推定为0或进行中
 UPDATE follow_up_action SET progress_pct = progress_pct;

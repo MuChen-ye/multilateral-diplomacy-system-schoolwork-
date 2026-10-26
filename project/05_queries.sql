@@ -7,8 +7,8 @@
 
 USE `multilateral-diplomacy-system-schoolwork-`;
 
--- 查询 1：会议全景（会议 + 主办国 + 机制 + 参与国数 + 文件数）
-SELECT short_name AS 会议简称, conference_type AS 类型, host_country AS 主办国,
+-- 查询 1：会议全景（会议 + 举办地国家 + 机制 + 参与国数 + 文件数）
+SELECT short_name AS 会议简称, conference_type AS 类型, host_country AS 举办地国家,
        host_city AS 城市, start_date AS 开始日期, participant_count AS 参与国数,
        document_count AS 成果文件数, action_count AS 后续行动数
 FROM v_conference_overview
@@ -43,12 +43,12 @@ FROM document d
 WHERE NOT EXISTS (SELECT 1 FROM follow_up_action a WHERE a.document_id = d.document_id)
 ORDER BY d.issue_date;
 
--- 查询 5：各国主办会议数（分组统计 + 排序，包含未主办的国家）
-SELECT hc.name_cn AS 主办国, COUNT(c.conference_id) AS 主办会议数
+-- 查询 5：各国举办会议数（分组统计 + 排序，包含未作为举办地的国家）
+SELECT hc.name_cn AS 举办地国家, COUNT(c.conference_id) AS 举办会议数
 FROM country hc
 LEFT JOIN conference c ON c.host_country_id = hc.country_id
 GROUP BY hc.country_id, hc.name_cn
-ORDER BY 主办会议数 DESC, hc.country_id;
+ORDER BY 举办会议数 DESC, hc.country_id;
 
 -- 查询 6：后续行动逾期预警（视图 + 逾期天数）
 SELECT action_name AS 行动名称, conference_name AS 来源会议, lead_country AS 牵头国,
@@ -76,7 +76,7 @@ ORDER BY 涉及会议数 DESC;
 
 -- 查询 9：中国在多边机制中的参与全景与文件联署情况（思政报表，基于视图）
 SELECT conference_name AS 会议, china_role AS 中国身份, china_delegation_level AS 出席级别,
-       host_country AS 主办国, mechanism_name AS 所属机制,
+       host_country AS 举办地国家, mechanism_name AS 所属机制,
        documents_of_conference AS 会议文件数, documents_china_signed AS 中国联署文件数
 FROM v_china_multilateral
 ORDER BY start_date;
@@ -93,7 +93,7 @@ ORDER BY 行动数 DESC;
 SELECT YEAR(c.start_date) AS 年份,
        COUNT(DISTINCT c.conference_id) AS 会议数,
        COUNT(p.country_id)             AS 参与国次,
-       COUNT(DISTINCT c.host_country_id) AS 主办国数
+       COUNT(DISTINCT c.host_country_id) AS 举办地国家数
 FROM conference c
 LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY YEAR(c.start_date)

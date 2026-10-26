@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS mechanism;
 DROP TABLE IF EXISTS international_organization;
 DROP TABLE IF EXISTS country;
 
+-- 真实资料未公开的分类、人数、核心标记、通过方式和执行情况允许NULL。
 -- 1. 参与国家表
 CREATE TABLE country (
   country_id INT AUTO_INCREMENT,
@@ -23,7 +24,7 @@ CREATE TABLE country (
   name_cn VARCHAR(50) NOT NULL,
   name_en VARCHAR(80) NOT NULL,
   continent VARCHAR(10) NOT NULL,
-  development_status VARCHAR(10) NOT NULL DEFAULT '发展中国家',
+  development_status VARCHAR(10),
   is_un_member SMALLINT NOT NULL DEFAULT 1,
   note VARCHAR(200),
   PRIMARY KEY (country_id),
@@ -76,20 +77,20 @@ CREATE TABLE topic (
   CHECK (category IN ('和平与安全','发展与合作','气候变化','公共卫生','人文交流','全球治理体系'))
 ) ENGINE=InnoDB;
 
--- 5. 国际会议表
+-- 5. 国际会议表：host_country_id记录举办地国家；纯线上会议可为空。
 CREATE TABLE conference (
   conference_id INT AUTO_INCREMENT,
   title VARCHAR(120) NOT NULL,
   short_name VARCHAR(60),
   mechanism_id INT,
   org_id INT,
-  host_country_id INT NOT NULL,
+  host_country_id INT,
   host_city VARCHAR(60),
   conference_type VARCHAR(10) NOT NULL,
   session_label VARCHAR(20),
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,
-  format VARCHAR(10) NOT NULL DEFAULT '线下',
+  format VARCHAR(10),
   status VARCHAR(10) NOT NULL DEFAULT '已闭幕',
   theme VARCHAR(200),
   PRIMARY KEY (conference_id),
@@ -97,7 +98,7 @@ CREATE TABLE conference (
   FOREIGN KEY (org_id) REFERENCES international_organization (org_id) ON UPDATE CASCADE ON DELETE SET NULL,
   FOREIGN KEY (host_country_id) REFERENCES country (country_id) ON UPDATE CASCADE ON DELETE RESTRICT,
   CHECK (end_date >= start_date),
-  CHECK (conference_type IN ('首脑峰会','部长级会议','高官会议','专家会议','大会','特别会议')),
+  CHECK (conference_type IN ('首脑峰会','部长级会议','高官会议','专家会议','大会','特别会议','专题会议')),
   CHECK (format IN ('线下','线上','混合')),
   CHECK (status IN ('筹备中','进行中','已闭幕','取消'))
 ) ENGINE=InnoDB;
@@ -107,14 +108,14 @@ CREATE TABLE conference_participant (
   conference_id INT NOT NULL,
   country_id INT NOT NULL,
   role VARCHAR(10) NOT NULL DEFAULT '成员国',
-  delegation_level VARCHAR(10) NOT NULL DEFAULT '部长级',
-  delegation_size INT NOT NULL DEFAULT 0,
+  delegation_level VARCHAR(10),
+  delegation_size INT,
   join_date DATE,
   PRIMARY KEY (conference_id, country_id),
   FOREIGN KEY (conference_id) REFERENCES conference (conference_id) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (country_id) REFERENCES country (country_id) ON UPDATE CASCADE ON DELETE RESTRICT,
   CHECK (delegation_size >= 0),
-  CHECK (role IN ('主办国','主席国','成员国','观察员','嘉宾国')),
+  CHECK (role IN ('主办国','主席国','成员国','观察员','嘉宾国','对话伙伴')),
   CHECK (delegation_level IN ('元首级','政府首脑级','外交部长级','部长级','高官级','专家级'))
 ) ENGINE=InnoDB;
 
@@ -122,7 +123,7 @@ CREATE TABLE conference_participant (
 CREATE TABLE conference_topic (
   conference_id INT NOT NULL,
   topic_id INT NOT NULL,
-  is_core SMALLINT NOT NULL DEFAULT 0,
+  is_core SMALLINT,
   discussion_date DATE,
   summary VARCHAR(300),
   PRIMARY KEY (conference_id, topic_id),
@@ -139,16 +140,17 @@ CREATE TABLE document (
   doc_type VARCHAR(10) NOT NULL,
   doc_no VARCHAR(40),
   issue_date DATE NOT NULL,
-  adopt_method VARCHAR(10) NOT NULL DEFAULT '协商一致',
+  adopt_method VARCHAR(10),
   status VARCHAR(10) NOT NULL DEFAULT '已通过',
   summary VARCHAR(300),
   PRIMARY KEY (document_id),
   UNIQUE (doc_no),
   FOREIGN KEY (conference_id) REFERENCES conference (conference_id) ON UPDATE CASCADE ON DELETE CASCADE,
   CHECK (doc_no IS NULL OR CHAR_LENGTH(TRIM(doc_no)) > 0),
-  CHECK (doc_type IN ('联合声明','联合公报','决议','行动计划','谅解备忘录','倡议')),
+  CHECK (doc_type IN ('宣言','政治宣言','联合声明','声明','联合公报','决议','联合国大会决议','决定',
+    '行动计划','行动执行计划','主席声明','条约','议定书','谅解备忘录','倡议')),
   CHECK (adopt_method IN ('协商一致','表决通过')),
-  CHECK (status IN ('草案','已通过','已生效'))
+  CHECK (status IN ('草案','已通过','已生效','已发布','已签署'))
 ) ENGINE=InnoDB;
 
 -- 9. 文件联署/支持国家表
@@ -168,13 +170,13 @@ CREATE TABLE follow_up_action (
   conference_id INT NOT NULL,
   document_id INT,
   action_name VARCHAR(120) NOT NULL,
-  lead_country_id INT NOT NULL,
+  lead_country_id INT,
   responsible_org_id INT,
-  start_date DATE NOT NULL,
-  planned_end_date DATE NOT NULL,
+  start_date DATE,
+  planned_end_date DATE,
   actual_end_date DATE,
-  progress_pct INT NOT NULL DEFAULT 0,
-  status VARCHAR(10) NOT NULL DEFAULT '进行中',
+  progress_pct INT,
+  status VARCHAR(10),
   remarks VARCHAR(200),
   PRIMARY KEY (action_id),
   FOREIGN KEY (conference_id) REFERENCES conference (conference_id) ON UPDATE CASCADE ON DELETE CASCADE,
