@@ -26,17 +26,17 @@ SELECT m.name AS 机制, m.category AS 类别,
         WHERE c.conference_id = p.conference_id
           AND c.mechanism_id = m.mechanism_id) AS 参会国次
 FROM mechanism m
-ORDER BY 会议数 DESC, 成果文件数 DESC;
+ORDER BY 会议数 DESC, 成果文件数 DESC, m.mechanism_id;
 
--- 查询 3：参与国不少于 8 个的多边会议（HAVING 过滤分组结果）
+-- 查询 3：已登记参会国不少于8个的会议（HAVING 过滤分组结果）
 SELECT c.short_name AS 会议简称, COUNT(p.country_id) AS 参与国数
 FROM conference c
 JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY c.conference_id, c.short_name
 HAVING COUNT(p.country_id) >= 8
-ORDER BY 参与国数 DESC;
+ORDER BY 参与国数 DESC, c.conference_id;
 
--- 查询 4：没有产生任何后续行动的成果文件（相关子查询 + NOT EXISTS）
+-- 查询 4：尚未关联后续行动的成果文件（相关子查询 + NOT EXISTS）
 SELECT COALESCE(d.doc_no, '（无编号）') AS 文件编号, d.title AS 文件名称,
        d.doc_type AS 类型, d.status AS 状态
 FROM document d
@@ -51,6 +51,7 @@ GROUP BY hc.country_id, hc.name_cn
 ORDER BY 举办会议数 DESC, hc.country_id;
 
 -- 查询 6：后续行动逾期预警（视图 + 逾期天数）
+-- 真实资料的精确完成期限尚未核实，空结果正常；触发器效果用07的事务演示。
 SELECT action_name AS 行动名称, conference_name AS 来源会议, lead_country AS 牵头国,
        planned_end_date AS 计划完成, overdue_days AS 逾期天数,
        progress_pct AS 进度百分比

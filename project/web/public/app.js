@@ -496,7 +496,8 @@ async function boot() {
     const pill = $('#conn');
     pill.className = 'pill pill-ok';
     pill.textContent = `已连接 · MySQL ${h.version}`;
-    $('#side-version').textContent = `${h.tables} 表 / ${h.views} 视图 / ${h.triggers} 触发器`;
+    $('#side-version').textContent = `${h.tables} 表 / ${h.views} 视图`
+      + (h.triggers ? ` / ${h.triggers} 触发器` : '');
     const m = await api('/api/meta');
     state.meta = m;
     $('#conf-mech').innerHTML = '<option value="">全部机制</option>' +

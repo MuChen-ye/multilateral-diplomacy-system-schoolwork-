@@ -415,9 +415,10 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 4 | `04_views.sql` | 6 个视图（可单独重跑） |
 | 5 | `06_routines.sql` | 4 触发器 + 1 存储过程 + 1 函数 |
 | 6 | `05_queries.sql` | 14 条核心查询 |
-| 7 | `07_crud_samples.sql` | 增删改查样例（事务内演示，末尾 ROLLBACK） |
+| 7 | `07_crud_samples.sql` | S06—S10增删改、触发器、综合统计及回滚 |
 | 8 | `08_course_examples.sql` | 条件、自身连接、IN、ANY/ALL、UNION、空值及视图更新 |
 | 9 | `99_verify.sql` | 验收自检 |
+| 单独演示 | `09_constraint_samples.sql` | S11—S16：11条故意违反语句及拒绝后的核对；不加入正常建库流程 |
 
 ### 5.2 数据规模
 
@@ -430,17 +431,19 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | conference | 50 | operation_log | 0（实际操作时生成） |
 | conference_participant | 304 | conference_topic | 103 |
 
-### 5.3 数据更新与约束
+### 5.3 样例设计与实际运行结果
 
-`07_crud_samples.sql` 在事务内演示单行/多行 INSERT、INSERT … SELECT、带子查询的 UPDATE/DELETE，随后 ROLLBACK。基础表数据恢复原样，自增编号可能留下空号。
+[SAMPLES.md](SAMPLES.md)按“3.4 样例”要求给出16个样例，包含5个复杂查询；每个样例展示SQL和MySQL实际结果，违规样例展示原始错误及拒绝后的数据核对。
 
-`08_course_examples.sql` 演示可更新视图：通过 v_active_user 修改姓名，查询 app_user 确认映射，再回滚。WITH CHECK OPTION 会拒绝将 is_active 改为 0，因为修改后该记录不再满足视图条件。
+07在事务内演示VALUES、INSERT ... SELECT、带子查询的UPDATE/DELETE、自动逾期、自动完成与审计，再ROLLBACK。相对日期保证演示不依赖固定日历日期；虚构数据不留在真实资料中，自增编号可能留下空号。
 
-非法外键、重复业务码、超出范围的进度及非法分类值均应被拒绝。触发器同时检查行动引用的文件是否属于来源会议；已关联行动的文件修改所属会议时，也会检查一致性。
+08的ANY/ALL对已登记参会国数作聚合比较，不拿未公开的人数和进度补造数值。可更新视图先插入事务内演示用户，保证实际修改一行。09进一步测试主键、UNIQUE、外键、CHECK、触发器一致性和WITH CHECK OPTION，共11次预期拒绝；须逐条运行或仅对09使用mysql --force。
 
 ### 5.4 验证环境
 
-50场真实资料版本的本次验证见[DATA_IMPORT.md](DATA_IMPORT.md)。以下为此前示例版本的验证记录。
+50场真实资料录入验证见[DATA_IMPORT.md](DATA_IMPORT.md)。2026-10-27在MySQL 8.4.11独立临时实例实测16个正式样例及11条预期拒绝，07—09重复执行后原始数据一致；详细SQL、结果及日志见[SAMPLES.md](SAMPLES.md)。以下为此前版本的验证记录。
+
+2026-10-27启动脚本调整：通过sh和Bash下20项路径、参数及失败处理检查；独立MySQL 8.4.11实测重建成功（12表、6视图、4触发器、2例程、50场会议）。SQL出错时即使传入或配置了force仍会停止；网页专用账号、自定义客户端及socket连接、只读接口验证通过。本次未在Windows、macOS原生环境执行。
 
 2026-10-24，MySQL 8.4.11，utf8mb4，严格模式及 ONLY_FULL_GROUP_BY。在独立临时实例完成 63 项执行及约束检查：建表文件在外键检查开启时重跑成功；原有示例数据正常导入；修改前后 14 条核心查询结果一致；非法分类、布尔标记、年份、重复参会、外键及日期范围均受约束；文件换会议的一致性检查通过；CRUD 与视图示例回滚后各表数据恢复；Linux 一键入口重建成功。Windows 入口本次未运行。
 
@@ -462,7 +465,7 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 | 1 | 会议全景 | 视图查询、ORDER BY |
 | 2 | 机制维度统计 | COUNT、相关子查询、等值连接 |
 | 3 | 参与国不少于 8 个的会议 | GROUP BY、HAVING |
-| 4 | 无后续行动的文件 | 相关子查询、NOT EXISTS |
+| 4 | 尚未关联后续行动的文件 | 相关子查询、NOT EXISTS |
 | 5 | 各国主办会议数（含 0） | LEFT JOIN、COUNT、排序 |
 | 6 | 行动逾期预警 | 视图、日期表达式 |
 | 7 | 文件共识广度 | 分组视图、排序 |
@@ -502,7 +505,9 @@ operation_log(log_id, user_id, action_type, target_table, target_id, old_value, 
 mysql -u root -p --default-character-set=utf8mb4 < project/backup/multilateral-diplomacy-system-schoolwork-_full.sql
 ```
 
-Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正常执行顺序为 `01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 99`。Windows 入口通过 PATH 查找 mysql.exe，也可指定 `-MySqlPath`；Linux/macOS 使用 `run_all.sh`。
+Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正常执行顺序为 `01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 99`。Windows入口通过PATH查找mysql.exe，也可指定`-MySqlPath`；Linux/macOS在项目根目录运行`sh project/run_all.sh -u root -p`。若本机root使用系统身份认证，改用`sudo sh project/run_all.sh -u root`。
+
+sh入口按自身目录读取SQL，兼容中文及空格路径；一次连接完成全部步骤，任何SQL出错即停止。自定义客户端用`MYSQL_BIN`，连接选项直接追加给MySQL；`sh project/run_all.sh --help`可查看说明。09的故意违规测试不包含在初始化中。网页通过`sh project/web/start.sh`启动，要求Node.js 18+，连接配置见[网页说明](web/README.md)。
 
 
 ---
@@ -541,7 +546,7 @@ Windows 可在 Navicat 的“运行 SQL 文件”中选择该文件。脚本正�
 1. `run_all.cmd` 一键重建 → 停在 `99_verify` 输出（表齐、约束齐、对象齐）
 2. Navicat 展开库 → 12 张表、外键连线、`follow_up_action` 的 5 个 CHECK
 3. 跑 `07_crud_samples.sql` → 增删改查 + 触发器联动 + 审计留痕 + 事务回滚
-4. 单独运行 07/08 末尾注释中的非法写入示例 → 约束不是摆设
+4. 按09逐条或使用mysql --force演示预期拒绝，对照SAMPLES中的实际错误与原行核对
 5. `CALL sp_conference_dashboard(3);` → 中非论坛北京峰会全链条一屏看完
 6. 查询 6 逾期预警 + 查询 9 中国参与全景 → 思政落到数据上
 

@@ -1,0 +1,2687 @@
+<?xml version="1.0"?>
+
+<resultset statement="SELECT short_name AS 会议简称, conference_type AS 类型, host_country AS 举办地国家,
+       host_city AS 城市, start_date AS 开始日期, participant_count AS 参与国数,
+       document_count AS 成果文件数, action_count AS 后续行动数
+FROM v_conference_overview
+ORDER BY start_date" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议简称">中非北京峰会2018</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">北京</field>
+	<field name="开始日期">2018-09-03</field>
+	<field name="参与国数">3</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">2</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖新德里视频会晤2021</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="城市" xsi:nil="true" />
+	<field name="开始日期">2021-09-09</field>
+	<field name="参与国数">5</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合杜尚别元首理事会2021</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">塔吉克斯坦</field>
+	<field name="城市">杜尚别</field>
+	<field name="开始日期">2021-09-17</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">3</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中非达喀尔部长级会议2021</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">塞内加尔</field>
+	<field name="城市">达喀尔</field>
+	<field name="开始日期">2021-11-29</field>
+	<field name="参与国数">7</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖领导人视频会晤2022</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="城市" xsi:nil="true" />
+	<field name="开始日期">2022-06-23</field>
+	<field name="参与国数">5</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合撒马尔罕元首理事会2022</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">乌兹别克斯坦</field>
+	<field name="城市">撒马尔罕</field>
+	<field name="开始日期">2022-09-16</field>
+	<field name="参与国数">14</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合总理视频会议2022</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="城市" xsi:nil="true" />
+	<field name="开始日期">2022-11-01</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">COP27</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">埃及</field>
+	<field name="城市">沙姆沙伊赫</field>
+	<field name="开始日期">2022-11-06</field>
+	<field name="参与国数">0</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">G20巴厘岛峰会2022</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">印度尼西亚</field>
+	<field name="城市">巴厘岛</field>
+	<field name="开始日期">2022-11-15</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">首届中阿利雅得峰会2022</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">沙特阿拉伯</field>
+	<field name="城市">利雅得</field>
+	<field name="开始日期">2022-12-09</field>
+	<field name="参与国数">16</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—中亚西安峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">西安</field>
+	<field name="开始日期">2023-05-18</field>
+	<field name="参与国数">6</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">1</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合新德里视频峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="城市" xsi:nil="true" />
+	<field name="开始日期">2023-07-04</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">3</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖约翰内斯堡峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">南非</field>
+	<field name="城市">约翰内斯堡</field>
+	<field name="开始日期">2023-08-22</field>
+	<field name="参与国数">5</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟雅加达会议2023</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">印度尼西亚</field>
+	<field name="城市">雅加达</field>
+	<field name="开始日期">2023-09-06</field>
+	<field name="参与国数">11</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">G20新德里峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">印度</field>
+	<field name="城市">新德里</field>
+	<field name="开始日期">2023-09-09</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">联合国可持续发展目标峰会2023</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2023-09-18</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">UNGA78一般性辩论</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2023-09-19</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合比什凯克总理会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="城市">比什凯克</field>
+	<field name="开始日期">2023-10-26</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">COP28</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">阿联酋</field>
+	<field name="城市">迪拜</field>
+	<field name="开始日期">2023-11-30</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">2</field>
+  </row>
+
+  <row>
+	<field name="会议简称">澜湄第四次领导人视频会议</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="城市" xsi:nil="true" />
+	<field name="开始日期">2023-12-25</field>
+	<field name="参与国数">6</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中阿论坛北京部长会2024</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">北京</field>
+	<field name="开始日期">2024-05-30</field>
+	<field name="参与国数">6</field>
+	<field name="成果文件数">3</field>
+	<field name="后续行动数">3</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合阿斯塔纳峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">哈萨克斯坦</field>
+	<field name="城市">阿斯塔纳</field>
+	<field name="开始日期">2024-07-04</field>
+	<field name="参与国数">10</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中非北京峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">北京</field>
+	<field name="开始日期">2024-09-04</field>
+	<field name="参与国数">7</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">8</field>
+  </row>
+
+  <row>
+	<field name="会议简称">联合国未来峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2024-09-22</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">UNGA79一般性辩论</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2024-09-24</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟万象会议2024</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">老挝</field>
+	<field name="城市">万象</field>
+	<field name="开始日期">2024-10-10</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">3</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合伊斯兰堡总理会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">巴基斯坦</field>
+	<field name="城市">伊斯兰堡</field>
+	<field name="开始日期">2024-10-15</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖喀山峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">俄罗斯</field>
+	<field name="城市">喀山</field>
+	<field name="开始日期">2024-10-22</field>
+	<field name="参与国数">9</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">COP29</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">阿塞拜疆</field>
+	<field name="城市">巴库</field>
+	<field name="开始日期">2024-11-11</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">2</field>
+  </row>
+
+  <row>
+	<field name="会议简称">G20里约峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">巴西</field>
+	<field name="城市">里约热内卢</field>
+	<field name="开始日期">2024-11-18</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖里约外长会</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">巴西</field>
+	<field name="城市">里约热内卢</field>
+	<field name="开始日期">2025-04-28</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中拉论坛北京部长会2025</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">北京</field>
+	<field name="开始日期">2025-05-13</field>
+	<field name="参与国数">4</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">7</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中非长沙协调人部长会</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">长沙</field>
+	<field name="开始日期">2025-06-11</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">1</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—中亚阿斯塔纳峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">哈萨克斯坦</field>
+	<field name="城市">阿斯塔纳</field>
+	<field name="开始日期">2025-06-16</field>
+	<field name="参与国数">6</field>
+	<field name="成果文件数">2</field>
+	<field name="后续行动数">2</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖里约峰会2025</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">巴西</field>
+	<field name="城市">里约热内卢</field>
+	<field name="开始日期">2025-07-06</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合天津元首理事会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">天津</field>
+	<field name="开始日期">2025-09-01</field>
+	<field name="参与国数">10</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">UNGA80一般性辩论</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2025-09-23</field>
+	<field name="参与国数">15</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">1</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟吉隆坡会议2025</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">马来西亚</field>
+	<field name="城市">吉隆坡</field>
+	<field name="开始日期">2025-10-28</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合莫斯科总理会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">俄罗斯</field>
+	<field name="城市">莫斯科</field>
+	<field name="开始日期">2025-11-17</field>
+	<field name="参与国数">16</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">G20约翰内斯堡峰会</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">南非</field>
+	<field name="城市">约翰内斯堡</field>
+	<field name="开始日期">2025-11-22</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖新德里安全事务会议2026</field>
+	<field name="类型">专题会议</field>
+	<field name="举办地国家">印度</field>
+	<field name="城市">新德里</field>
+	<field name="开始日期">2026-06-23</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">人工智能全球治理上海会议2026</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">中国</field>
+	<field name="城市">上海</field>
+	<field name="开始日期">2026-07-17</field>
+	<field name="参与国数">4</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">2</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟马尼拉外长会2026</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">菲律宾</field>
+	<field name="城市">马尼拉</field>
+	<field name="开始日期">2026-07-22</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合乔蓬阿塔外长会2026</field>
+	<field name="类型">部长级会议</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="城市">乔蓬阿塔</field>
+	<field name="开始日期">2026-07-24</field>
+	<field name="参与国数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合比什凯克元首理事会2026</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="城市">比什凯克</field>
+	<field name="开始日期">2026-09-01</field>
+	<field name="参与国数">10</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖新德里峰会2026</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">印度</field>
+	<field name="城市">新德里</field>
+	<field name="开始日期">2026-09-12</field>
+	<field name="参与国数">10</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">UNGA81一般性辩论2026</field>
+	<field name="类型">大会</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2026-09-22</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">全球发展倡议纽约对话会2026</field>
+	<field name="类型">专题会议</field>
+	<field name="举办地国家">美国</field>
+	<field name="城市">纽约</field>
+	<field name="开始日期">2026-09-25</field>
+	<field name="参与国数">4</field>
+	<field name="成果文件数">0</field>
+	<field name="后续行动数">1</field>
+  </row>
+
+  <row>
+	<field name="会议简称">亚信巴库峰会2026</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">阿塞拜疆</field>
+	<field name="城市">巴库</field>
+	<field name="开始日期">2026-10-15</field>
+	<field name="参与国数">2</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合杜尚别总理会2026</field>
+	<field name="类型">首脑峰会</field>
+	<field name="举办地国家">塔吉克斯坦</field>
+	<field name="城市">杜尚别</field>
+	<field name="开始日期">2026-10-20</field>
+	<field name="参与国数">12</field>
+	<field name="成果文件数">1</field>
+	<field name="后续行动数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT m.name AS 机制, m.category AS 类别,
+       (SELECT COUNT(*) FROM conference c
+        WHERE c.mechanism_id = m.mechanism_id) AS 会议数,
+       (SELECT COUNT(*) FROM conference c, document d
+        WHERE c.conference_id = d.conference_id
+          AND c.mechanism_id = m.mechanism_id) AS 成果文件数,
+       (SELECT COUNT(*) FROM conference c, conference_participant p
+        WHERE c.conference_id = p.conference_id
+          AND c.mechanism_id = m.mechanism_id) AS 参会国次
+FROM mechanism m
+ORDER BY 会议数 DESC, 成果文件数 DESC, m.mechanism_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="机制">金砖国家合作机制</field>
+	<field name="类别">南南合作</field>
+	<field name="会议数">8</field>
+	<field name="成果文件数">7</field>
+	<field name="参会国次">40</field>
+  </row>
+
+  <row>
+	<field name="机制">上海合作组织元首理事会</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">6</field>
+	<field name="成果文件数">6</field>
+	<field name="参会国次">68</field>
+  </row>
+
+  <row>
+	<field name="机制">上海合作组织政府首脑理事会</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">5</field>
+	<field name="成果文件数">5</field>
+	<field name="参会国次">64</field>
+  </row>
+
+  <row>
+	<field name="机制">中非合作论坛</field>
+	<field name="类别">南南合作</field>
+	<field name="会议数">4</field>
+	<field name="成果文件数">7</field>
+	<field name="参会国次">19</field>
+  </row>
+
+  <row>
+	<field name="机制">二十国集团</field>
+	<field name="类别">全球治理</field>
+	<field name="会议数">4</field>
+	<field name="成果文件数">4</field>
+	<field name="参会国次">7</field>
+  </row>
+
+  <row>
+	<field name="机制">联合国大会一般性辩论</field>
+	<field name="类别">全球治理</field>
+	<field name="会议数">4</field>
+	<field name="成果文件数">0</field>
+	<field name="参会国次">19</field>
+  </row>
+
+  <row>
+	<field name="机制">中国—东盟领导人会议</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">3</field>
+	<field name="成果文件数">6</field>
+	<field name="参会国次">25</field>
+  </row>
+
+  <row>
+	<field name="机制">联合国气候变化大会</field>
+	<field name="类别">专门领域</field>
+	<field name="会议数">3</field>
+	<field name="成果文件数">4</field>
+	<field name="参会国次">2</field>
+  </row>
+
+  <row>
+	<field name="机制">中国—阿拉伯国家合作论坛</field>
+	<field name="类别">南南合作</field>
+	<field name="会议数">2</field>
+	<field name="成果文件数">4</field>
+	<field name="参会国次">22</field>
+  </row>
+
+  <row>
+	<field name="机制">中国—中亚机制</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">2</field>
+	<field name="成果文件数">3</field>
+	<field name="参会国次">12</field>
+  </row>
+
+  <row>
+	<field name="机制">澜沧江—湄公河合作</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">2</field>
+	<field name="参会国次">6</field>
+  </row>
+
+  <row>
+	<field name="机制">中国—拉共体论坛</field>
+	<field name="类别">南南合作</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">2</field>
+	<field name="参会国次">4</field>
+  </row>
+
+  <row>
+	<field name="机制">联合国可持续发展高级别政治论坛</field>
+	<field name="类别">全球治理</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="参会国次">2</field>
+  </row>
+
+  <row>
+	<field name="机制">上海合作组织外长理事会</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="参会国次">1</field>
+  </row>
+
+  <row>
+	<field name="机制">中国—东盟外长会</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="参会国次">2</field>
+  </row>
+
+  <row>
+	<field name="机制">亚洲相互协作与信任措施会议</field>
+	<field name="类别">区域合作</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">1</field>
+	<field name="参会国次">2</field>
+  </row>
+
+  <row>
+	<field name="机制">全球发展倡议</field>
+	<field name="类别">全球治理</field>
+	<field name="会议数">1</field>
+	<field name="成果文件数">0</field>
+	<field name="参会国次">4</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT c.short_name AS 会议简称, COUNT(p.country_id) AS 参与国数
+FROM conference c
+JOIN conference_participant p ON p.conference_id = c.conference_id
+GROUP BY c.conference_id, c.short_name
+HAVING COUNT(p.country_id) &gt;= 8
+ORDER BY 参与国数 DESC, c.conference_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议简称">上合莫斯科总理会</field>
+	<field name="参与国数">16</field>
+  </row>
+
+  <row>
+	<field name="会议简称">首届中阿利雅得峰会2022</field>
+	<field name="参与国数">16</field>
+  </row>
+
+  <row>
+	<field name="会议简称">UNGA80一般性辩论</field>
+	<field name="参与国数">15</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合撒马尔罕元首理事会2022</field>
+	<field name="参与国数">14</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合伊斯兰堡总理会</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合新德里视频峰会</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合比什凯克总理会</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟万象会议2024</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合杜尚别总理会2026</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合总理视频会议2022</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合杜尚别元首理事会2021</field>
+	<field name="参与国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议简称">中国—东盟雅加达会议2023</field>
+	<field name="参与国数">11</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合阿斯塔纳峰会</field>
+	<field name="参与国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合天津元首理事会</field>
+	<field name="参与国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议简称">上合比什凯克元首理事会2026</field>
+	<field name="参与国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖新德里峰会2026</field>
+	<field name="参与国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议简称">金砖喀山峰会</field>
+	<field name="参与国数">9</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT COALESCE(d.doc_no, '（无编号）') AS 文件编号, d.title AS 文件名称,
+       d.doc_type AS 类型, d.status AS 状态
+FROM document d
+WHERE NOT EXISTS (SELECT 1 FROM follow_up_action a WHERE a.document_id = d.document_id)
+ORDER BY d.issue_date" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中非合作论坛—北京行动计划（2019—2021年）</field>
+	<field name="类型">行动计划</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">关于构建更加紧密的中非命运共同体的北京宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织二十周年杜尚别宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中非合作论坛第八届部长级会议达喀尔宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中非合作论坛—达喀尔行动计划（2022—2024）</field>
+	<field name="类型">行动计划</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十三次会晤新德里宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十四次会晤北京宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国元首理事会撒马尔罕宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十一次会议联合公报</field>
+	<field name="类型">联合公报</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">二十国集团领导人巴厘岛峰会宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">2/CP.27</field>
+	<field name="文件名称">应对气候变化不利影响所涉损失与损害的资金安排</field>
+	<field name="类型">决定</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">首届中阿峰会利雅得宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">1/CP.27</field>
+	<field name="文件名称">沙姆沙伊赫实施计划</field>
+	<field name="类型">决定</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—中亚峰会西安宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国元首理事会新德里宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十五次会晤约翰内斯堡宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟关于深化农业合作的联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟农业绿色发展行动计划（2023—2027）</field>
+	<field name="类型">行动计划</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">二十国集团领导人新德里峰会宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">2023年可持续发展目标峰会政治宣言</field>
+	<field name="类型">政治宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十二次会议联合公报</field>
+	<field name="类型">联合公报</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">澜湄合作五年行动计划（2023—2027）</field>
+	<field name="类型">行动计划</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">澜沧江—湄公河合作第四次领导人会议内比都宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—阿拉伯国家合作论坛第十届部长级会议北京宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—阿拉伯国家合作论坛2024年至2026年行动执行计划</field>
+	<field name="类型">行动执行计划</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国和阿拉伯国家关于巴勒斯坦问题的联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国元首理事会阿斯塔纳宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">关于共筑新时代全天候中非命运共同体的北京宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">A/RES/79/1</field>
+	<field name="文件名称">未来契约</field>
+	<field name="类型">联合国大会决议</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟关于推动建立可持续和包容性的数字生态合作联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟关于深化人文交流合作的联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟关于实质性结束中国—东盟自贸区3.0版升级谈判的联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十三次会议联合公报</field>
+	<field name="类型">联合公报</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十六次会晤喀山宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">二十国集团领导人里约热内卢峰会宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家外长会晤主席声明</field>
+	<field name="类型">主席声明</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—拉共体论坛第四届部长级会议北京宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">第二届中国—中亚峰会阿斯塔纳宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中华人民共和国同哈萨克斯坦共和国、吉尔吉斯共和国、塔吉克斯坦共和国、土库曼斯坦、乌兹别克斯坦共和国永久睦邻友好合作条约</field>
+	<field name="类型">条约</field>
+	<field name="状态">已签署</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十七次会晤里约热内卢宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国元首理事会天津宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟自贸区3.0版升级议定书</field>
+	<field name="类型">议定书</field>
+	<field name="状态">已签署</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十四次会议联合公报</field>
+	<field name="类型">联合公报</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">二十国集团南非峰会领导人宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">2026世界人工智能大会暨人工智能全球治理高级别会议主席声明</field>
+	<field name="类型">主席声明</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">中国—东盟外长关于应对中东局势演变对本地区影响及加强区域能源合作的联合声明</field>
+	<field name="类型">联合声明</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国外交部长理事会声明</field>
+	<field name="类型">声明</field>
+	<field name="状态">已发布</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织二十五周年比什凯克宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">金砖国家领导人第十八次会晤新德里宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">亚信第七次峰会宣言</field>
+	<field name="类型">宣言</field>
+	<field name="状态">已通过</field>
+  </row>
+
+  <row>
+	<field name="文件编号">（无编号）</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十五次会议联合公报</field>
+	<field name="类型">联合公报</field>
+	<field name="状态">已通过</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT hc.name_cn AS 举办地国家, COUNT(c.conference_id) AS 举办会议数
+FROM country hc
+LEFT JOIN conference c ON c.host_country_id = hc.country_id
+GROUP BY hc.country_id, hc.name_cn
+ORDER BY 举办会议数 DESC, hc.country_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="举办地国家">中国</field>
+	<field name="举办会议数">8</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">美国</field>
+	<field name="举办会议数">7</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴西</field>
+	<field name="举办会议数">3</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">印度</field>
+	<field name="举办会议数">3</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="举办会议数">3</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">俄罗斯</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">南非</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">哈萨克斯坦</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">印度尼西亚</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">塔吉克斯坦</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">阿塞拜疆</field>
+	<field name="举办会议数">2</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">埃及</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴基斯坦</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">沙特阿拉伯</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">乌兹别克斯坦</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">塞内加尔</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">老挝</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">菲律宾</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">阿联酋</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">马来西亚</field>
+	<field name="举办会议数">1</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">东帝汶</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">伊拉克</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">伊朗</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">伯利兹</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">刚果共和国</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">刚果民主共和国</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">卡塔尔</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">吉布提</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">哥伦比亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">土库曼斯坦</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">土耳其</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">圣卢西亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">圣基茨和尼维斯</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">圣文森特和格林纳丁斯</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">圭亚那</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">坦桑尼亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">埃塞俄比亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">多米尼克</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">孟加拉国</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">安哥拉</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">安提瓜和巴布达</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">尼日利亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴勒斯坦</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴哈马</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴巴多斯</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">巴林</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">摩洛哥</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">文莱</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">新加坡</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">智利</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">柬埔寨</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">格林纳达</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">毛里塔尼亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">泰国</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">海地</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">牙买加</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">特立尼达和多巴哥</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">白俄罗斯</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">科威特</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">科摩罗</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">突尼斯</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">约旦</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">缅甸</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">苏里南</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">蒙古国</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">越南</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">阿尔及利亚</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">马尔代夫</field>
+	<field name="举办会议数">0</field>
+  </row>
+
+  <row>
+	<field name="举办地国家">黎巴嫩</field>
+	<field name="举办会议数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT action_name AS 行动名称, conference_name AS 来源会议, lead_country AS 牵头国,
+       planned_end_date AS 计划完成, overdue_days AS 逾期天数,
+       progress_pct AS 进度百分比
+FROM v_action_alert
+ORDER BY overdue_days DESC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT title AS 文件名称, conference_name AS 会议,
+       signed_count AS 联署国数, support_count AS 支持国数,
+       reserved_count AS 保留国数, total_country_count AS 涉国总数
+FROM v_document_consensus
+ORDER BY signed_count DESC, total_country_count DESC, document_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="文件名称">上海合作组织成员国元首理事会天津宣言</field>
+	<field name="会议">上合天津元首理事会</field>
+	<field name="联署国数">10</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">10</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国元首理事会新德里宣言</field>
+	<field name="会议">上合新德里视频峰会</field>
+	<field name="联署国数">8</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">8</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织二十周年杜尚别宣言</field>
+	<field name="会议">上合杜尚别元首理事会2021</field>
+	<field name="联署国数">8</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">8</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—中亚峰会西安宣言</field>
+	<field name="会议">中国—中亚西安峰会</field>
+	<field name="联署国数">6</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">6</field>
+  </row>
+
+  <row>
+	<field name="文件名称">第二届中国—中亚峰会阿斯塔纳宣言</field>
+	<field name="会议">中国—中亚阿斯塔纳峰会</field>
+	<field name="联署国数">6</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">6</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中华人民共和国同哈萨克斯坦共和国、吉尔吉斯共和国、塔吉克斯坦共和国、土库曼斯坦、乌兹别克斯坦共和国永久睦邻友好合作条约</field>
+	<field name="会议">中国—中亚阿斯塔纳峰会</field>
+	<field name="联署国数">6</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">6</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十三次会议联合公报</field>
+	<field name="会议">上合伊斯兰堡总理会</field>
+	<field name="联署国数">1</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">1</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国元首理事会阿斯塔纳宣言</field>
+	<field name="会议">上合阿斯塔纳峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十六次会晤喀山宣言</field>
+	<field name="会议">金砖喀山峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">关于共筑新时代全天候中非命运共同体的北京宣言</field>
+	<field name="会议">中非北京峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中非合作论坛—北京行动计划（2025-2027）</field>
+	<field name="会议">中非北京峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">二十国集团领导人里约热内卢峰会宣言</field>
+	<field name="会议">G20里约峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">气候资金新集体量化目标</field>
+	<field name="会议">COP29</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家外长会晤主席声明</field>
+	<field name="会议">金砖里约外长会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十七次会晤里约热内卢宣言</field>
+	<field name="会议">金砖里约峰会2025</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">未来契约</field>
+	<field name="会议">联合国未来峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十二次会议联合公报</field>
+	<field name="会议">上合比什凯克总理会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十四次会议联合公报</field>
+	<field name="会议">上合莫斯科总理会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十五次会晤约翰内斯堡宣言</field>
+	<field name="会议">金砖约翰内斯堡峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">二十国集团领导人新德里峰会宣言</field>
+	<field name="会议">G20新德里峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">二十国集团南非峰会领导人宣言</field>
+	<field name="会议">G20约翰内斯堡峰会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">首次全球盘点结果</field>
+	<field name="会议">COP28</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟关于深化农业合作的联合声明</field>
+	<field name="会议">中国—东盟雅加达会议2023</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟农业绿色发展行动计划（2023—2027）</field>
+	<field name="会议">中国—东盟雅加达会议2023</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟关于实质性结束中国—东盟自贸区3.0版升级谈判的联合声明</field>
+	<field name="会议">中国—东盟万象会议2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟关于深化人文交流合作的联合声明</field>
+	<field name="会议">中国—东盟万象会议2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟关于推动建立可持续和包容性的数字生态合作联合声明</field>
+	<field name="会议">中国—东盟万象会议2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟自贸区3.0版升级议定书</field>
+	<field name="会议">中国—东盟吉隆坡会议2025</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">澜沧江—湄公河合作第四次领导人会议内比都宣言</field>
+	<field name="会议">澜湄第四次领导人视频会议</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">澜湄合作五年行动计划（2023—2027）</field>
+	<field name="会议">澜湄第四次领导人视频会议</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—阿拉伯国家合作论坛第十届部长级会议北京宣言</field>
+	<field name="会议">中阿论坛北京部长会2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—阿拉伯国家合作论坛2024年至2026年行动执行计划</field>
+	<field name="会议">中阿论坛北京部长会2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国和阿拉伯国家关于巴勒斯坦问题的联合声明</field>
+	<field name="会议">中阿论坛北京部长会2024</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中非维护全球南方团结合作的长沙宣言</field>
+	<field name="会议">中非长沙协调人部长会</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—拉共体论坛第四届部长级会议北京宣言</field>
+	<field name="会议">中拉论坛北京部长会2025</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—拉共体成员国重点领域合作共同行动计划（2025—2027）</field>
+	<field name="会议">中拉论坛北京部长会2025</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">2023年可持续发展目标峰会政治宣言</field>
+	<field name="会议">联合国可持续发展目标峰会2023</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织二十五周年比什凯克宣言</field>
+	<field name="会议">上合比什凯克元首理事会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十八次会晤新德里宣言</field>
+	<field name="会议">金砖新德里峰会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十五次会议联合公报</field>
+	<field name="会议">上合杜尚别总理会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国外交部长理事会声明</field>
+	<field name="会议">上合乔蓬阿塔外长会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中国—东盟外长关于应对中东局势演变对本地区影响及加强区域能源合作的联合声明</field>
+	<field name="会议">中国—东盟马尼拉外长会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">2026世界人工智能大会暨人工智能全球治理高级别会议主席声明</field>
+	<field name="会议">人工智能全球治理上海会议2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">亚信第七次峰会宣言</field>
+	<field name="会议">亚信巴库峰会2026</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国元首理事会撒马尔罕宣言</field>
+	<field name="会议">上合撒马尔罕元首理事会2022</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十一次会议联合公报</field>
+	<field name="会议">上合总理视频会议2022</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十四次会晤北京宣言</field>
+	<field name="会议">金砖领导人视频会晤2022</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">二十国集团领导人巴厘岛峰会宣言</field>
+	<field name="会议">G20巴厘岛峰会2022</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">沙姆沙伊赫实施计划</field>
+	<field name="会议">COP27</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">应对气候变化不利影响所涉损失与损害的资金安排</field>
+	<field name="会议">COP27</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中非合作论坛第八届部长级会议达喀尔宣言</field>
+	<field name="会议">中非达喀尔部长级会议2021</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中非合作论坛—达喀尔行动计划（2022—2024）</field>
+	<field name="会议">中非达喀尔部长级会议2021</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">关于构建更加紧密的中非命运共同体的北京宣言</field>
+	<field name="会议">中非北京峰会2018</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">中非合作论坛—北京行动计划（2019—2021年）</field>
+	<field name="会议">中非北京峰会2018</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">金砖国家领导人第十三次会晤新德里宣言</field>
+	<field name="会议">金砖新德里视频会晤2021</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+
+  <row>
+	<field name="文件名称">首届中阿峰会利雅得宣言</field>
+	<field name="会议">首届中阿利雅得峰会2022</field>
+	<field name="联署国数">0</field>
+	<field name="支持国数">0</field>
+	<field name="保留国数">0</field>
+	<field name="涉国总数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT t.category AS 议题领域,
+       COUNT(DISTINCT t.topic_id)  AS 议题数,
+       COUNT(DISTINCT ct.conference_id) AS 涉及会议数,
+       SUM(CASE WHEN ct.is_core = 1 THEN 1 ELSE 0 END) AS 核心议题次数
+FROM topic t
+JOIN conference_topic ct ON ct.topic_id = t.topic_id
+GROUP BY t.category
+ORDER BY 涉及会议数 DESC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="议题领域">发展与合作</field>
+	<field name="议题数">38</field>
+	<field name="涉及会议数">35</field>
+	<field name="核心议题次数">0</field>
+  </row>
+
+  <row>
+	<field name="议题领域">全球治理体系</field>
+	<field name="议题数">25</field>
+	<field name="涉及会议数">22</field>
+	<field name="核心议题次数">0</field>
+  </row>
+
+  <row>
+	<field name="议题领域">和平与安全</field>
+	<field name="议题数">15</field>
+	<field name="涉及会议数">16</field>
+	<field name="核心议题次数">0</field>
+  </row>
+
+  <row>
+	<field name="议题领域">气候变化</field>
+	<field name="议题数">11</field>
+	<field name="涉及会议数">8</field>
+	<field name="核心议题次数">0</field>
+  </row>
+
+  <row>
+	<field name="议题领域">人文交流</field>
+	<field name="议题数">7</field>
+	<field name="涉及会议数">7</field>
+	<field name="核心议题次数">0</field>
+  </row>
+
+  <row>
+	<field name="议题领域">公共卫生</field>
+	<field name="议题数">5</field>
+	<field name="涉及会议数">5</field>
+	<field name="核心议题次数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT conference_name AS 会议, china_role AS 中国身份, china_delegation_level AS 出席级别,
+       host_country AS 举办地国家, mechanism_name AS 所属机制,
+       documents_of_conference AS 会议文件数, documents_china_signed AS 中国联署文件数
+FROM v_china_multilateral
+ORDER BY start_date" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议">中非北京峰会2018</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中非合作论坛</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里视频会晤2021</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合杜尚别元首理事会2021</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">塔吉克斯坦</field>
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">1</field>
+  </row>
+
+  <row>
+	<field name="会议">中非达喀尔部长级会议2021</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">塞内加尔</field>
+	<field name="所属机制">中非合作论坛</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖领导人视频会晤2022</field>
+	<field name="中国身份">主席国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合撒马尔罕元首理事会2022</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">乌兹别克斯坦</field>
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合总理视频会议2022</field>
+	<field name="中国身份">主席国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="所属机制">上海合作组织政府首脑理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">G20巴厘岛峰会2022</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">印度尼西亚</field>
+	<field name="所属机制">二十国集团</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">首届中阿利雅得峰会2022</field>
+	<field name="中国身份">对话伙伴</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">沙特阿拉伯</field>
+	<field name="所属机制">中国—阿拉伯国家合作论坛</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—中亚西安峰会</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中国—中亚机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">1</field>
+  </row>
+
+  <row>
+	<field name="会议">上合新德里视频峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">1</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖约翰内斯堡峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">南非</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟雅加达会议2023</field>
+	<field name="中国身份">对话伙伴</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">印度尼西亚</field>
+	<field name="所属机制">中国—东盟领导人会议</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">G20新德里峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">印度</field>
+	<field name="所属机制">二十国集团</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">联合国可持续发展目标峰会2023</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">联合国可持续发展高级别政治论坛</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA78一般性辩论</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">联合国大会一般性辩论</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合比什凯克总理会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="所属机制">上海合作组织政府首脑理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">COP28</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">阿联酋</field>
+	<field name="所属机制">联合国气候变化大会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">澜湄第四次领导人视频会议</field>
+	<field name="中国身份">主席国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家" xsi:nil="true" />
+	<field name="所属机制">澜沧江—湄公河合作</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中阿论坛北京部长会2024</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中国—阿拉伯国家合作论坛</field>
+	<field name="会议文件数">3</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合阿斯塔纳峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">哈萨克斯坦</field>
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中非北京峰会</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中非合作论坛</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">联合国未来峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">美国</field>
+	<field name="所属机制" xsi:nil="true" />
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA79一般性辩论</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">联合国大会一般性辩论</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟万象会议2024</field>
+	<field name="中国身份">对话伙伴</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">老挝</field>
+	<field name="所属机制">中国—东盟领导人会议</field>
+	<field name="会议文件数">3</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合伊斯兰堡总理会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">巴基斯坦</field>
+	<field name="所属机制">上海合作组织政府首脑理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">1</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖喀山峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">俄罗斯</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">COP29</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">阿塞拜疆</field>
+	<field name="所属机制">联合国气候变化大会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">G20里约峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">巴西</field>
+	<field name="所属机制">二十国集团</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约外长会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">巴西</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中拉论坛北京部长会2025</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中国—拉共体论坛</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中非长沙协调人部长会</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">中非合作论坛</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—中亚阿斯塔纳峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">哈萨克斯坦</field>
+	<field name="所属机制">中国—中亚机制</field>
+	<field name="会议文件数">2</field>
+	<field name="中国联署文件数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约峰会2025</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">巴西</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合天津元首理事会</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">1</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA80一般性辩论</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">联合国大会一般性辩论</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟吉隆坡会议2025</field>
+	<field name="中国身份">对话伙伴</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">马来西亚</field>
+	<field name="所属机制">中国—东盟领导人会议</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合莫斯科总理会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">俄罗斯</field>
+	<field name="所属机制">上海合作组织政府首脑理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">G20约翰内斯堡峰会</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">南非</field>
+	<field name="所属机制">二十国集团</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里安全事务会议2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">印度</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">人工智能全球治理上海会议2026</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">中国</field>
+	<field name="所属机制" xsi:nil="true" />
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟马尼拉外长会2026</field>
+	<field name="中国身份">对话伙伴</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">菲律宾</field>
+	<field name="所属机制">中国—东盟外长会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合乔蓬阿塔外长会2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="所属机制">上海合作组织外长理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合比什凯克元首理事会2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">吉尔吉斯斯坦</field>
+	<field name="所属机制">上海合作组织元首理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里峰会2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">元首级</field>
+	<field name="举办地国家">印度</field>
+	<field name="所属机制">金砖国家合作机制</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA81一般性辩论2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">联合国大会一般性辩论</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">全球发展倡议纽约对话会2026</field>
+	<field name="中国身份">主办国</field>
+	<field name="出席级别" xsi:nil="true" />
+	<field name="举办地国家">美国</field>
+	<field name="所属机制">全球发展倡议</field>
+	<field name="会议文件数">0</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">亚信巴库峰会2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">外交部长级</field>
+	<field name="举办地国家">阿塞拜疆</field>
+	<field name="所属机制">亚洲相互协作与信任措施会议</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+
+  <row>
+	<field name="会议">上合杜尚别总理会2026</field>
+	<field name="中国身份">成员国</field>
+	<field name="出席级别">政府首脑级</field>
+	<field name="举办地国家">塔吉克斯坦</field>
+	<field name="所属机制">上海合作组织政府首脑理事会</field>
+	<field name="会议文件数">1</field>
+	<field name="中国联署文件数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT status AS 状态, COUNT(*) AS 行动数,
+       ROUND(AVG(progress_pct), 1) AS 平均进度,
+       SUM(CASE WHEN actual_end_date IS NOT NULL THEN 1 ELSE 0 END) AS 已实际完成数
+FROM follow_up_action
+GROUP BY status
+ORDER BY 行动数 DESC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="状态" xsi:nil="true" />
+	<field name="行动数">38</field>
+	<field name="平均进度" xsi:nil="true" />
+	<field name="已实际完成数">0</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT YEAR(c.start_date) AS 年份,
+       COUNT(DISTINCT c.conference_id) AS 会议数,
+       COUNT(p.country_id)             AS 参与国次,
+       COUNT(DISTINCT c.host_country_id) AS 举办地国家数
+FROM conference c
+LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+GROUP BY YEAR(c.start_date)
+ORDER BY 年份" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="年份">2018</field>
+	<field name="会议数">1</field>
+	<field name="参与国次">3</field>
+	<field name="举办地国家数">1</field>
+  </row>
+
+  <row>
+	<field name="年份">2021</field>
+	<field name="会议数">3</field>
+	<field name="参与国次">24</field>
+	<field name="举办地国家数">2</field>
+  </row>
+
+  <row>
+	<field name="年份">2022</field>
+	<field name="会议数">6</field>
+	<field name="参与国次">48</field>
+	<field name="举办地国家数">4</field>
+  </row>
+
+  <row>
+	<field name="年份">2023</field>
+	<field name="会议数">10</field>
+	<field name="参与国次">58</field>
+	<field name="举办地国家数">7</field>
+  </row>
+
+  <row>
+	<field name="年份">2024</field>
+	<field name="会议数">10</field>
+	<field name="参与国次">61</field>
+	<field name="举办地国家数">8</field>
+  </row>
+
+  <row>
+	<field name="年份">2025</field>
+	<field name="会议数">10</field>
+	<field name="参与国次">61</field>
+	<field name="举办地国家数">7</field>
+  </row>
+
+  <row>
+	<field name="年份">2026</field>
+	<field name="会议数">10</field>
+	<field name="参与国次">49</field>
+	<field name="举办地国家数">7</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT cn.country_id AS 国家编号, cn.name_cn AS 国家
+FROM country cn
+WHERE NOT EXISTS (
+  SELECT * FROM conference_participant p
+  WHERE p.country_id = (SELECT country_id FROM country WHERE iso_code = 'CHN')
+    AND NOT EXISTS (
+      SELECT * FROM conference_participant x
+      WHERE x.conference_id = p.conference_id AND x.country_id = cn.country_id
+    )
+)
+ORDER BY cn.country_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="国家编号">1</field>
+	<field name="国家">中国</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT user_role AS 角色, COUNT(*) AS 人数,
+       SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS 启用人数,
+       COUNT(DISTINCT country_id) AS 涉及国家数
+FROM app_user
+GROUP BY user_role
+ORDER BY 人数 DESC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT 操作人, 角色, 操作类型, 目标表, 目标ID, 变更前, 变更后, log_time AS 记录时间
+FROM v_operation_audit
+ORDER BY log_time DESC, log_id DESC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></resultset>

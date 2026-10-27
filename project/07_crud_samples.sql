@@ -1,108 +1,91 @@
--- ============================================================
--- 实验项目 步骤 7：数据更新（课件 3.4）与事务回滚
--- 以下会议和文件为虚构演示数据。
--- 在一段显式事务里完整演示 INSERT / UPDATE / DELETE / SELECT，
--- 最后由 ROLLBACK 撤掉演示数据，保证可重复执行、不改变已录入的真实资料。
--- 触发器联动：插入时自动判定逾期状态；更新时自动记录审计日志。
--- ============================================================
-
+-- 课件3.4：单行/多行INSERT、INSERT ... SELECT、带子查询的UPDATE/DELETE。
+-- S06—S10：只在事务中建立虚构演示数据，最后ROLLBACK；真实资料保持原样。
+-- MySQL适配：用户变量、LAST_INSERT_ID、CURDATE和DATE_SUB。
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 START TRANSACTION;
+SET @demo_day = CURDATE();
+SET @china = (SELECT country_id FROM country WHERE iso_code = 'CHN');
+SET @kaz = (SELECT country_id FROM country WHERE iso_code = 'KAZ');
+SET @rus = (SELECT country_id FROM country WHERE iso_code = 'RUS');
+SET @security = (SELECT topic_id FROM topic WHERE name = '全球安全治理');
+SET @ai = (SELECT topic_id FROM topic WHERE name = '人工智能治理');
 
--- ---------- 1. INSERT：新建一场课程演示会议 ----------
+-- @sample S06 新增会议及关联数据，插入时触发器自动判为逾期。
 INSERT INTO conference
-  (title, short_name, mechanism_id, org_id, host_country_id, host_city,
-   conference_type, session_label, start_date, end_date, format, status, theme)
+  (title, short_name, host_country_id, host_city, conference_type, start_date, end_date, format)
 VALUES
-  ('多边合作课程演示会议（虚构）', '课件演示会议', 1, 2, 1, '北京',
-   '首脑峰会', '演示', '2026-01-10', '2026-01-11', '线下', '已闭幕',
-   '弘扬"上海精神"，推动构建更加紧密的上合组织命运共同体');
-SET @conf := LAST_INSERT_ID();
+  ('课程综合演示会议（虚构）', '课件演示会议', @china, '北京', '专题会议',
+   DATE_SUB(@demo_day, INTERVAL 10 DAY), DATE_SUB(@demo_day, INTERVAL 9 DAY), '线下');
+SET @conf = LAST_INSERT_ID();
 
--- ---------- 2. INSERT：登记参会国家（主办国 + 两个成员国 + 一个观察员） ----------
 INSERT INTO conference_participant
-  (conference_id, country_id, role, delegation_level, delegation_size, join_date)
+  (conference_id, country_id, role, delegation_level, delegation_size)
 VALUES
-  (@conf, 1,  '主办国', '元首级', 60, '2026-01-01'),
-  (@conf, 8,  '成员国', '元首级', 40, '2026-01-02'),
-  (@conf, 3,  '成员国', '元首级', 38, '2026-01-02');
+  (@conf, @china, '主办国', '元首级', 60),
+  (@conf, @kaz, '成员国', '元首级', 40),
+  (@conf, @rus, '成员国', '元首级', 38);
 
--- 查询结果的插入：从国家表查出印度尼西亚，登记为观察员。
 INSERT INTO conference_participant
-  (conference_id, country_id, role, delegation_level, delegation_size, join_date)
-SELECT @conf, country_id, '观察员', '部长级', 20, '2026-01-03'
+  (conference_id, country_id, role, delegation_level, delegation_size)
+SELECT @conf, country_id, '观察员', '部长级', 20
 FROM country WHERE iso_code = 'IDN';
 
--- ---------- 3. INSERT：挂接议题 ----------
-INSERT INTO conference_topic (conference_id, topic_id, is_core, discussion_date, summary)
-VALUES
-  (@conf, 1, 1, '2026-01-10', '共同、综合、合作、可持续的安全观'),
-  (@conf, 9, 1, '2026-01-11', '人工智能治理与数字丝绸之路');
+INSERT INTO conference_topic (conference_id, topic_id, is_core, summary)
+VALUES (@conf, @security, 1, '共同安全与多边合作'),
+       (@conf, @ai, 1, '人工智能治理与技术合作');
 
--- ---------- 4. INSERT：产出成果文件 + 联署国 ----------
-INSERT INTO document
-  (conference_id, title, doc_type, doc_no, issue_date, adopt_method, status, summary)
-VALUES
-  (@conf, '课程演示联合声明', '联合声明', 'COURSE-DEMO', '2026-01-11', '协商一致', '已通过',
-   '课程演示数据');
-SET @doc := LAST_INSERT_ID();
-
+INSERT INTO document (conference_id, title, doc_type, doc_no, issue_date, adopt_method)
+VALUES (@conf, '课程演示联合声明', '联合声明', 'COURSE-DEMO', @demo_day, '协商一致');
+SET @doc = LAST_INSERT_ID();
 INSERT INTO document_sponsor (document_id, country_id, stance)
-VALUES (@doc, 1, '联署'), (@doc, 8, '联署'), (@doc, 3, '支持');
+VALUES (@doc, @china, '联署'), (@doc, @kaz, '联署'), (@doc, @rus, '支持');
 
--- ---------- 5. INSERT：派生一项后续行动（计划完成日期已过 → 触发器判为逾期） ----------
 INSERT INTO follow_up_action
-  (conference_id, document_id, action_name, lead_country_id, responsible_org_id,
-   start_date, planned_end_date, actual_end_date, progress_pct, status, remarks)
+  (conference_id, document_id, action_name, lead_country_id,
+   start_date, planned_end_date, progress_pct, status)
 VALUES
-  (@conf, @doc, '上合组织人工智能治理联合研究', 1, 2,
-   '2026-01-12', '2026-09-30', NULL, 30, '进行中', '演示记录：计划完成日期早于当前日期');
-SET @act := LAST_INSERT_ID();
+  (@conf, @doc, '课程人工智能合作研究（虚构）', @china,
+   DATE_SUB(@demo_day, INTERVAL 8 DAY), DATE_SUB(@demo_day, INTERVAL 1 DAY), 30, '进行中');
+SET @act = LAST_INSERT_ID();
 
--- SELECT 验证 1：新写入的会议全链条
-SELECT c.conference_id, c.short_name, c.status,
-       (SELECT COUNT(*) FROM conference_participant p WHERE p.conference_id = c.conference_id) AS 参与国数,
-       (SELECT COUNT(*) FROM conference_topic ct WHERE ct.conference_id = c.conference_id)       AS 议题数,
-       (SELECT COUNT(*) FROM document d WHERE d.conference_id = c.conference_id)                 AS 文件数
+SELECT c.short_name AS 会议,
+       (SELECT COUNT(*) FROM conference_participant p WHERE p.conference_id = c.conference_id) AS 参会国数,
+       (SELECT COUNT(*) FROM conference_topic t WHERE t.conference_id = c.conference_id) AS 议题数,
+       (SELECT COUNT(*) FROM document d WHERE d.conference_id = c.conference_id) AS 文件数
 FROM conference c WHERE c.conference_id = @conf;
-
-SELECT action_id, action_name, status AS 触发器判定结果, progress_pct
+SELECT status AS 插入后状态, progress_pct AS 进度
 FROM follow_up_action WHERE action_id = @act;
 
--- ---------- 6. UPDATE：补录完成情况（进度 100% + 实际完成日期 → 触发器改判已完成并写审计） ----------
+-- @sample S07 只填写完成日期，观察触发器将状态改为已完成、进度改为100并写审计。
 UPDATE follow_up_action
-SET actual_end_date = '2026-10-15', progress_pct = 100
+SET actual_end_date = @demo_day
 WHERE action_id = @act
   AND lead_country_id IN (SELECT country_id FROM country WHERE iso_code = 'CHN');
-
-SELECT action_id, action_name, status, progress_pct, actual_end_date
+SELECT status AS 状态, progress_pct AS 进度, actual_end_date AS 完成日期
 FROM follow_up_action WHERE action_id = @act;
-
--- SELECT 验证 2：审计日志（触发器自动留痕）
-SELECT log_id, action_type, target_table, target_id, old_value, new_value
+SELECT action_type AS 操作, old_value AS 变更前, new_value AS 变更后
 FROM operation_log WHERE target_table = 'follow_up_action' AND target_id = @act
 ORDER BY log_id;
 
--- ---------- 7. DELETE：撤销错误的参会登记与行动记录 ----------
-DELETE FROM conference_participant WHERE conference_id = @conf
+-- @sample S08 带子查询的DELETE，查询实际剩余数量。
+DELETE FROM conference_participant
+WHERE conference_id = @conf
   AND country_id IN (SELECT country_id FROM country WHERE iso_code = 'IDN');
 DELETE FROM follow_up_action WHERE action_id = @act;
+SELECT (SELECT COUNT(*) FROM conference_participant WHERE conference_id = @conf) AS 剩余参会国数,
+       (SELECT COUNT(*) FROM follow_up_action WHERE action_id = @act) AS 剩余演示行动数;
 
-SELECT COUNT(*) AS 删除后该会议参与国数
-FROM conference_participant WHERE conference_id = @conf;
+-- @sample S09 综合统计：调用自定义函数，分母为已记录的文件立场国家数。
+SELECT COUNT(*) AS 已记录立场国数,
+       SUM(CASE WHEN stance = '联署' THEN 1 ELSE 0 END) AS 联署国数,
+       fn_consensus_ratio(@doc) AS 联署比例百分比
+FROM document_sponsor WHERE document_id = @doc;
 
--- ---------- 8. 回滚整个演示事务，库里数据保持原样 ----------
+-- @sample S10 回滚演示，真实数据及审计记录恢复原样；自增编号可能留下空号。
 ROLLBACK;
-
-SELECT (SELECT COUNT(*) FROM conference)         AS 回滚后会议数,
-       (SELECT COUNT(*) FROM follow_up_action)   AS 回滚后行动数,
-       (SELECT COUNT(*) FROM document)           AS 回滚后文件数;
-
--- 说明：以下语句故意不执行，用于答辩时演示约束拦截（单独跑，预期报错）
---   INSERT INTO conference_participant (conference_id, country_id, role) VALUES (1, 999, '成员国');
---   → ERROR 1452 外键约束失败
---   UPDATE follow_up_action SET progress_pct = 150 WHERE action_id = 2;
---   → ERROR 3819 CHECK 约束拒绝超出 0—100 的进度
---   DELETE FROM country WHERE iso_code = 'CHN';
---   → ERROR 1451 被外键引用，ON DELETE RESTRICT 拒绝删除
+SELECT (SELECT COUNT(*) FROM conference) AS 会议数,
+       (SELECT COUNT(*) FROM document) AS 文件数,
+       (SELECT COUNT(*) FROM conference_participant) AS 参会记录数,
+       (SELECT COUNT(*) FROM follow_up_action) AS 行动数,
+       (SELECT COUNT(*) FROM operation_log) AS 审计记录数;

@@ -78,7 +78,7 @@ JOIN conference c ON c.conference_id = a.conference_id
 LEFT JOIN country lc   ON lc.country_id = a.lead_country_id
 WHERE a.actual_end_date IS NULL
   AND a.planned_end_date < CURDATE()
-  AND a.status <> '终止';
+  AND (a.status IS NULL OR a.status <> '终止');
 
 -- ---------- 视图 4 v_china_multilateral 基于视图的中国参与全景 ----------
 CREATE OR REPLACE VIEW v_china_multilateral AS

@@ -1,0 +1,970 @@
+<?xml version="1.0"?>
+
+<resultset statement="SELECT short_name AS 会议, start_date AS 日期
+FROM conference
+WHERE start_date BETWEEN '2026-01-01' AND '2026-12-31'
+  AND title LIKE '%上海合作组织%'
+ORDER BY start_date, conference_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议">上合乔蓬阿塔外长会2026</field>
+	<field name="日期">2026-07-24</field>
+  </row>
+
+  <row>
+	<field name="会议">上合比什凯克元首理事会2026</field>
+	<field name="日期">2026-09-01</field>
+  </row>
+
+  <row>
+	<field name="会议">上合杜尚别总理会2026</field>
+	<field name="日期">2026-10-20</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT c.short_name AS 会议
+FROM conference c, conference_participant x, conference_participant y
+WHERE c.conference_id = x.conference_id AND x.conference_id = y.conference_id
+  AND x.country_id = (SELECT country_id FROM country WHERE iso_code = 'CHN')
+  AND y.country_id = (SELECT country_id FROM country WHERE iso_code = 'BRA')
+ORDER BY c.conference_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议">金砖喀山峰会</field>
+  </row>
+
+  <row>
+	<field name="会议">G20里约峰会</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约外长会</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约峰会2025</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖约翰内斯堡峰会</field>
+  </row>
+
+  <row>
+	<field name="会议">中拉论坛北京部长会2025</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里峰会2026</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖领导人视频会晤2022</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里视频会晤2021</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT name_cn AS 国家 FROM country
+WHERE country_id IN (SELECT country_id FROM conference_participant WHERE conference_id = 1)
+ORDER BY country_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="国家">中国</field>
+  </row>
+
+  <row>
+	<field name="国家">俄罗斯</field>
+  </row>
+
+  <row>
+	<field name="国家">印度</field>
+  </row>
+
+  <row>
+	<field name="国家">哈萨克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">巴基斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">乌兹别克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">伊朗</field>
+  </row>
+
+  <row>
+	<field name="国家">吉尔吉斯斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">塔吉克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">白俄罗斯</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT name_cn AS 国家 FROM country
+WHERE country_id NOT IN (SELECT country_id FROM conference_participant WHERE conference_id = 1)
+ORDER BY country_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="国家">美国</field>
+  </row>
+
+  <row>
+	<field name="国家">巴西</field>
+  </row>
+
+  <row>
+	<field name="国家">南非</field>
+  </row>
+
+  <row>
+	<field name="国家">埃及</field>
+  </row>
+
+  <row>
+	<field name="国家">印度尼西亚</field>
+  </row>
+
+  <row>
+	<field name="国家">沙特阿拉伯</field>
+  </row>
+
+  <row>
+	<field name="国家">东帝汶</field>
+  </row>
+
+  <row>
+	<field name="国家">伊拉克</field>
+  </row>
+
+  <row>
+	<field name="国家">伯利兹</field>
+  </row>
+
+  <row>
+	<field name="国家">刚果共和国</field>
+  </row>
+
+  <row>
+	<field name="国家">刚果民主共和国</field>
+  </row>
+
+  <row>
+	<field name="国家">卡塔尔</field>
+  </row>
+
+  <row>
+	<field name="国家">吉布提</field>
+  </row>
+
+  <row>
+	<field name="国家">哥伦比亚</field>
+  </row>
+
+  <row>
+	<field name="国家">土库曼斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">土耳其</field>
+  </row>
+
+  <row>
+	<field name="国家">圣卢西亚</field>
+  </row>
+
+  <row>
+	<field name="国家">圣基茨和尼维斯</field>
+  </row>
+
+  <row>
+	<field name="国家">圣文森特和格林纳丁斯</field>
+  </row>
+
+  <row>
+	<field name="国家">圭亚那</field>
+  </row>
+
+  <row>
+	<field name="国家">坦桑尼亚</field>
+  </row>
+
+  <row>
+	<field name="国家">埃塞俄比亚</field>
+  </row>
+
+  <row>
+	<field name="国家">塞内加尔</field>
+  </row>
+
+  <row>
+	<field name="国家">多米尼克</field>
+  </row>
+
+  <row>
+	<field name="国家">孟加拉国</field>
+  </row>
+
+  <row>
+	<field name="国家">安哥拉</field>
+  </row>
+
+  <row>
+	<field name="国家">安提瓜和巴布达</field>
+  </row>
+
+  <row>
+	<field name="国家">尼日利亚</field>
+  </row>
+
+  <row>
+	<field name="国家">巴勒斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家">巴哈马</field>
+  </row>
+
+  <row>
+	<field name="国家">巴巴多斯</field>
+  </row>
+
+  <row>
+	<field name="国家">巴林</field>
+  </row>
+
+  <row>
+	<field name="国家">摩洛哥</field>
+  </row>
+
+  <row>
+	<field name="国家">文莱</field>
+  </row>
+
+  <row>
+	<field name="国家">新加坡</field>
+  </row>
+
+  <row>
+	<field name="国家">智利</field>
+  </row>
+
+  <row>
+	<field name="国家">柬埔寨</field>
+  </row>
+
+  <row>
+	<field name="国家">格林纳达</field>
+  </row>
+
+  <row>
+	<field name="国家">毛里塔尼亚</field>
+  </row>
+
+  <row>
+	<field name="国家">泰国</field>
+  </row>
+
+  <row>
+	<field name="国家">海地</field>
+  </row>
+
+  <row>
+	<field name="国家">牙买加</field>
+  </row>
+
+  <row>
+	<field name="国家">特立尼达和多巴哥</field>
+  </row>
+
+  <row>
+	<field name="国家">科威特</field>
+  </row>
+
+  <row>
+	<field name="国家">科摩罗</field>
+  </row>
+
+  <row>
+	<field name="国家">突尼斯</field>
+  </row>
+
+  <row>
+	<field name="国家">约旦</field>
+  </row>
+
+  <row>
+	<field name="国家">缅甸</field>
+  </row>
+
+  <row>
+	<field name="国家">老挝</field>
+  </row>
+
+  <row>
+	<field name="国家">苏里南</field>
+  </row>
+
+  <row>
+	<field name="国家">菲律宾</field>
+  </row>
+
+  <row>
+	<field name="国家">蒙古国</field>
+  </row>
+
+  <row>
+	<field name="国家">越南</field>
+  </row>
+
+  <row>
+	<field name="国家">阿塞拜疆</field>
+  </row>
+
+  <row>
+	<field name="国家">阿尔及利亚</field>
+  </row>
+
+  <row>
+	<field name="国家">阿联酋</field>
+  </row>
+
+  <row>
+	<field name="国家">马尔代夫</field>
+  </row>
+
+  <row>
+	<field name="国家">马来西亚</field>
+  </row>
+
+  <row>
+	<field name="国家">黎巴嫩</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT c.short_name AS 会议, COUNT(p.country_id) AS 已登记参会国数
+FROM conference c LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+GROUP BY c.conference_id, c.short_name
+HAVING COUNT(p.country_id) &gt; ANY (
+  SELECT COUNT(x.country_id)
+  FROM conference y LEFT JOIN conference_participant x ON x.conference_id = y.conference_id
+  WHERE y.conference_type = '部长级会议'
+  GROUP BY y.conference_id
+)
+ORDER BY 已登记参会国数 DESC, c.conference_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议">上合莫斯科总理会</field>
+	<field name="已登记参会国数">16</field>
+  </row>
+
+  <row>
+	<field name="会议">首届中阿利雅得峰会2022</field>
+	<field name="已登记参会国数">16</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA80一般性辩论</field>
+	<field name="已登记参会国数">15</field>
+  </row>
+
+  <row>
+	<field name="会议">上合撒马尔罕元首理事会2022</field>
+	<field name="已登记参会国数">14</field>
+  </row>
+
+  <row>
+	<field name="会议">上合伊斯兰堡总理会</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">上合新德里视频峰会</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">上合比什凯克总理会</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟万象会议2024</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">上合杜尚别总理会2026</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">上合总理视频会议2022</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">上合杜尚别元首理事会2021</field>
+	<field name="已登记参会国数">12</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟雅加达会议2023</field>
+	<field name="已登记参会国数">11</field>
+  </row>
+
+  <row>
+	<field name="会议">上合阿斯塔纳峰会</field>
+	<field name="已登记参会国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议">上合天津元首理事会</field>
+	<field name="已登记参会国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议">上合比什凯克元首理事会2026</field>
+	<field name="已登记参会国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里峰会2026</field>
+	<field name="已登记参会国数">10</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖喀山峰会</field>
+	<field name="已登记参会国数">9</field>
+  </row>
+
+  <row>
+	<field name="会议">中非北京峰会</field>
+	<field name="已登记参会国数">7</field>
+  </row>
+
+  <row>
+	<field name="会议">中非达喀尔部长级会议2021</field>
+	<field name="已登记参会国数">7</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—中亚西安峰会</field>
+	<field name="已登记参会国数">6</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—中亚阿斯塔纳峰会</field>
+	<field name="已登记参会国数">6</field>
+  </row>
+
+  <row>
+	<field name="会议">澜湄第四次领导人视频会议</field>
+	<field name="已登记参会国数">6</field>
+  </row>
+
+  <row>
+	<field name="会议">中阿论坛北京部长会2024</field>
+	<field name="已登记参会国数">6</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖约翰内斯堡峰会</field>
+	<field name="已登记参会国数">5</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖领导人视频会晤2022</field>
+	<field name="已登记参会国数">5</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里视频会晤2021</field>
+	<field name="已登记参会国数">5</field>
+  </row>
+
+  <row>
+	<field name="会议">中拉论坛北京部长会2025</field>
+	<field name="已登记参会国数">4</field>
+  </row>
+
+  <row>
+	<field name="会议">人工智能全球治理上海会议2026</field>
+	<field name="已登记参会国数">4</field>
+  </row>
+
+  <row>
+	<field name="会议">全球发展倡议纽约对话会2026</field>
+	<field name="已登记参会国数">4</field>
+  </row>
+
+  <row>
+	<field name="会议">中非北京峰会2018</field>
+	<field name="已登记参会国数">3</field>
+  </row>
+
+  <row>
+	<field name="会议">G20里约峰会</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约外长会</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖里约峰会2025</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">G20新德里峰会</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">G20约翰内斯堡峰会</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟吉隆坡会议2025</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">中非长沙协调人部长会</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">联合国可持续发展目标峰会2023</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">中国—东盟马尼拉外长会2026</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">UNGA81一般性辩论2026</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">亚信巴库峰会2026</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+
+  <row>
+	<field name="会议">金砖新德里安全事务会议2026</field>
+	<field name="已登记参会国数">2</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT c.short_name AS 会议, COUNT(p.country_id) AS 已登记参会国数
+FROM conference c LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+GROUP BY c.conference_id, c.short_name
+HAVING COUNT(p.country_id) &gt;= ALL (
+  SELECT COUNT(*) FROM conference_participant GROUP BY conference_id
+)
+ORDER BY c.conference_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="会议">上合莫斯科总理会</field>
+	<field name="已登记参会国数">16</field>
+  </row>
+
+  <row>
+	<field name="会议">首届中阿利雅得峰会2022</field>
+	<field name="已登记参会国数">16</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT country_id AS 国家编号, name_cn AS 国家 FROM country
+WHERE country_id IN (SELECT host_country_id FROM conference)
+UNION
+SELECT country_id, name_cn FROM country
+WHERE country_id IN (SELECT lead_country_id FROM follow_up_action)
+ORDER BY 国家编号" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="国家编号">1</field>
+	<field name="国家">中国</field>
+  </row>
+
+  <row>
+	<field name="国家编号">2</field>
+	<field name="国家">美国</field>
+  </row>
+
+  <row>
+	<field name="国家编号">3</field>
+	<field name="国家">俄罗斯</field>
+  </row>
+
+  <row>
+	<field name="国家编号">4</field>
+	<field name="国家">巴西</field>
+  </row>
+
+  <row>
+	<field name="国家编号">5</field>
+	<field name="国家">南非</field>
+  </row>
+
+  <row>
+	<field name="国家编号">6</field>
+	<field name="国家">印度</field>
+  </row>
+
+  <row>
+	<field name="国家编号">7</field>
+	<field name="国家">埃及</field>
+  </row>
+
+  <row>
+	<field name="国家编号">8</field>
+	<field name="国家">哈萨克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家编号">9</field>
+	<field name="国家">巴基斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家编号">10</field>
+	<field name="国家">印度尼西亚</field>
+  </row>
+
+  <row>
+	<field name="国家编号">11</field>
+	<field name="国家">沙特阿拉伯</field>
+  </row>
+
+  <row>
+	<field name="国家编号">13</field>
+	<field name="国家">乌兹别克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家编号">20</field>
+	<field name="国家">吉尔吉斯斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家编号">31</field>
+	<field name="国家">塔吉克斯坦</field>
+  </row>
+
+  <row>
+	<field name="国家编号">32</field>
+	<field name="国家">塞内加尔</field>
+  </row>
+
+  <row>
+	<field name="国家编号">59</field>
+	<field name="国家">老挝</field>
+  </row>
+
+  <row>
+	<field name="国家编号">61</field>
+	<field name="国家">菲律宾</field>
+  </row>
+
+  <row>
+	<field name="国家编号">64</field>
+	<field name="国家">阿塞拜疆</field>
+  </row>
+
+  <row>
+	<field name="国家编号">66</field>
+	<field name="国家">阿联酋</field>
+  </row>
+
+  <row>
+	<field name="国家编号">68</field>
+	<field name="国家">马来西亚</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT document_id AS 文件编号, title AS 文件名称 FROM document
+WHERE doc_no IS NULL
+ORDER BY document_id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="文件编号">1</field>
+	<field name="文件名称">上海合作组织成员国元首理事会阿斯塔纳宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">2</field>
+	<field name="文件名称">金砖国家领导人第十六次会晤喀山宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">3</field>
+	<field name="文件名称">关于共筑新时代全天候中非命运共同体的北京宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">4</field>
+	<field name="文件名称">中非合作论坛—北京行动计划（2025-2027）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">5</field>
+	<field name="文件名称">二十国集团领导人里约热内卢峰会宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">7</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十三次会议联合公报</field>
+  </row>
+
+  <row>
+	<field name="文件编号">8</field>
+	<field name="文件名称">金砖国家外长会晤主席声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">9</field>
+	<field name="文件名称">金砖国家领导人第十七次会晤里约热内卢宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">11</field>
+	<field name="文件名称">上海合作组织成员国元首理事会新德里宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">12</field>
+	<field name="文件名称">上海合作组织成员国元首理事会天津宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">13</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十二次会议联合公报</field>
+  </row>
+
+  <row>
+	<field name="文件编号">14</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十四次会议联合公报</field>
+  </row>
+
+  <row>
+	<field name="文件编号">15</field>
+	<field name="文件名称">金砖国家领导人第十五次会晤约翰内斯堡宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">16</field>
+	<field name="文件名称">二十国集团领导人新德里峰会宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">17</field>
+	<field name="文件名称">二十国集团南非峰会领导人宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">19</field>
+	<field name="文件名称">中国—中亚峰会西安宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">20</field>
+	<field name="文件名称">第二届中国—中亚峰会阿斯塔纳宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">21</field>
+	<field name="文件名称">中华人民共和国同哈萨克斯坦共和国、吉尔吉斯共和国、塔吉克斯坦共和国、土库曼斯坦、乌兹别克斯坦共和国永久睦邻友好合作条约</field>
+  </row>
+
+  <row>
+	<field name="文件编号">22</field>
+	<field name="文件名称">中国—东盟关于深化农业合作的联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">23</field>
+	<field name="文件名称">中国—东盟农业绿色发展行动计划（2023—2027）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">24</field>
+	<field name="文件名称">中国—东盟关于实质性结束中国—东盟自贸区3.0版升级谈判的联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">25</field>
+	<field name="文件名称">中国—东盟关于深化人文交流合作的联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">26</field>
+	<field name="文件名称">中国—东盟关于推动建立可持续和包容性的数字生态合作联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">27</field>
+	<field name="文件名称">中国—东盟自贸区3.0版升级议定书</field>
+  </row>
+
+  <row>
+	<field name="文件编号">28</field>
+	<field name="文件名称">澜沧江—湄公河合作第四次领导人会议内比都宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">29</field>
+	<field name="文件名称">澜湄合作五年行动计划（2023—2027）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">30</field>
+	<field name="文件名称">中国—阿拉伯国家合作论坛第十届部长级会议北京宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">31</field>
+	<field name="文件名称">中国—阿拉伯国家合作论坛2024年至2026年行动执行计划</field>
+  </row>
+
+  <row>
+	<field name="文件编号">32</field>
+	<field name="文件名称">中国和阿拉伯国家关于巴勒斯坦问题的联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">33</field>
+	<field name="文件名称">中非维护全球南方团结合作的长沙宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">34</field>
+	<field name="文件名称">中国—拉共体论坛第四届部长级会议北京宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">35</field>
+	<field name="文件名称">中国—拉共体成员国重点领域合作共同行动计划（2025—2027）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">36</field>
+	<field name="文件名称">2023年可持续发展目标峰会政治宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">37</field>
+	<field name="文件名称">上海合作组织二十五周年比什凯克宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">38</field>
+	<field name="文件名称">金砖国家领导人第十八次会晤新德里宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">39</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十五次会议联合公报</field>
+  </row>
+
+  <row>
+	<field name="文件编号">40</field>
+	<field name="文件名称">上海合作组织成员国外交部长理事会声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">41</field>
+	<field name="文件名称">中国—东盟外长关于应对中东局势演变对本地区影响及加强区域能源合作的联合声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">42</field>
+	<field name="文件名称">2026世界人工智能大会暨人工智能全球治理高级别会议主席声明</field>
+  </row>
+
+  <row>
+	<field name="文件编号">43</field>
+	<field name="文件名称">亚信第七次峰会宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">44</field>
+	<field name="文件名称">上海合作组织成员国元首理事会撒马尔罕宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">45</field>
+	<field name="文件名称">上海合作组织成员国政府首脑（总理）理事会第二十一次会议联合公报</field>
+  </row>
+
+  <row>
+	<field name="文件编号">46</field>
+	<field name="文件名称">金砖国家领导人第十四次会晤北京宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">47</field>
+	<field name="文件名称">二十国集团领导人巴厘岛峰会宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">50</field>
+	<field name="文件名称">中非合作论坛第八届部长级会议达喀尔宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">51</field>
+	<field name="文件名称">中非合作论坛—达喀尔行动计划（2022—2024）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">52</field>
+	<field name="文件名称">关于构建更加紧密的中非命运共同体的北京宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">53</field>
+	<field name="文件名称">中非合作论坛—北京行动计划（2019—2021年）</field>
+  </row>
+
+  <row>
+	<field name="文件编号">54</field>
+	<field name="文件名称">金砖国家领导人第十三次会晤新德里宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">55</field>
+	<field name="文件名称">上海合作组织二十周年杜尚别宣言</field>
+  </row>
+
+  <row>
+	<field name="文件编号">56</field>
+	<field name="文件名称">首届中阿峰会利雅得宣言</field>
+  </row>
+</resultset>
+<?xml version="1.0"?>
+
+<resultset statement="SELECT username, real_name, is_active FROM app_user WHERE user_id = @view_user" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="username">course_view_demo</field>
+	<field name="real_name">课程视图演示用户（已修改）</field>
+	<field name="is_active">1</field>
+  </row>
+</resultset>

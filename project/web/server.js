@@ -2,7 +2,7 @@
 /**
  * 多边外交数据库 · 轻量 Web 界面（零依赖）
  *
- * 设计取舍：不装 express / mysql2，直接 spawn 系统里的 mysql.exe，用
+ * 设计取舍：不装 express / mysql2，直接 spawn 系统里的 MySQL 客户端，用
  * MySQL 的 JSON_OBJECT / JSON_ARRAYAGG 把结果整段取回再 JSON.parse。
  * 好处是换台机器只要有 node + mysql 就能跑，不受 npm 源影响。
  *
@@ -13,18 +13,24 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { spawn } = require('child_process');
 
 // ---------------------------------------------------------------- 配置
 const PORT = Number(process.env.PORT || 8765);
 const HOST = '127.0.0.1';
-const MYSQL = process.env.MYSQL_BIN || 'C:/Program Files/MySQL/MySQL Server 9.4/bin/mysql.exe';
+const MYSQL = process.env.MYSQL_BIN || (process.platform === 'win32'
+  ? 'mysql.exe' : 'mysql');
+const MYSQL_USER = process.env.MYSQL_USER || 'root';
+const MYSQL_CONNECTION = Object.entries({
+  host: process.env.MYSQL_HOST, port: process.env.MYSQL_PORT, socket: process.env.MYSQL_SOCKET
+}).filter(([, value]) => value).map(([key, value]) => `--${key}=${value}`);
 const DB = process.env.DB_NAME || 'multilateral-diplomacy-system-schoolwork-';
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const CRED_FILE = process.env.MYSQL_CRED || 'C:/Users/nbd99/.dsh-backups/db/mysql-root.txt';
+const CRED_FILE = process.env.MYSQL_CRED || path.join(os.homedir(), '.dsh-backups', 'db', 'mysql-root.txt');
 
 function readPassword() {
-  if (process.env.MYSQL_PWD) return process.env.MYSQL_PWD;
+  if (process.env.MYSQL_PWD !== undefined) return process.env.MYSQL_PWD;
   try {
     const line = fs.readFileSync(CRED_FILE, 'utf8').split(/\r?\n/)
       .find(l => l.startsWith('password='));
@@ -38,7 +44,7 @@ const PWD = readPassword();
 // ---------------------------------------------------------------- mysql 调用
 function mysqlRun(sql) {
   return new Promise((resolve, reject) => {
-    const p = spawn(MYSQL, ['-u', 'root', '--default-character-set=utf8mb4',
+    const p = spawn(MYSQL, [...MYSQL_CONNECTION, '-u', MYSQL_USER, '--default-character-set=utf8mb4',
       '-B', '-N', '--raw', '-D', DB, '-e', sql],
       { env: { ...process.env, MYSQL_PWD: PWD }, windowsHide: true });
     let out = '', err = '';
@@ -460,5 +466,5 @@ server.listen(PORT, HOST, () => {
   console.log(`多边外交数据库 Web 界面已启动：http://${HOST}:${PORT}`);
   console.log(`数据库：${DB}`);
   console.log(`客户端：${MYSQL}`);
-  if (!PWD) console.warn('警告：未找到 MySQL 密码（MYSQL_PWD 环境变量或凭据文件），查询会失败。');
+  console.log(`数据库账号：${MYSQL_USER}`);
 });
