@@ -1,8 +1,7 @@
--- S11—S16：约束与触发器的故意违反测试，共11条语句应报错。
--- 先执行01—04、06；本文件不加入run_all，避免预期错误中断正常建库。
--- Linux运行：sudo mysql --force --table < project/09_constraint_samples.sql
--- --force仅用于本文件，使预期失败后继续验证并执行ROLLBACK；也可逐条演示。
--- 全部演示数据都在同一事务内，结束后回滚。若手动中断，请在同一连接ROLLBACK。
+-- S11—S16：约束与触发器的“故意违反”测试，11 条语句应报错。
+-- 单独运行：mysql --force --table < 09_constraint_samples.sql（不要并入 run_all）。
+-- 全部演示在事务内完成，结束 ROLLBACK；扩展：用户变量与 CURDATE()。
+
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 START TRANSACTION;
@@ -63,7 +62,7 @@ SET progress_pct = NULL, status = NULL,
     planned_end_date = DATE_SUB(@check_day, INTERVAL 1 DAY)
 WHERE action_id = @check_action;
 SELECT a.progress_pct AS 未知进度, a.status AS 未知状态, v.overdue_days AS 逾期天数
-FROM follow_up_action a LEFT JOIN v_action_alert v ON v.action_id = a.action_id
+FROM follow_up_action a LEFT OUTER JOIN v_action_alert v ON v.action_id = a.action_id
 WHERE a.action_id = @check_action;
 
 -- @sample S15 触发器：插入行动、修改行动会议、修改文件会议的不一致均应报1644。
@@ -72,7 +71,7 @@ VALUES (@check_conf2, @check_doc, '来源不一致的演示行动');
 UPDATE follow_up_action SET conference_id = @check_conf2 WHERE action_id = @check_action;
 UPDATE document SET conference_id = @check_conf2 WHERE document_id = @check_doc;
 SELECT a.conference_id = d.conference_id AS 行动文件会议仍一致
-FROM follow_up_action a JOIN document d ON d.document_id = a.document_id
+FROM follow_up_action a INNER JOIN document d ON d.document_id = a.document_id
 WHERE a.action_id = @check_action;
 
 -- @sample S16 可更新视图：合法修改一行；违反is_active=1应报1369，基表保持启用。

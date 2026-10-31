@@ -1,10 +1,6 @@
--- ============================================================
--- 实验项目 步骤 6：扩展功能（触发器 + 存储过程 + 函数）
--- 课件 3.7 将存储过程列为自学内容；基础查询见 05 和 08。
--- 触发器：后续行动状态自动判定（逾期预警的业务保障）
--- 存储过程：单场会议全景仪表盘（验收演示用，一次输出 5 个结果集）
--- 函数：成果文件共识率（联署国占比）
--- ============================================================
+-- 步骤 6：扩展功能（课件 3.7 列为自学内容）。
+-- 4 个触发器 + 1 个存储过程 + 1 个函数：行动状态自动判定、审计留痕、跨会议校验、一屏演示、联署率。
+-- 依赖 MySQL 的 DELIMITER、<=>、SIGNAL、CURDATE()，属于课件外的扩展语法。
 
 USE `multilateral-diplomacy-system-schoolwork-`;
 
@@ -111,15 +107,15 @@ BEGIN
          c.session_label AS 届次, c.start_date AS 开始日期, c.end_date AS 结束日期,
          c.status AS 状态, hc.name_cn AS 举办地国家, m.name AS 所属机制
   FROM conference c
-  LEFT JOIN country hc   ON hc.country_id = c.host_country_id
-  LEFT JOIN mechanism m  ON m.mechanism_id = c.mechanism_id
+  LEFT OUTER JOIN country hc   ON hc.country_id = c.host_country_id
+  LEFT OUTER JOIN mechanism m  ON m.mechanism_id = c.mechanism_id
   WHERE c.conference_id = p_conference_id;
 
   -- 2 参与国家
   SELECT p.role AS 参会身份, p.delegation_level AS 出席级别,
          p.delegation_size AS 代表团人数, cn.name_cn AS 国家
   FROM conference_participant p
-  JOIN country cn ON cn.country_id = p.country_id
+  INNER JOIN country cn ON cn.country_id = p.country_id
   WHERE p.conference_id = p_conference_id
   ORDER BY FIELD(p.role, '主办国','主席国','成员国','观察员','嘉宾国'), cn.name_cn;
 
@@ -127,7 +123,7 @@ BEGIN
   SELECT t.category AS 议题领域, t.name AS 议题, ct.is_core AS 是否核心,
          ct.discussion_date AS 讨论日期
   FROM conference_topic ct
-  JOIN topic t ON t.topic_id = ct.topic_id
+  INNER JOIN topic t ON t.topic_id = ct.topic_id
   WHERE ct.conference_id = p_conference_id
   ORDER BY ct.is_core DESC, t.name;
 
@@ -144,7 +140,7 @@ BEGIN
          a.planned_end_date AS 计划完成, a.actual_end_date AS 实际完成,
          a.progress_pct AS 进度, a.status AS 状态
   FROM follow_up_action a
-  LEFT JOIN country lc ON lc.country_id = a.lead_country_id
+  LEFT OUTER JOIN country lc ON lc.country_id = a.lead_country_id
   WHERE a.conference_id = p_conference_id
   ORDER BY a.action_id;
 END$$

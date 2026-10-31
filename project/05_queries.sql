@@ -1,9 +1,5 @@
--- ============================================================
--- 实验项目 步骤 5：核心查询（14 条）
--- 课件对应：连接、聚合、GROUP BY/HAVING、嵌套查询与视图查询。
--- IN、ANY/ALL、自身连接与 UNION 示例另见 08_course_examples.sql。
--- 日期函数 DATEDIFF、CURDATE、YEAR 用于适配 MySQL。
--- ============================================================
+-- 步骤 5：14 条核心查询（课件 3.3：连接、聚合、GROUP BY/HAVING、嵌套查询、视图查询）。
+-- 扩展：YEAR()、CURDATE()、DATEDIFF() 三个日期函数（课件未讲，用于“按年统计”和“逾期天数”）。
 
 USE `multilateral-diplomacy-system-schoolwork-`;
 
@@ -31,7 +27,7 @@ ORDER BY 会议数 DESC, 成果文件数 DESC, m.mechanism_id;
 -- 查询 3：已登记参会国不少于8个的会议（HAVING 过滤分组结果）
 SELECT c.short_name AS 会议简称, COUNT(p.country_id) AS 参与国数
 FROM conference c
-JOIN conference_participant p ON p.conference_id = c.conference_id
+INNER JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY c.conference_id, c.short_name
 HAVING COUNT(p.country_id) >= 8
 ORDER BY 参与国数 DESC, c.conference_id;
@@ -46,7 +42,7 @@ ORDER BY d.issue_date;
 -- 查询 5：各国举办会议数（分组统计 + 排序，包含未作为举办地的国家）
 SELECT hc.name_cn AS 举办地国家, COUNT(c.conference_id) AS 举办会议数
 FROM country hc
-LEFT JOIN conference c ON c.host_country_id = hc.country_id
+LEFT OUTER JOIN conference c ON c.host_country_id = hc.country_id
 GROUP BY hc.country_id, hc.name_cn
 ORDER BY 举办会议数 DESC, hc.country_id;
 
@@ -67,11 +63,14 @@ ORDER BY signed_count DESC, total_country_count DESC, document_id;
 
 -- 查询 8：议题热度（按领域统计被多少场会议讨论、其中多少为核心议题）
 SELECT t.category AS 议题领域,
-       COUNT(DISTINCT t.topic_id)  AS 议题数,
+       COUNT(DISTINCT t.topic_id)       AS 议题数,
        COUNT(DISTINCT ct.conference_id) AS 涉及会议数,
-       SUM(CASE WHEN ct.is_core = 1 THEN 1 ELSE 0 END) AS 核心议题次数
+       (SELECT COUNT(*) FROM conference_topic ct2
+         WHERE ct2.topic_id IN (SELECT topic_id FROM topic t2
+                                 WHERE t2.category = t.category)
+           AND ct2.is_core = 1)          AS 核心议题次数
 FROM topic t
-JOIN conference_topic ct ON ct.topic_id = t.topic_id
+INNER JOIN conference_topic ct ON ct.topic_id = t.topic_id
 GROUP BY t.category
 ORDER BY 涉及会议数 DESC;
 
@@ -85,8 +84,9 @@ ORDER BY start_date;
 -- 查询 10：后续行动状态分布与平均进度
 SELECT status AS 状态, COUNT(*) AS 行动数,
        ROUND(AVG(progress_pct), 1) AS 平均进度,
-       SUM(CASE WHEN actual_end_date IS NOT NULL THEN 1 ELSE 0 END) AS 已实际完成数
-FROM follow_up_action
+       (SELECT COUNT(*) FROM follow_up_action a2
+         WHERE a2.status = a.status AND a2.actual_end_date IS NOT NULL) AS 已实际完成数
+FROM follow_up_action a
 GROUP BY status
 ORDER BY 行动数 DESC;
 
@@ -96,7 +96,7 @@ SELECT YEAR(c.start_date) AS 年份,
        COUNT(p.country_id)             AS 参与国次,
        COUNT(DISTINCT c.host_country_id) AS 举办地国家数
 FROM conference c
-LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+LEFT OUTER JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY YEAR(c.start_date)
 ORDER BY 年份;
 
@@ -116,9 +116,10 @@ ORDER BY cn.country_id;
 
 -- 查询 13：系统用户角色与国别分布（权限视角）
 SELECT user_role AS 角色, COUNT(*) AS 人数,
-       SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS 启用人数,
+       (SELECT COUNT(*) FROM app_user u2
+         WHERE u2.user_role = u.user_role AND u2.is_active = 1) AS 启用人数,
        COUNT(DISTINCT country_id) AS 涉及国家数
-FROM app_user
+FROM app_user u
 GROUP BY user_role
 ORDER BY 人数 DESC;
 

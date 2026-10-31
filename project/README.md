@@ -73,10 +73,10 @@
 erDiagram
     COUNTRY ||--o{ CONFERENCE : "主办"
     COUNTRY ||--o{ CONFERENCE_PARTICIPANT : "参加"
-    CONFERENCE ||--o{ CONFERENCE_PARTICIPANT : "包含"
+    CONFERENCE ||--o{ CONFERENCE_PARTICIPANT : "登记"
     INTERNATIONAL_ORGANIZATION ||--o{ CONFERENCE : "主办"
     INTERNATIONAL_ORGANIZATION ||--o{ MECHANISM : "牵头"
-    MECHANISM ||--o{ CONFERENCE : "归属"
+    MECHANISM ||--o{ CONFERENCE : "包含"
 ```
 
 **（2）议程与成果域**：回答"会上谈了什么、谈成了什么、谁赞同"。
@@ -87,7 +87,7 @@ erDiagram
     TOPIC ||--o{ CONFERENCE_TOPIC : "被讨论"
     CONFERENCE ||--o{ DOCUMENT : "产出"
     DOCUMENT ||--o{ DOCUMENT_SPONSOR : "获得"
-    COUNTRY ||--o{ DOCUMENT_SPONSOR : "联署"
+    COUNTRY ||--o{ DOCUMENT_SPONSOR : "表态"
 ```
 
 **（3）行动与审计域**：回答"文件条款落实得怎么样、谁改的数据"。
@@ -95,7 +95,7 @@ erDiagram
 ```mermaid
 erDiagram
     CONFERENCE ||--o{ FOLLOW_UP_ACTION : "派生"
-    DOCUMENT ||--o{ FOLLOW_UP_ACTION : "依据"
+    DOCUMENT ||--o{ FOLLOW_UP_ACTION : "作为依据"
     COUNTRY ||--o{ FOLLOW_UP_ACTION : "牵头"
     INTERNATIONAL_ORGANIZATION ||--o{ FOLLOW_UP_ACTION : "负责"
     APP_USER ||--o{ OPERATION_LOG : "产生"
@@ -108,19 +108,19 @@ erDiagram
 erDiagram
     COUNTRY ||--o{ CONFERENCE : "主办"
     COUNTRY ||--o{ CONFERENCE_PARTICIPANT : "参加"
-    COUNTRY ||--o{ DOCUMENT_SPONSOR : "联署/支持"
+    COUNTRY ||--o{ DOCUMENT_SPONSOR : "表态"
     COUNTRY ||--o{ FOLLOW_UP_ACTION : "牵头"
     INTERNATIONAL_ORGANIZATION ||--o{ CONFERENCE : "主办"
     INTERNATIONAL_ORGANIZATION ||--o{ MECHANISM : "牵头"
     INTERNATIONAL_ORGANIZATION ||--o{ FOLLOW_UP_ACTION : "负责"
-    MECHANISM ||--o{ CONFERENCE : "归属"
-    CONFERENCE ||--o{ CONFERENCE_PARTICIPANT : "包含"
+    MECHANISM ||--o{ CONFERENCE : "包含"
+    CONFERENCE ||--o{ CONFERENCE_PARTICIPANT : "登记"
     CONFERENCE ||--o{ CONFERENCE_TOPIC : "设置"
     TOPIC ||--o{ CONFERENCE_TOPIC : "被讨论"
     CONFERENCE ||--o{ DOCUMENT : "产出"
     DOCUMENT ||--o{ DOCUMENT_SPONSOR : "获得"
     CONFERENCE ||--o{ FOLLOW_UP_ACTION : "派生"
-    DOCUMENT ||--o{ FOLLOW_UP_ACTION : "依据"
+    DOCUMENT ||--o{ FOLLOW_UP_ACTION : "作为依据"
     APP_USER ||--o{ OPERATION_LOG : "产生"
 ```
 

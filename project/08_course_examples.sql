@@ -1,7 +1,5 @@
--- ============================================================
--- 课件补充示例：基础条件、自身连接、IN、ANY/ALL、UNION、空值和视图更新。
--- 来源章节：3.3 数据查询、3.5 视图；本文件可重复执行。
--- ============================================================
+-- 课件 3.3/3.5 补充示例：BETWEEN、LIKE、自身连接、IN、ANY/ALL、UNION、空值、视图更新。
+
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 -- 1. BETWEEN + LIKE：2026年已举行的上合组织会议。
@@ -33,11 +31,11 @@ ORDER BY country_id;
 -- 5. ANY + 聚合：已登记参会国数超过至少一场部长会的会议。
 -- COUNT得到已知数量，避免拿未公开的代表团人数作比较。
 SELECT c.short_name AS 会议, COUNT(p.country_id) AS 已登记参会国数
-FROM conference c LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+FROM conference c LEFT OUTER JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY c.conference_id, c.short_name
 HAVING COUNT(p.country_id) > ANY (
   SELECT COUNT(x.country_id)
-  FROM conference y LEFT JOIN conference_participant x ON x.conference_id = y.conference_id
+  FROM conference y LEFT OUTER JOIN conference_participant x ON x.conference_id = y.conference_id
   WHERE y.conference_type = '部长级会议'
   GROUP BY y.conference_id
 )
@@ -46,7 +44,7 @@ ORDER BY 已登记参会国数 DESC, c.conference_id;
 -- 6. ALL + 聚合：已登记参会国数最多的会议，保留并列结果。
 -- 对应课件13第24页HAVING AVG(...) >= ALL(...)的结构。
 SELECT c.short_name AS 会议, COUNT(p.country_id) AS 已登记参会国数
-FROM conference c LEFT JOIN conference_participant p ON p.conference_id = c.conference_id
+FROM conference c LEFT OUTER JOIN conference_participant p ON p.conference_id = c.conference_id
 GROUP BY c.conference_id, c.short_name
 HAVING COUNT(p.country_id) >= ALL (
   SELECT COUNT(*) FROM conference_participant GROUP BY conference_id

@@ -32,9 +32,19 @@
 - Windows 入口自动寻找 mysql.exe，并保留手动指定路径；临时文件及临时密码在退出时清理。新增 Linux/macOS 入口。
 - 保留触发器与例程作为扩展。两个行动触发器额外拒绝行动插入/更新时文件和会议不匹配的写入。
 
-## SQL 方言说明
+## SQL 方言说明与本次语法对齐
 
-课件采用通用 SQL。项目保留必要的 MySQL AUTO_INCREMENT、InnoDB、DATETIME、日期函数及 DELIMITER；建表已不使用 ENUM、YEAR、TINYINT 和 KEY 子句；CREATE OR REPLACE VIEW 用于可重复执行。未照搬 MySQL 不支持的 CREATE DOMAIN、CREATE SCHEMA … AUTHORIZATION、UPDATE … SET ROW 等写法。
+课件采用通用 SQL。本次按课件逐词核对后做了两件事：
+
+**（1）把课件里有的写法，统一成课件里的形式**
+
+- 连接一律写成 `INNER JOIN … ON` / `LEFT OUTER JOIN … ON`（课件 13 第 5—10 页的写法），不再混用省略 OUTER 的简写。
+- 查询与视图里的 `SUM(CASE WHEN … THEN 1 ELSE 0 END)` 计数，改为**单值子查询** `(SELECT COUNT(*) … WHERE 条件)`（课件 11—12 的嵌套查询）；结果逐行核对一致（5 个视图与 14 条查询的输出与改前完全相同）。
+- `v_document_consensus` 去掉分组与中介表连接，改为对每份文件做三个计数子查询，语句更短。
+
+**（2）课件里没有等价物的部分，保留并标注**
+
+`AUTO_INCREMENT`、`ON DELETE CASCADE/RESTRICT/SET NULL`、`CREATE OR REPLACE VIEW`、日期函数（`CURDATE/DATEDIFF/YEAR`）、`CASE`（仅剩 1 处文本归类）、`COALESCE`（仅剩默认文字）、触发器/存储过程/函数、事务与用户变量——这些在课件中没有等价写法，删掉会直接损失功能（自动编号、级联清理、逾期天数、自动判定与审计、回滚演示）。各文件头注释已逐条注明“课件内 / 扩展”。
 
 WITH CHECK OPTION 检查更新后的行是否满足视图条件，不会自动补齐 WHERE 中的字段值。聚合报表用于查询；修改姓名的演示使用单表视图。
 

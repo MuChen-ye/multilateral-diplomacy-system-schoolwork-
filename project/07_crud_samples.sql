@@ -1,6 +1,7 @@
--- 课件3.4：单行/多行INSERT、INSERT ... SELECT、带子查询的UPDATE/DELETE。
--- S06—S10：只在事务中建立虚构演示数据，最后ROLLBACK；真实资料保持原样。
--- MySQL适配：用户变量、LAST_INSERT_ID、CURDATE和DATE_SUB。
+-- 课件 3.4：单行/多行 INSERT、INSERT ... SELECT、带子查询的 UPDATE/DELETE。
+-- S06—S10 只在事务中建虚构演示数据，最后 ROLLBACK，真实资料不变。
+-- 扩展：用户变量 SET @、LAST_INSERT_ID()、CURDATE()、DATE_SUB()（MySQL 适配）。
+
 USE `multilateral-diplomacy-system-schoolwork-`;
 
 START TRANSACTION;
@@ -78,7 +79,8 @@ SELECT (SELECT COUNT(*) FROM conference_participant WHERE conference_id = @conf)
 
 -- @sample S09 综合统计：调用自定义函数，分母为已记录的文件立场国家数。
 SELECT COUNT(*) AS 已记录立场国数,
-       SUM(CASE WHEN stance = '联署' THEN 1 ELSE 0 END) AS 联署国数,
+       (SELECT COUNT(*) FROM document_sponsor s2
+         WHERE s2.document_id = @doc AND s2.stance = '联署') AS 联署国数,
        fn_consensus_ratio(@doc) AS 联署比例百分比
 FROM document_sponsor WHERE document_id = @doc;
 
