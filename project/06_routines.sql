@@ -81,7 +81,8 @@ BEGIN
   END IF;
 END$$
 
--- ---------- 函数：文件共识率（联署国 / 涉国总数 %） ----------
+-- ---------- 函数：文件共识率（联署国 / 涉国总数 %）（报告 3.4 样例 16） ----------
+-- 注意：存储过程内部调用本函数，因此函数必须建在过程之前，两个样例的脚本顺序由依赖决定。
 CREATE FUNCTION fn_consensus_ratio(p_document_id INT)
 RETURNS DECIMAL(5,2)
 READS SQL DATA
@@ -98,7 +99,7 @@ BEGIN
   RETURN ROUND(v_signed * 100 / v_total, 2);
 END$$
 
--- ---------- 存储过程：会议全景仪表盘 ----------
+-- ---------- 存储过程：会议全景仪表盘（报告 3.4 样例 15） ----------
 CREATE PROCEDURE sp_conference_dashboard(IN p_conference_id INT)
 COMMENT '输出一场国际会议的：基本信息 / 参与国家 / 议题 / 成果文件 / 后续行动'
 BEGIN

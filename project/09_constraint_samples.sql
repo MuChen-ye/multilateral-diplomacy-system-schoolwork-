@@ -1,4 +1,5 @@
 -- S11—S16：约束与触发器的“故意违反”测试，11 条语句应报错。
+-- 文件内按报告 3.4 的样例 11—14 排列：S14 CHECK → S11 复合主键 → S13 外键 → S15 触发器，S12 唯一文号、S16 可更新视图为补充样例；编号不变，仍与 SAMPLES.md 对应。
 -- 单独运行：mysql --force --table < 09_constraint_samples.sql（不要并入 run_all）。
 -- 全部演示在事务内完成，结束 ROLLBACK；扩展：用户变量与 CURDATE()。
 
@@ -29,26 +30,7 @@ INSERT INTO app_user (username, real_name, user_role)
 VALUES ('course_constraint_demo', '约束演示用户', '观察员');
 SET @check_user = LAST_INSERT_ID();
 
--- @sample S11 复合主键：同一会议重复登记同一国家，应报1062。
-INSERT INTO conference_participant (conference_id, country_id, role)
-VALUES (@check_conf1, @check_china, '成员国');
-SELECT COUNT(*) AS 该国参会记录仍为1
-FROM conference_participant WHERE conference_id = @check_conf1 AND country_id = @check_china;
-
--- @sample S12 UNIQUE：重复非空正式文号，应报1062；多个NULL文号允许存在。
-INSERT INTO document (conference_id, title, doc_type, doc_no, issue_date)
-VALUES (@check_conf2, '重复文号演示', '联合声明', 'COURSE-CONSTRAINT', @check_day);
-SELECT COUNT(*) AS 该文号记录仍为1 FROM document WHERE doc_no = 'COURSE-CONSTRAINT';
-
--- @sample S13 外键：不存在的国家应报1452；删除被引用的国家应报1451。
-INSERT INTO conference_participant (conference_id, country_id, role)
-VALUES (@check_conf1, @missing_country, '成员国');
-DELETE FROM country WHERE country_id = @check_china;
-SELECT COUNT(*) AS 中国记录仍为1 FROM country WHERE country_id = @check_china;
-SELECT COUNT(*) AS 不存在国家的参会记录为0
-FROM conference_participant WHERE conference_id = @check_conf1 AND country_id = @missing_country;
-
--- @sample S14 CHECK：进度越界、计划日期倒置、已完成却无完成日期均应报3819。
+-- @sample S14 CHECK：进度越界、计划日期倒置、已完成却无完成日期均应报3819。　（报告 3.4 样例 11）
 UPDATE follow_up_action SET progress_pct = 150 WHERE action_id = @check_action;
 UPDATE follow_up_action SET planned_end_date = DATE_SUB(start_date, INTERVAL 1 DAY)
 WHERE action_id = @check_action;
@@ -65,7 +47,21 @@ SELECT a.progress_pct AS 未知进度, a.status AS 未知状态, v.overdue_days 
 FROM follow_up_action a LEFT OUTER JOIN v_action_alert v ON v.action_id = a.action_id
 WHERE a.action_id = @check_action;
 
--- @sample S15 触发器：插入行动、修改行动会议、修改文件会议的不一致均应报1644。
+-- @sample S11 复合主键：同一会议重复登记同一国家，应报1062。　（报告 3.4 样例 12）
+INSERT INTO conference_participant (conference_id, country_id, role)
+VALUES (@check_conf1, @check_china, '成员国');
+SELECT COUNT(*) AS 该国参会记录仍为1
+FROM conference_participant WHERE conference_id = @check_conf1 AND country_id = @check_china;
+
+-- @sample S13 外键：不存在的国家应报1452；删除被引用的国家应报1451。　（报告 3.4 样例 13）
+INSERT INTO conference_participant (conference_id, country_id, role)
+VALUES (@check_conf1, @missing_country, '成员国');
+DELETE FROM country WHERE country_id = @check_china;
+SELECT COUNT(*) AS 中国记录仍为1 FROM country WHERE country_id = @check_china;
+SELECT COUNT(*) AS 不存在国家的参会记录为0
+FROM conference_participant WHERE conference_id = @check_conf1 AND country_id = @missing_country;
+
+-- @sample S15 触发器：插入行动、修改行动会议、修改文件会议的不一致均应报1644。　（报告 3.4 样例 14）
 INSERT INTO follow_up_action (conference_id, document_id, action_name)
 VALUES (@check_conf2, @check_doc, '来源不一致的演示行动');
 UPDATE follow_up_action SET conference_id = @check_conf2 WHERE action_id = @check_action;
@@ -74,7 +70,12 @@ SELECT a.conference_id = d.conference_id AS 行动文件会议仍一致
 FROM follow_up_action a INNER JOIN document d ON d.document_id = a.document_id
 WHERE a.action_id = @check_action;
 
--- @sample S16 可更新视图：合法修改一行；违反is_active=1应报1369，基表保持启用。
+-- @sample S12 UNIQUE：重复非空正式文号，应报1062；多个NULL文号允许存在。　（补充样例）
+INSERT INTO document (conference_id, title, doc_type, doc_no, issue_date)
+VALUES (@check_conf2, '重复文号演示', '联合声明', 'COURSE-CONSTRAINT', @check_day);
+SELECT COUNT(*) AS 该文号记录仍为1 FROM document WHERE doc_no = 'COURSE-CONSTRAINT';
+
+-- @sample S16 可更新视图：合法修改一行；违反is_active=1应报1369，基表保持启用。　（补充样例）
 UPDATE v_active_user SET real_name = '约束演示用户（已修改）' WHERE user_id = @check_user;
 SELECT real_name AS 修改后姓名, is_active AS 启用状态 FROM app_user WHERE user_id = @check_user;
 UPDATE v_active_user SET is_active = 0 WHERE user_id = @check_user;

@@ -12,7 +12,7 @@ SET @rus = (SELECT country_id FROM country WHERE iso_code = 'RUS');
 SET @security = (SELECT topic_id FROM topic WHERE name = '全球安全治理');
 SET @ai = (SELECT topic_id FROM topic WHERE name = '人工智能治理');
 
--- @sample S06 新增会议及关联数据，插入时触发器自动判为逾期。
+-- @sample S06 新增会议及关联数据，插入时触发器自动判为逾期。（报告 3.4 样例 8：增）
 INSERT INTO conference
   (title, short_name, host_country_id, host_city, conference_type, start_date, end_date, format)
 VALUES
@@ -58,7 +58,7 @@ FROM conference c WHERE c.conference_id = @conf;
 SELECT status AS 插入后状态, progress_pct AS 进度
 FROM follow_up_action WHERE action_id = @act;
 
--- @sample S07 只填写完成日期，观察触发器将状态改为已完成、进度改为100并写审计。
+-- @sample S07 只填写完成日期，观察触发器将状态改为已完成、进度改为100并写审计。（报告 3.4 样例 9：改）
 UPDATE follow_up_action
 SET actual_end_date = @demo_day
 WHERE action_id = @act
@@ -69,7 +69,7 @@ SELECT action_type AS 操作, old_value AS 变更前, new_value AS 变更后
 FROM operation_log WHERE target_table = 'follow_up_action' AND target_id = @act
 ORDER BY log_id;
 
--- @sample S08 带子查询的DELETE，查询实际剩余数量。
+-- @sample S08 带子查询的DELETE，查询实际剩余数量。（报告 3.4 样例 10：删）
 DELETE FROM conference_participant
 WHERE conference_id = @conf
   AND country_id IN (SELECT country_id FROM country WHERE iso_code = 'IDN');
