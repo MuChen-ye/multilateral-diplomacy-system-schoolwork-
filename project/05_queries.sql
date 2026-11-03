@@ -1,5 +1,5 @@
--- 步骤 5：14 条核心查询（课件 3.3：连接、聚合、GROUP BY/HAVING、嵌套查询、视图查询）。
--- 文件内按报告 3.4 的样例 1—7 顺序排列，其后是 7 条补充查询；编号沿用 SAMPLES.md 的引用，故不连续。
+-- 步骤 5：14 条核心查询 + 2 条补充查询（课件 3.3：连接、聚合、GROUP BY/HAVING、嵌套查询、视图查询）。
+-- 文件内按报告 3.4 的样例 1—7 顺序排列，其后是 7 条补充查询，最后是查询 15、16 两条新增；编号沿用 SAMPLES.md 的引用，故不连续。
 -- 扩展：YEAR()、CURDATE()、DATEDIFF() 三个日期函数（课件未讲，用于“按年统计”和“逾期天数”）。
 
 USE `multilateral-diplomacy-system-schoolwork-`;
@@ -145,3 +145,9 @@ FROM conference c
 INNER JOIN v_conference_overview v ON v.conference_id = c.conference_id
 WHERE c.status = '进行中'
 ORDER BY c.end_date;
+
+
+
+SELECT *
+FROM conference
+WHERE status = '进行中';
