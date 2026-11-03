@@ -128,3 +128,20 @@ ORDER BY 人数 DESC;
 SELECT 操作人, 角色, 操作类型, 目标表, 目标ID, 变更前, 变更后, log_time AS 记录时间
 FROM v_operation_audit
 ORDER BY log_time DESC, log_id DESC;
+
+
+SELECT c.conference_id AS 会议ID, c.short_name AS 会议简称,
+       c.start_date AS 开始日期, c.end_date AS 结束日期,
+       DATEDIFF(CURDATE(), c.start_date) + 1 AS 已进行天数,
+       DATEDIFF(c.end_date, CURDATE())       AS 剩余天数,
+       v.participant_count AS 参与国数,
+       v.core_topic_count  AS 核心议题数,
+       v.document_count    AS 文件数,
+       v.action_count      AS 行动数,
+       CASE WHEN v.document_count = 0 THEN '会中尚未产出文件'
+            WHEN v.action_count   = 0 THEN '有文件、尚未拆解行动'
+            ELSE '进度正常' END AS 落实提示
+FROM conference c
+INNER JOIN v_conference_overview v ON v.conference_id = c.conference_id
+WHERE c.status = '进行中'
+ORDER BY c.end_date;

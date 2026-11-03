@@ -5,12 +5,13 @@
 -- C01/D01/A01分别对应会议/文件/行动主键1；来源及未入表字段见 data/真实数据.json。
 -- 未核实值用NULL；整列未知的可空字段省略，按表定义保持NULL。
 -- 系统账户和操作日志由实际使用产生。
+-- 末尾补充 1 行演示数据：51 号会议（test），并为它的两个外键先建 100 号测试国家与 100 号测试机制。
 USE `multilateral-diplomacy-system-schoolwork-`;
 SET NAMES utf8mb4;
 
 START TRANSACTION;
 
--- country：69条
+-- country：70条（69 条真实 + 1 条演示）
 INSERT INTO country (country_id, iso_code, name_cn, name_en, continent, is_un_member, note) VALUES
 (1, 'CHN', '中国', 'China', '亚洲', 1, NULL),
 (2, 'USA', '美国', 'United States of America', '北美洲', 1, NULL),
@@ -88,7 +89,7 @@ INSERT INTO international_organization (org_id, name_cn, abbr, org_type) VALUES
 (2, '上海合作组织', 'SCO', '区域性组织'),
 (3, '联合国气候变化框架公约秘书处', 'UNFCCC', '联合国系统');
 
--- mechanism：17条
+-- mechanism：18条（17 条真实 + 1 条演示）
 INSERT INTO mechanism (mechanism_id, name, abbr, category, lead_org_id) VALUES
 (1, '上海合作组织元首理事会', 'SCO-HS', '区域合作', 2),
 (2, '金砖国家合作机制', 'BRICS', '南南合作', NULL),
@@ -212,7 +213,7 @@ INSERT INTO topic (topic_id, name, category) VALUES
 (100, '中阿伙伴关系与发展合作', '发展与合作'),
 (101, '地区安全与文明交流', '和平与安全');
 
--- conference：50条
+-- conference：51条（50 条真实 + 1 条演示）
 INSERT INTO conference (conference_id, title, short_name, mechanism_id, org_id, host_country_id, host_city, conference_type, start_date, end_date, format, status, theme) VALUES
 (1, '上海合作组织成员国元首理事会第二十四次会议', '上合阿斯塔纳峰会', 1, 2, 8, '阿斯塔纳', '首脑峰会', '2024-07-04', '2024-07-04', '线下', '已闭幕', NULL),
 (2, '金砖国家领导人第十六次会晤', '金砖喀山峰会', 2, NULL, 3, '喀山', '首脑峰会', '2024-10-22', '2024-10-24', '混合', '已闭幕', '加强多边主义，促进公正的全球发展与安全'),
@@ -264,6 +265,18 @@ INSERT INTO conference (conference_id, title, short_name, mechanism_id, org_id, 
 (48, '金砖国家领导人第十三次会晤', '金砖新德里视频会晤2021', 2, NULL, NULL, NULL, '首脑峰会', '2021-09-09', '2021-09-09', '线上', '已闭幕', '金砖15周年：开展金砖合作，促进延续、巩固与共识'),
 (49, '上海合作组织成员国元首理事会第二十一次会议', '上合杜尚别元首理事会2021', 1, 2, 31, '杜尚别', '首脑峰会', '2021-09-17', '2021-09-17', '混合', '已闭幕', NULL),
 (50, '首届中国—阿拉伯国家峰会', '首届中阿利雅得峰会2022', 11, NULL, 11, '利雅得', '首脑峰会', '2022-12-09', '2022-12-09', '线下', '已闭幕', NULL);
+
+-- 演示数据（补充）：51 号会议引用的两个父行
+INSERT INTO country (country_id, iso_code, name_cn, name_en, continent, development_status, is_un_member, note) VALUES
+(100, 'TST', '测试国', 'Testland', '亚洲', '发展中国家', 0, '演示用测试国家');
+
+INSERT INTO mechanism (mechanism_id, name, abbr, category, lead_org_id) VALUES
+(100, '测试机制', 'TEST', '区域合作', NULL);
+
+-- 演示数据（补充）：51 号会议
+INSERT INTO conference (conference_id, title, short_name, mechanism_id, org_id, host_country_id,
+                        host_city, conference_type, start_date, end_date, format, status, theme) VALUES
+(51, 'test', 'test', 100, NULL, 100, '北京', '首脑峰会', '2026-11-01', '2026-11-05', '线下', '进行中', NULL);
 
 -- conference_participant：304条
 INSERT INTO conference_participant (conference_id, country_id, role, delegation_level) VALUES
